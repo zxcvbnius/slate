@@ -2,6 +2,8 @@
 title: API Reference
 
 language_tabs:
+  - android
+  - ios
   - shell
   - ruby
   - python
@@ -16,153 +18,242 @@ includes:
 search: true
 ---
 
-# Introduction
+# Getting Started
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+## Prerequisites for API v0.1.0 
 
-This example API documentation page was created with [Slate](http://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+* **iOS**
+<br></br>
+
+* **Android**
+    - We do not support Java outside of Android at the moment.  
+    - A recent version of the Android SDK  
+    - We support all Android versions since API Level 14 (Android 4.0 & above).  
+
+
+
+### Installation for iOS
+
+- ` pod 'DUMessaging'`  
+- ` pod install`  
+- _TODO_  
+
+
+### Installation for Android
+
+- You can either use Maven or manually add a Jar to your project.  
+
+
+1. **Maven** 
+<br></br>
+    *  Navigate to your build.gradle file at the app level (not project level) and ensure that you include the following:  
+        ` maven { url "https://dl.bintray.com/zxcvbnius/maven"} `  
+    * Add compile **'com.duolc.diuitapi:message:0.1.1'** to the dependencies of your project  
+    * In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files  
+<br></br>
+
+2. **Jar** 
+<br></br>
+    * Download the release package and unzip  
+    * Create a new project with Android Studio  
+    * Copy the **diuit-api-VERSION.jar** folder into app/libs  
+    * In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files  
+
+
+
+## Initialization
+
+* **iOS**
+<br></br>
+
+* **Android**
+    - Open your main activity or the activity in which you want to integrate the update process.  
+    - Add the following lines:    
+
+```android
+
+    public class YourActivity extends Activity {
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+
+            // Your own code to create the view
+            // ...
+
+            DiuitAPI.current = new DiuitAPI( DIUIT_APP_ID, DIUIT_APP_KEY );
+        }
+
+        // Probably more methods
+    }
+
+```
+
+# Models
+
+Diuit message api models are defined by implementing something very similar to [socket.io](http://socket.io)   
+Simply extend our DiuitObject class and let the Diuit annotations processor generate proxy classes.  
+In out api, there are 4 models you might to know:  
+
+### **DiuitUser**  
+<br></br>
+
+### **DiuitDevice**  
+<br></br>
+
+
+### **DiuitChat**  
+<br></br>
+
+
+### **DiuitMessage**  
+<br></br>
+
+
+
 
 # Authentication
 
-> To authorize, use this code:
+The User / Authentication module provide functionalities for managing user information.  
 
-```ruby
-require 'kittn'
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
+### Authentication  
 
-```python
-import kittn
+Our messaging server does not directly store your users' credential. Instead, you will need to have your own account server to manager your users' credentials and to authenticate them.
 
-api = kittn.authorize('meowmeowmeow')
-```
+After you've authenticate your user, you then encrypt a JWT access grant the user access using the EncryptionKey obtained from when registering your account, and send the JWT to us to signify that you vouch that this user is indeed logged in.
 
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
+Thus, authenticating a user requires a 4 steps process.  
 
-> Make sure to replace `meowmeowmeow` with your API key.
+1. Obtain a nounce is from our API server through /1/auth/nonce API. (This can be done either by device client or by your account server)
+You authenticate the user on your account server.  
+2. If authentication is successful, your account server will create a JWT authentication token  
+3. You then pass this authentication token to our /1/auth/login API to obtain a session token. (Thie can be done either by device client or by your account server)  
+4. The session token is set in the X-Diuit-Session-Token header for all future API calls that requires a specific user session.
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+Please note that the EncryptionKey should be kept private on your account server, and should not be stored on your client app. If the EncryptionKey is leaked, anyone can forge a user-login to the messaging system. If you suspect that an encryption key has been leaked, please genereate a new EncryptionKey on [http://www.diuit.net](http://www.diuit.net) and revoke the old one.  
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
 
-`Authorization: meowmeowmeow`
+### 1. Obtaining Authentication Nonce
 
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+The first step of authentication requires obtaining a unique nonce from our server. This nounce is used to prevent replay-attack of the JWT token.
+To obtain the nonce from our server, send a GET request to the /1/auth/nonce API. 
+<br></br>
+<aside class="note">
+        curl -X GET \  
+            -H "X-Diuit-Application-Id: ${APPLICATION_ID}" \  
+            -H "X-Diuit-API-Key: ${REST_API_KEY}" \  
+            https://api.diuit.net/1/auth/nonce  
+</aside>
+<br></br>
+
+The response body is a JSON object containing the `nonce` key.
+<aside class="note">
+    {
+        "nonce": "123asdf123asdf12321adf",
+    }
 </aside>
 
-# Kittens
 
-## Get All Kittens
+### 2. Authenticate User Credential On Your Server.  
 
-```ruby
-require 'kittn'
+The real user authentication is performed on your own server. Perform any authentication check you've implement to authenticate the user loggining in.
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
+### 3. Generate JWT Autentiction Token  
 
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Isis",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
+If the user's identity is verified, your server should generate a JWT token with the following header:
+<br></br>
+<aside class="note">
+    {  
+        "typ": "JWT",  
+        "alg": "RS256"  
+        "cty": "diuit-eit;v=1"  
+        "kid": ${EncryptionKeyId}  
+    }
 </aside>
+<br></br>
 
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-> The above command returns JSON structured like this:
-
-```json
+and the following claim body:
+<br></br>
+<aside class="note">
 {
-  "id": 2,
-  "name": "Isis",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+"iss": ${APPLICATION_ID}  
+"sub": ${UNIQUE_USER_ID}  
+"iat": ${CURRENT_TIME_IN_ISO8601_FORMAT}  
+"exp": ${SESSION_EXPIRATION_TIME_IN_ISO8601_FORMAT}  
+"nce": ${AUTHENTICATION_NONCE}  
 }
-```
+</aside>
+<br></br>
 
-This endpoint retrieves a specific kitten.
 
-<aside class="warning">If you're not using an administrator API key, note that some kittens will return 403 Forbidden if they are hidden for admins only.</aside>
+and encrypt the whole thing with your EncryptionKey obtained when registering for our account.  
+Take note that you put the EncryptionKeyId, not EncryptionKey itself in "kid" field. The JWT header itself is not encrypted, so do not put your encryption key here.  
+The resulting JWT token should then be passed back to the client app to indicate authentication successful.  
 
-### HTTP Request
 
-`GET http://example.com/kittens/<ID>`
+### 4. Obtaining Session Token with Authentication Token
 
-### URL Parameters
+With the JWT token generated, you then POST to the /1/auth/login API with the auth-token parameter set to the JWT token to obtain a session token for the user.  
+This step can be done either on the server side or client side depending on your own system architecture.  
+But please note that when loggin in, you will also need to provide the deviceId field to uniquely identify the current device that the user is logging in from. If on a web device, please generate a unique UUID to link with the current web session.  
+And if your wish to enable push notification on mobile devices, please pass two additional fields: platform field to indicate what is the push platform to be used (can be one of "gcm", "ios_sandbox", "ios_production"), and a pushToken field to indicate the pushToken specific to the push platform.  
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
+<br></br>
+<aside class="note">
+curl -X POST \  
+-H "X-Diuit-Application-Id: ${APPLICATION_ID}" \  
+-H "X-Diuit-API-Key: ${REST_API_KEY}" \  
+-H "Content-Type: application/json" \  
+-d '{"authToken":"putyourtoken", "deviceId": "putyourdeviceid", "platform": "gcm", "pushToken": "putdevicepushtoken"}' \  
+https://api.diuit.net/1/auth/login  
+</aside>
+<br></br>
+
+If successful, the response will be a JSON object contains the `sessionToken` key that should be set in future API calls as `X-Diuit-Session-Token` header to authenticate the user.  
+
+
+### Authenticate With Socket.IO  
+After authenticate the user, and obtaining the session-token, you can start the real-time messaging session by opening a Socket.IO connection to our `http://www.diuit.net` server.  
+After the socket.io session is connected, you have 15 seconds to emit a "authenticate" message with payload {authToken: ${SESSION_TOKEN}} to authenticate the user.  
+The server should respond with a JSON payload containing your device info to signify login success.  
+After which you can use the other Socket.IO APIs.  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
