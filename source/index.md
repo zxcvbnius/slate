@@ -216,23 +216,23 @@ To list all chat-rooms you are currently joined in, emit a "chats/list" message,
 The server should respond with with a list of all chats you are currently joined in.  
 
 ```java  
-         // In Android, if you have already authenticated your devices, you can get all your chatroom easily.
+    // In Android, if you have already authenticated your devices, you can get all your chatroom easily.
  
-         DiuitAPI.current.listChats(new DiuitAPICallback<ArrayList<DiuitChat>>()
-         {
-             @Override
-             public void onSuccess(final ArrayList<DiuitChat> chatArrayList)
-             {
-                 // if success, retrun chatArrayList
-             }
+    DiuitAPI.current.listChats(new DiuitAPICallback<ArrayList<DiuitChat>>()
+    {
+        @Override
+        public void onSuccess(final ArrayList<DiuitChat> chatArrayList)
+        {
+            // if success, retrun chatArrayList
+        }
  
-             @Override
-             public void onFailure(final int code, final JSONObject resultObj)
-             {
-                 // if failure, it will return error code and result
-             }
-         });
- 
+        @Override
+        public void onFailure(final int code, final JSONObject resultObj)
+        {
+            // if failure, it will return error code and result
+        }
+    });
+
 ```
 
 ```objective_c
@@ -266,25 +266,238 @@ For `whiteList` field, you can leave it `null` to indicate that everyone is allo
 
 ```java
     
-        // @params serialOfUsers : put all users you want to join init this string array
-        // @params meta : you can put attribute of the chat, ex, {'name' : 'this is my new chatroom'}
-        DiuitAPI.current.createChat(String[] serialOfUsers, JSONObject meta, new DiuitAPICallback<DiuitChat>()
+    // @params serialOfUsers : put all users you want to join init this string array
+    // @params meta : you can put attribute of the chat, ex, {'name' : 'this is my new chatroom'}
+    DiuitAPI.current.createChat(String[] serialOfUsers, JSONObject meta, new DiuitAPICallback<DiuitChat>()
+    {
+        @Override
+        public void onSuccess(final DiuitChat diuitChat)
         {
-            @Override
-            public void onSuccess(final DiuitChat diuitChat)
-            {
-                // If success, will return a DiuitChat object
-            }
+            // If success, will return a DiuitChat object
+        }
 
-            @Override
-            public void onFailure(final int code, final JSONObject resultObj)
-            {
-                 // if failure, it will return error code and result        
-            }
-        });
+        @Override
+        public void onFailure(final int code, final JSONObject resultObj)
+        {
+                // if failure, it will return error code and result        
+        }
+    });
 
 ```
 
+
+```objective_c
+```
+
+
+```http
+```
+
+
+## Join a Chat Room
+
+To join a chat-room, you emit a "chats/join" message, with the following payload:
+
+<aside class="note">
+
+{  
+chatId: ${CHATROOM_ID}  
+}  
+
+</aside>
+<br></br>
+
+
+```java
+
+    //@param chatId , the id of the chat you want to join
+    DiuitAPI.current.joinChat(int chatId, new DiuitAPICallback<DiuitChat>()
+    {
+        @Override
+        public void onFailure(final int code, final JSONObject resultObj)
+        {
+            // if failure, it will return error code and result                
+        }
+        @Override
+        public void onSuccess(final DiuitChat diuitChat)
+        {
+            // if success, it will return the DiuitChat object
+        }
+    });
+```
+
+```objective_c
+```
+
+
+```http
+```
+
+
+
+
+## Leave a Chat Room
+
+To leave a chat-room, you emit a "chats/leave" message, with the following payload:
+
+<aside class="note">
+{  
+chatId: ${CHATROOM_ID}  
+}  
+</aside>
+<br></br>
+
+
+```java
+
+    //@param chatId , the id of the chat you want to join
+    DiuitAPI.current.leaveChat(diuitChat, new DiuitAPICallback<DiuitChat>()
+    {
+        @Override
+        public void onFailure(final int code, final JSONObject resultObj)
+        {
+            // if failure, it will return error code and result        
+        }
+        @Override
+        public void onSuccess(final DiuitChat diuitChat)
+        {
+            // if success, it will return the DiuitChat object
+        }
+
+    });
+```
+
+```objective_c
+```
+
+
+```http
+```
+
+
+## Updating Chat Room Meta Info
+
+To update the chat-room's infomation, emit a "chats/meta/update" message, with the following payload:
+
+<aside class="note">
+{  
+    chatId: ${CHATROOM_ID}  
+    meta: { ${CHATROOM_META} }  
+}  
+</aside>
+<br></br>
+
+
+```java
+
+    // create new meta for updating the attribute of the chat 
+    JSONObject newMeta = new JSONObject();
+    newMeta("name", newName);
+
+    DiuitAPI.current.updateChat(diuitChat, newMeta, new DiuitAPICallback<DiuitChat>()
+    {
+        @Override
+        public void onFailure(final int code, final JSONObject resultObj)
+        {
+            // if failure, it will return error code and result  
+        }
+
+        @Override
+        public void onSuccess(DiuitChat diuitChat)
+        {
+            // if success, it will return the DiuitChat object            
+        }
+    });
+
+```
+
+```objective_c
+```
+
+
+```http
+```
+
+
+
+## Updating Chat Room White List
+
+To update the chat-room's white list info, emit a "chats/whiteList/update" message, with the following payload:  
+
+<aside class="note">
+{ 
+    chatId: ${CHATROOM_ID}  
+    whiteList: [ ${USER_ID_1} ]   
+}  
+</aside>
+<br></br>
+
+Note, to clear whiteList to `null`, pass a `null for thewhiteList` field.  
+And that removing a persom from the white list doesn't kick a person from the chat-room if he's already joined to the chat room.  
+
+
+```java
+
+    // @param serialsOfUsers : all users who you want to set into this chat whitelist
+    // @param diuitChat : the chat which you want to update 
+    DiuitAPI.current.updateWhiteList(DiuitChat diuitChat, String[] serialsOfUsers, 
+                    new DiuitAPICallback<DiuitChat>()
+    {
+        @Override
+        public void onFailure(final int code, final JSONObject resultObj)
+        {
+            // if failure, it will return error code and result  
+        }
+
+        @Override
+        public void onSuccess(DiuitChat diuitChat)
+        {
+            // if success, it will return the DiuitChat object            
+        }
+    });
+
+```
+
+```objective_c
+```
+
+
+```http
+```
+
+
+## Kick a user from Chat Room
+
+To kick a user from the chat room, emit a "chat/kick" message, with the following payload  
+
+<aside class="note">
+    {  
+        chatId: ${CHATROOM_ID}  
+        userId: ${TARGET_USER_TO_KICK}  
+    }  
+</aside>
+<br></br>
+
+Note that kicking a user from the chat room doesn't change the whiteList status. So if the user is in the white list of the chat room, he can join back to the room himself.  
+To completely ban a user from the chat room, emit a "chat/whiteList/update" first, before kicking them out.  '
+
+```java
+
+    DiuitAPI.current.kick(diuitChat, diuitUser, new DiuitAPICallback<JSONObject>()
+    {
+        @Override
+        public void onSuccess(JSONObject resultObj)
+        {
+            // if success, it will return result
+        }
+
+        @Override
+        public void onFailure(final int code, final JSONObject resultObj)
+        {
+            // if failure, it will return error code and result
+        }
+    });
+```
 
 ```objective_c
 ```
