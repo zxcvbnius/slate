@@ -210,13 +210,13 @@ After which you can use the other Socket.IO APIs.
 Diuit is a powerful tool that lets you add in-app messaging with very little overhead. Diuit can work with any existing User Management system, and includes features such as querying, Message delivery and read receipts, Conversation metadata, and typing indicators.  
 
 
-### Listing Chat Rooms
+## Listing Chat Rooms
 
 To list all chat-rooms you are currently joined in, emit a "chats/list" message, with empty payload.  
 The server should respond with with a list of all chats you are currently joined in.  
 
 ```java  
-         In Android, if you have already authenticated your devices, you can get all your chatroom easily.
+         // In Android, if you have already authenticated your devices, you can get all your chatroom easily.
  
          DiuitAPI.current.listChats(new DiuitAPICallback<ArrayList<DiuitChat>>()
          {
@@ -235,18 +235,62 @@ The server should respond with with a list of all chats you are currently joined
  
 ```
 
-```http  
- 
-To list all chat-rooms you are currently joined in, emit a "chats/list" message, with empty payload.  
-The server should respond with with a list of all chats you are currently joined in.  
- 
+```objective_c
 ```
 
-### Create a Chat Room  
+
+```http  
+```
+
+## Create a Chat Room  
 
 To create a chat-room, you emit a "chats/creat" message, with the following payload:
 
+<aside class="note">
+
+{  
+    members: [ ${USER_ID_1}, ${USER_ID_2} ..]  
+    whiteList: [ ${USER_ID_1} ... ]  
+    meta: { ${ANY_CHAT_ROOM_SPECIFIC_META_DATA} }  
+}  
+
+</aside>
+<br></br>
+
+For `members` field, put the ids of all the people you wish to include the chatroom as an array. (Note that the ID shold be the sub fields you passed in when you create your JWT token)  
+How you obtain these user ID are application specific, and is not the concern of our messaging API. For example, for a chatting application, you generally will have a query API on your own account server, for your user to query their own friends / other contactst they wish to message to.  
+For a IOT application, you might have a list of pre-written contacts in your firmware instead. Our messaging API makes no assumption about what kind of application you are developing.  
+The meta field is a general purpose field for you to store any chat-room specific information. For example, you can store the name of your chat-room, a globally shared notes for your chat-room, a base64 encoded small icon for your chatroom, etc. Again, our messaging makes no assumption about what kind of application you are developing, so it's up to you on what you need to store along with the chat-room's meta data.  
+For `whiteList` field, you can leave it `null` to indicate that everyone is allowed to join, or include all the user IDs that are allowed to join in the room.  
+
+
 ```java
+    
+        // @params serialOfUsers : put all users you want to join init this string array
+        // @params meta : you can put attribute of the chat, ex, {'name' : 'this is my new chatroom'}
+        DiuitAPI.current.createChat(String[] serialOfUsers, JSONObject meta, new DiuitAPICallback<DiuitChat>()
+        {
+            @Override
+            public void onSuccess(final DiuitChat diuitChat)
+            {
+                // If success, will return a DiuitChat object
+            }
+
+            @Override
+            public void onFailure(final int code, final JSONObject resultObj)
+            {
+                 // if failure, it will return error code and result        
+            }
+        });
+
+```
+
+
+```objective_c
+```
+
+
+```http
 ```
 
 
