@@ -2,9 +2,9 @@
 title: API Reference
 
 language_tabs:
-  - android
-  - ios
-  - restful
+  - java: android
+  - objective_c: ios
+  - http: restful
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
@@ -71,28 +71,28 @@ search: true
 
 
 
-```android
-#    public class YourActivity extends Activity {
-#
-#        @Override
-#        protected void onCreate(Bundle savedInstanceState) {
-#
-#            // Your own code to create the view
-#            // ...
-#
-#            DiuitAPI.current = new DiuitAPI( DIUIT_APP_ID, DIUIT_APP_KEY );
-#        }
-#
-#        // Probably more methods
-#    }
+```java
+    public class YourActivity extends Activity {
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+
+            // Your own code to create the view
+            // ...
+
+            DiuitAPI.current = new DiuitAPI( DIUIT_APP_ID, DIUIT_APP_KEY );
+        }
+
+        // Probably more methods
+    }
 ```  
 
-```ios  
-# iOS
+```objective_c  
+ iOS
 ```  
 
-```restful  
-# Restful
+```http  
+ Restful
 ```  
 
 
@@ -215,38 +215,38 @@ Diuit is a powerful tool that lets you add in-app messaging with very little ove
 To list all chat-rooms you are currently joined in, emit a "chats/list" message, with empty payload.  
 The server should respond with with a list of all chats you are currently joined in.  
 
-```android  
-#         In Android, if you have already authenticated your devices, you can get all your chatroom easily.
-# 
-#         DiuitAPI.current.listChats(new DiuitAPICallback<ArrayList<DiuitChat>>()
-#         {
-#             @Override
-#             public void onSuccess(final ArrayList<DiuitChat> chatArrayList)
-#             {
-#                 // if success, retrun chatArrayList
-#             }
-# 
-#             @Override
-#             public void onFailure(final int code, final JSONObject resultObj)
-#             {
-#                 // if failure, it will return error code and result
-#             }
-#         });
-# 
+```java  
+         In Android, if you have already authenticated your devices, you can get all your chatroom easily.
+ 
+         DiuitAPI.current.listChats(new DiuitAPICallback<ArrayList<DiuitChat>>()
+         {
+             @Override
+             public void onSuccess(final ArrayList<DiuitChat> chatArrayList)
+             {
+                 // if success, retrun chatArrayList
+             }
+ 
+             @Override
+             public void onFailure(final int code, final JSONObject resultObj)
+             {
+                 // if failure, it will return error code and result
+             }
+         });
+ 
 ```
 
-```restful  
-# 
-# To list all chat-rooms you are currently joined in, emit a "chats/list" message, with empty payload.  
-# The server should respond with with a list of all chats you are currently joined in.  
-# 
+```http  
+ 
+To list all chat-rooms you are currently joined in, emit a "chats/list" message, with empty payload.  
+The server should respond with with a list of all chats you are currently joined in.  
+ 
 ```
 
 ### Create a Chat Room  
 
 To create a chat-room, you emit a "chats/creat" message, with the following payload:
 
-```android
+```java
 ```
 
 
