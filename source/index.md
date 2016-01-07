@@ -650,6 +650,105 @@ To send a rich media message to a chat room, emit a "messages/create" message, w
 > Remember , each message has file size limit <= 5MB
 
 
+## List Messages In a Chat Room 
+
+To list messages in a chat room, emit a "messages/list" message, with the following payload  
+
+<aside class="note">
+    {  
+        chatId: ${CHATROOM_ID},  
+        page: ${PAGE_NUMBER_TO_GET},  
+        count: ${MESSAGES_PER_PAGE},  
+        before: ${TIMESTAMP_IN_SEC},  
+    }
+</aside>
+<br></br>
+
+Response will contains `count` number of message before the timestamp specified in `before` field, skipping over `page` * `count` number of messages. (In another word, page start at 0)  
+Messages are returned in reverse chronological order, with the newest message returned first.  
+So, in general, you call the API with the current timestamp to obtain all the latest messages, and required, call the API with an older timestamp to obtain older messages.  
+
+
+```java
+
+    // @param chat , the chat you want to query
+    // @param before, before the timestamp, UTC+0
+    DiuitAPI.current.listMessagesInChat(DiuitChat chat, Date before, int count, int page, new DiuitAPICallback<ArrayList<DiuitMessage>>()
+    {
+        @Override
+        public void onSuccess(final ArrayList<DiuitMessage> diuitMessageArrayList)
+        {
+            // if success, it will return message arraylist
+        }
+        @Override
+        public void onFailure(final int code, final JSONObject resultObj)
+        {
+            // if failure, it will return error code and result
+        }
+    });
+
+```
+
+```objective_c
+```
+
+
+```http
+```
+
+
+## Mark a Message as being Read
+
+To mark a message as being read, emit "messages/markAsRead" message, with the following payload.  
+
+<aside class="note">
+    {
+        messageId: ${MESSAGE_ID}  
+    }
+</aside>
+<br></br>
+
+The message will be marked as read by the currently logged in user.  
+
+```java
+
+    // @param message, the message which you want to mark as readed
+    DiuitAPI.current.markAsRead(DiuitMessage message, callback()
+    {
+        @Override
+        public void onSuccess(final JSONObject resultObj)
+        {
+            // if success, it will return result
+        }
+        @Override
+        public void onFailure(final int code, final JSONObject resultObj)
+        {
+            // if failure, it will return error code and result
+        }
+    });
+
+```
+
+```objective_c
+```
+
+
+```http
+```
+
+## Appendex
+
+System Message Definitions
+
+Type | Payload Keys
+---------- | -------
+user.left | userId
+user.joined | userId
+whiteList.updated | whiteList
+user.kicked | userId
+meta.updated | meta
+
+
 
 # Models
 
