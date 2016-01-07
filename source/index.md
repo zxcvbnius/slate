@@ -507,6 +507,148 @@ To completely ban a user from the chat room, emit a "chat/whiteList/update" firs
 ```
 
 
+## Receiving a Message
+
+When a user send a message to the chatroom you are joined in. You will receive a "message" event.  
+You should listen for the event to receive real-time messages. The message will have the following format:  
+
+<aside class="note">
+{  
+    chatId: ${CHATROOM_ID},  
+    data: ${SOME_DATA}  
+    mime: ${DATA_MIME_TYPE}  
+    encoding: ${DATA_ENCOIDNG}  
+    meta: {$USER_SPECIFIC_META_FIELD}  
+}  
+</aside>
+<br></br>
+
+For text message, the mime type will be text/plain and the encoding will be utf8, and the data will be the text message itself.  
+For rich media messages, the mime type will be the mime type of the media, and the data will contain a url pointing to the rich media itself.  
+
+```java
+    // If you want to receive messages , you have to register receiving listener with your object  
+    // This object could be Activity, Fragment , or any kind of object   
+    // Once someone send you a message , you would get these in the callback
+    
+    DiuitAPI.current.registerReceivingMessage(DiuitAPICallback<DiuitMessage> callback)
+
+    // Before you leave the activity, or change the object to be `NULL`, you have to unregister this listener  
+
+    DiuitAPI.current.unregisterReceivingMessage(DiuitAPICallback<DiuitMessage> callback)
+
+```
+
+
+```objective_c
+```
+
+
+```http
+```
+
+
+
+
+## Send a Text Message
+
+To send a message to a chat room, emit a "message/create" message, with the following payload  
+
+<aside class="note">
+    {
+        chatId: ${CHATROOM_ID},
+        data: ${SOME_TEXT_TO_SEND}
+        mime: 'text/plain'
+        encoding: 'utf8'
+        meta: {$USER_SPECIFIC_META_FIELD}
+    }
+</aside>
+<br></br>
+
+> There three main type of message , text, photo, and file.
+> According different type, you have to call differen API.
+> Example, if you want to send a text to your friends:
+
+```java
+
+    // @param text , your text message string
+    // @param chat, choose a chat which you want to send
+    DiuitAPI.current.sendToChat(DiuitChat chat, String text, new DiuitAPICallback<DiuitMessage>()
+    {
+        @Override
+        public void onSuccess(final DiuitMessage diuitMessage)
+        {
+            // if success, it will return your DiuitMessage
+        }
+
+        @Override
+        public void onFailure(final int code, final JSONObject resultObj)
+        {
+            // if failure, it will return error code and result                
+        }
+    });
+```
+
+```objective_c
+```
+
+
+```http
+```
+
+
+## Send a Rich Media Message
+
+To send a rich media message to a chat room, emit a "messages/create" message, with the following payload  
+
+<aside class="note">
+    {
+        chatId: ${CHATROOM_ID},  
+        data: ${BASE64_ENCODED_DATA}  
+        mime: ${MIME_TYPE_OF_DATA}  
+        encoding: 'base64'  
+        meta: {$USER_SPECIFIC_META_FIELD}  
+    }
+</aside>
+<br></br>
+
+
+> Also, you can use those API to send your photos and files to your chat
+
+```java
+
+    // @param bitmap , the bitmap of your photo
+    // @param chat, choose a chat which you want to send
+    DiuitAPI.current.sendToChat(DiuitChat chat, Bitmap bitmap, new DiuitAPICallback<DiuitMessage>(){...})  
+
+```
+
+```objective_c
+```
+
+
+```http
+```
+
+> If you want to send your file , just call this API:
+
+```java
+
+    // @param file , the File object of your file
+    // @param chat, choose a chat which you want to send
+    DiuitAPI.current.sendToChat(DiuitChat chat, File file, new DiuitAPICallback<DiuitMessage>(){...})
+
+```
+
+```objective_c
+```
+
+
+```http
+```
+
+> Remember , each message has file size limit <= 5MB
+
 
 
 # Models
