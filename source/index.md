@@ -4,9 +4,7 @@ title: API Reference
 language_tabs:
   - android
   - ios
-  - shell
-  - ruby
-  - python
+  - restful
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
@@ -71,45 +69,31 @@ search: true
     - Open your main activity or the activity in which you want to integrate the update process.  
     - Add the following lines:    
 
+
+
 ```android
+#    public class YourActivity extends Activity {
+#
+#        @Override
+#        protected void onCreate(Bundle savedInstanceState) {
+#
+#            // Your own code to create the view
+#            // ...
+#
+#            DiuitAPI.current = new DiuitAPI( DIUIT_APP_ID, DIUIT_APP_KEY );
+#        }
+#
+#        // Probably more methods
+#    }
+```  
 
-    public class YourActivity extends Activity {
+```ios  
+# iOS
+```  
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-
-            // Your own code to create the view
-            // ...
-
-            DiuitAPI.current = new DiuitAPI( DIUIT_APP_ID, DIUIT_APP_KEY );
-        }
-
-        // Probably more methods
-    }
-
-```
-
-# Models
-
-Diuit message api models are defined by implementing something very similar to [socket.io](http://socket.io)   
-Simply extend our DiuitObject class and let the Diuit annotations processor generate proxy classes.  
-In out api, there are 4 models you might to know:  
-
-### **DiuitUser**  
-<br></br>
-
-### **DiuitDevice**  
-<br></br>
-
-
-### **DiuitChat**  
-<br></br>
-
-
-### **DiuitMessage**  
-<br></br>
-
-
+```restful  
+# Restful
+```  
 
 
 # Authentication
@@ -220,6 +204,64 @@ The server should respond with a JSON payload containing your device info to sig
 After which you can use the other Socket.IO APIs.  
 
 
+
+# Integration
+
+Diuit is a powerful tool that lets you add in-app messaging with very little overhead. Diuit can work with any existing User Management system, and includes features such as querying, Message delivery and read receipts, Conversation metadata, and typing indicators.  
+
+
+### Listing Chat Rooms
+
+To list all chat-rooms you are currently joined in, emit a "chats/list" message, with empty payload.  
+The server should respond with with a list of all chats you are currently joined in.  
+
+```android  
+#         In Android, if you have already authenticated your devices, you can get all your chatroom easily.
+# 
+#         DiuitAPI.current.listChats(new DiuitAPICallback<ArrayList<DiuitChat>>()
+#         {
+#             @Override
+#             public void onSuccess(final ArrayList<DiuitChat> chatArrayList)
+#             {
+#                 // if success, retrun chatArrayList
+#             }
+# 
+#             @Override
+#             public void onFailure(final int code, final JSONObject resultObj)
+#             {
+#                 // if failure, it will return error code and result
+#             }
+#         });
+# 
+```
+
+```restful  
+# 
+# To list all chat-rooms you are currently joined in, emit a "chats/list" message, with empty payload.  
+# The server should respond with with a list of all chats you are currently joined in.  
+# 
+```
+
+### Create a Chat Room  
+
+To create a chat-room, you emit a "chats/creat" message, with the following payload:
+
+```android
+```
+
+
+
+
+# Models
+
+Diuit message api models are defined by implementing something very similar to [socket.io](http://socket.io)   
+Simply extend our DiuitObject class and let the Diuit annotations processor generate proxy classes.  
+In out api, there are 4 models you might to know:  
+
+### **DiuitUser**  
+### **DiuitDevice**  
+### **DiuitChat**  
+### **DiuitMessage**  
 
 
 
