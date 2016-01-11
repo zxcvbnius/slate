@@ -1,6 +1,5 @@
 ---
 title: API Reference
-updated : 2016/01/10
 
 language_tabs:
   - java: android
@@ -16,6 +15,8 @@ includes:
 
 search: true
 ---
+
+updated : 2016/01/10
 
 # Getting Started
 
