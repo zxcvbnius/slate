@@ -19,15 +19,15 @@ search: true
 # Getting Started
 
 
-## Prerequisites for API v0.1.0 
+## Prerequisites for API v0.1.0
 
 * **iOS**
 <br></br>
 
 * **Android**
-    - We do not support Java outside of Android at the moment.  
+    - We do not support Java outside of Android at the moment.
     - A recent version of the Android SDK  
-    - We support all Android versions since API Level 14 (Android 4.0 & above).  
+    - We support all Android versions since API Level 14 (Android 4.0 & above).
 
 
 
@@ -43,7 +43,7 @@ search: true
 - You can either use Maven or manually add a Jar to your project.  
 
 
-1. **Maven** 
+1. **Maven**
 <br></br>
     *  Navigate to your build.gradle file at the app level (not project level) and ensure that you include the following:  
         ` maven { url "https://dl.bintray.com/zxcvbnius/maven"} `  
@@ -51,7 +51,7 @@ search: true
     * In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files  
 <br></br>
 
-2. **Jar** 
+2. **Jar**
 <br></br>
     * Download the release package and unzip  
     * Create a new project with Android Studio  
@@ -95,129 +95,201 @@ search: true
  Restful
 ```  
 
+# Authentication Module
 
-# Authentication
+The User / Authentication module provides functionalities for managing user information.
 
-The User / Authentication module provide functionalities for managing user information.  
+### Authentication
 
+Our messaging server does not directly store your users' credential. Instead,
+you will need to have your own account server to manager your users' credentials
+and to authenticate them for our messaging server.
 
-### Authentication  
+After you've authenticate your user, you then encrypt a JWT token using the
+**Encryption Key** obtained from us when you signed up for your account.
 
-Our messaging server does not directly store your users' credential. Instead, you will need to have your own account server to manager your users' credentials and to authenticate them.
+The JWT contains a grant telling us which user is allowed access to the messaging
+server and how long the grant is effective.
 
-After you've authenticate your user, you then encrypt a JWT access grant the user access using the EncryptionKey obtained from when registering your account, and send the JWT to us to signify that you vouch that this user is indeed logged in.
+Thus, authenticating a user on our messaging server is a 4 steps process.
 
-Thus, authenticating a user requires a 4 steps process.  
+1. Obtain a random **nonce** from our messaging server through /1/auth/nonce API.
+This nonce is used to prevent replay attack on our messaging server, should the
+nonce is leaked to a malicious user.
 
-1. Obtain a nounce is from our API server through /1/auth/nonce API. (This can be done either by device client or by your account server)
-You authenticate the user on your account server.  
-2. If authentication is successful, your account server will create a JWT authentication token  
-3. You then pass this authentication token to our /1/auth/login API to obtain a session token. (Thie can be done either by device client or by your account server)  
-4. The session token is set in the X-Diuit-Session-Token header for all future API calls that requires a specific user session.
+Note that this step can be performed either by the your messaging clients or by
+your account server depending on your system architecture.
 
-Please note that the EncryptionKey should be kept private on your account server, and should not be stored on your client app. If the EncryptionKey is leaked, anyone can forge a user-login to the messaging system. If you suspect that an encryption key has been leaked, please genereate a new EncryptionKey on [http://www.diuit.net](http://www.diuit.net) and revoke the old one.  
+2. With the nonce at hand, you authenticate your client on your account server
+using whatever method you like.
 
+If authentication is successful, your account server should create a JWT token
+granting the authenticated user access to our messaging server.
+
+3. You should then call our /1/auth/login API using the JWT token as the parameter
+to obtain a **session token**.
+
+Note that this step can also be done either on your messaging clients side or
+on your account server, depending on your system architecture.
+
+4. With the session token on hand, the messaging client should use it as the
+value for the **X-Diuit-Session-Token** header** for all future API calls that
+requires a specific user session.
+
+Please note that the **Encryption Key** should be kept private on your account
+server, and should not be stored on your client devices, unless you have security
+measures ensuring that the key can be kept secret. (For Android / iOS clients,
+this is impossible, there are many ways of rooting devices, and storing your
+encryption key on iOS/Android clients will make your system vulnerable to attack.)
+
+If you suspect that your encryption key has been compromised, please generate a
+new one on [http://www.diuit.net](http://www.diuit.net) and revoke the old key.
 
 ### 1. Obtaining Authentication Nonce
 
-The first step of authentication requires obtaining a unique nonce from our server. This nounce is used to prevent replay-attack of the JWT token.
-To obtain the nonce from our server, send a GET request to the /1/auth/nonce API. 
-<br></br>
-<aside class="note">
-        curl -X GET \  
-            -H "X-Diuit-Application-Id: ${APPLICATION_ID}" \  
-            -H "X-Diuit-API-Key: ${REST_API_KEY}" \  
-            https://api.diuit.net/1/auth/nonce  
-</aside>
-<br></br>
+The first step of authentication requires you to obtain a random nonce from our
+messaging server. This nonce is used to prevent replay-attack of the JWT token.
+
+To obtain the nonce from our server, send a GET request to the /1/auth/nonce endpoint.
+
+```http
+  curl -X GET \
+    -H "X-Diuit-Application-Id: ${APPLICATION_ID}" \
+    -H "X-Diuit-API-Key: ${REST_API_KEY}" \
+    https://api.diuit.net/1/auth/nonce
+```
 
 The response body is a JSON object containing the `nonce` key.
-<aside class="note">
-    {
-        "nonce": "123asdf123asdf12321adf",
-    }
-</aside>
 
+```http
+  {
+    "nonce": "123asdf123asdf12321adf",
+  }
+```
 
-### 2. Authenticate User Credential On Your Server.  
+### 2. Authenticate User On Your Account Server
 
-The real user authentication is performed on your own server. Perform any authentication check you've implement to authenticate the user loggining in.
+The actual user authentication is performed on your own server. Perform any
+authentication check you've implement to authenticate the user logging in.
 
-### 3. Generate JWT Autentiction Token  
+### 3. Generate JWT Token
 
 If the user's identity is verified, your server should generate a JWT token with the following header:
-<br></br>
-<aside class="note">
-    {  
-        "typ": "JWT",  
-        "alg": "RS256"  
-        "cty": "diuit-eit;v=1"  
-        "kid": ${EncryptionKeyId}  
-    }
-</aside>
-<br></br>
 
-and the following claim body:
-<br></br>
-<aside class="note">
-{
-"iss": ${APPLICATION_ID}  
-"sub": ${UNIQUE_USER_ID}  
-"iat": ${CURRENT_TIME_IN_ISO8601_FORMAT}  
-"exp": ${SESSION_EXPIRATION_TIME_IN_ISO8601_FORMAT}  
-"nce": ${AUTHENTICATION_NONCE}  
-}
-</aside>
-<br></br>
+```http
+  {
+    "typ": "JWT",
+    "alg": "RS256"
+    "cty": "diuit-eit;v=1"
+    "kid": ${EncryptionKeyId}
+  }
+```
 
+...and with the following claim body:
 
-and encrypt the whole thing with your EncryptionKey obtained when registering for our account.  
-Take note that you put the EncryptionKeyId, not EncryptionKey itself in "kid" field. The JWT header itself is not encrypted, so do not put your encryption key here.  
-The resulting JWT token should then be passed back to the client app to indicate authentication successful.  
+```http
+  {
+    "iss": ${APPLICATION_ID}
+    "sub": ${UNIQUE_USER_ID}
+    "iat": ${CURRENT_TIME_IN_ISO8601_FORMAT}
+    "exp": ${SESSION_EXPIRATION_TIME_IN_ISO8601_FORMAT}
+    "nce": ${AUTHENTICATION_NONCE}
+  }
+```
 
+... then encrypt the whole thing with your **Encryption Key** obtained when
+registering for your account.
+
+Note that you can put anything in the "sub" field, as long as you can co-relate
+this to the user on your system. Our messaging server will use this field to
+identify this user.
+
+In "exp" field, you specify when this grant should expire, this field controls
+how long the session token generated in the next step will be valid for.
+
+Setting this to a relative short value makes the system more secure; leaking
+a session token will have limited damage. But with the draw-back that you will
+have to re-autheticate the user every so often.
+
+Setting this to a long value can also be useful for IOT application, where you
+are pretty confident that the device cannot be hacked, and you can pre-generate
+your session token, and set a extremely long expiration date to effectively make
+the device always authenticated. But you will have to ensure that the session
+token is never leaked in this case. (The session token will essentially behaves
+like a randomly generated password in this case).
+
+For the "kid" field, put the **Encryption Key Id**, not **Encryption Key** itself.
+The JWT header itself is not encrypted, so never put any private data in the
+JWT header
 
 ### 4. Obtaining Session Token with Authentication Token
 
-With the JWT token generated, you then POST to the /1/auth/login API with the auth-token parameter set to the JWT token to obtain a session token for the user.  
-This step can be done either on the server side or client side depending on your own system architecture.  
-But please note that when loggin in, you will also need to provide the deviceId field to uniquely identify the current device that the user is logging in from. If on a web device, please generate a unique UUID to link with the current web session.  
-And if your wish to enable push notification on mobile devices, please pass two additional fields: platform field to indicate what is the push platform to be used (can be one of "gcm", "ios_sandbox", "ios_production"), and a pushToken field to indicate the pushToken specific to the push platform.  
+With the JWT token generated, you then POST to the /1/auth/login API with the
+**auth-token** parameter set to the JWT token to obtain a session token for
+the user.
 
-<br></br>
-<aside class="note">
-curl -X POST \  
--H "X-Diuit-Application-Id: ${APPLICATION_ID}" \  
--H "X-Diuit-API-Key: ${REST_API_KEY}" \  
--H "Content-Type: application/json" \  
--d '{"authToken":"putyourtoken", "deviceId": "putyourdeviceid", "platform": "gcm", "pushToken": "putdevicepushtoken"}' \  
-https://api.diuit.net/1/auth/login  
-</aside>
-<br></br>
+This step can be done either on the server side or client side depending on your
+own system architecture. But please note that when logging in, you will also
+need to provide the **deviceId** field to uniquely identify the current device
+that the user is logging in from.
 
-If successful, the response will be a JSON object contains the `sessionToken` key that should be set in future API calls as `X-Diuit-Session-Token` header to authenticate the user.  
+If you are using a web platform, please generate a unique UUID to link with the
+current web session. (And possibly store the UUID in local storage / cookie).
 
+If your wish to enable push notification on mobile devices, please pass two
+additional fields: **platform** to indicate what is the push platform to be
+used (valid values are one of "gcm", "ios_sandbox", "ios_production"), and a
+**pushToken** field to indicate the pushToken specific to the push platform.
 
-### Authenticate With Socket.IO  
-After authenticate the user, and obtaining the session-token, you can start the real-time messaging session by opening a Socket.IO connection to our `http://www.diuit.net` server.  
-After the socket.io session is connected, you have 15 seconds to emit a "authenticate" message with payload {authToken: ${SESSION_TOKEN}} to authenticate the user.  
-The server should respond with a JSON payload containing your device info to signify login success.  
-After which you can use the other Socket.IO APIs.  
+```http
+  curl -X POST \
+    -H "X-Diuit-Application-Id: ${APPLICATION_ID}" \
+    -H "X-Diuit-API-Key: ${REST_API_KEY}" \
+    -H "Content-Type: application/json" \
+    -d '{"authToken":"JWT_TOKEN", "deviceId": "DEVICE_ID", "platform": "PUSH_PLATFORM", "pushToken": "PUSH_TOKEN"}' \
+    https://api.diuit.net/1/auth/login
+```
 
+If successful, the response will be a JSON object contains the `sessionToken`
+key that should be set in future API calls as `X-Diuit-Session-Token` header to
+authenticate the user.
 
+### Authenticate With Socket.IO
+
+After authenticating the user, and obtaining the session-token, you can start
+the real-time messaging session by opening a Socket.IO connection to our
+`http://www.diuit.net` server.
+
+After the socket.io session is connected, you have 15 seconds to emit a
+`authenticate` message with payload `{authToken: ${SESSION_TOKEN}}` to authenticate
+the user.
+
+The server should respond with a JSON payload containing your device info to
+signify login success. After which you can use the other Socket.IO APIs.
+
+If you've failed to send an authenticate message within 15 seconds, the connection
+will be terminated by our server automatically.
+
+Upon re-connection, you should repeat the authentication message to ensure you
+are properly authenticated and call other APIs.
 
 # Integration
 
-Diuit is a powerful tool that lets you add in-app messaging with very little overhead. Diuit can work with any existing User Management system, and includes features such as querying, Message delivery and read receipts, Conversation metadata, and typing indicators.  
-
+Diuit is a powerful tool that lets you add in-app messaging with very little
+overhead. Diuit can work with any existing User Management system, and includes f
+eatures such as querying, Message delivery and read receipts, Conversation
+metadata, and typing indicators.
 
 ## Listing Chat Rooms
 
-To list all chat-rooms you are currently joined in, emit a "chats/list" message, with empty payload.  
-The server should respond with with a list of all chats you are currently joined in.  
+To list all chat-rooms you are currently joined in, emit a "chats/list" message,
+with empty payload.
+
+The server should respond with with a list of all chats you are currently joined in.
 
 ```java  
     // In Android, if you have already authenticated your devices, you can get all your chatroom easily.
- 
+
     DiuitAPI.current.listChats(new DiuitAPICallback<ArrayList<DiuitChat>>()
     {
         @Override
@@ -225,7 +297,7 @@ The server should respond with with a list of all chats you are currently joined
         {
             // if success, retrun chatArrayList
         }
- 
+
         @Override
         public void onFailure(final int code, final JSONObject resultObj)
         {
@@ -242,30 +314,58 @@ The server should respond with with a list of all chats you are currently joined
 ```http  
 ```
 
-## Create a Chat Room  
+## Create a Chat Room
 
-To create a chat-room, you emit a "chats/creat" message, with the following payload:
+To create a chat-room, emit a "chats/creat" message, with the following payload:
 
 <aside class="note">
-
-{  
-    members: [ ${USER_ID_1}, ${USER_ID_2} ..]  
-    whiteList: [ ${USER_ID_1} ... ]  
-    meta: { ${ANY_CHAT_ROOM_SPECIFIC_META_DATA} }  
-}  
-
+{
+    members: [ ${USER_ID_1}, ${USER_ID_2} ..]
+    whiteList: [ ${USER_ID_1} ... ]
+    meta: { ${ANY_CHAT_ROOM_SPECIFIC_META_DATA} }
+}
 </aside>
 <br></br>
 
-For `members` field, put the ids of all the people you wish to include the chatroom as an array. (Note that the ID shold be the sub fields you passed in when you create your JWT token)  
-How you obtain these user ID are application specific, and is not the concern of our messaging API. For example, for a chatting application, you generally will have a query API on your own account server, for your user to query their own friends / other contactst they wish to message to.  
-For a IOT application, you might have a list of pre-written contacts in your firmware instead. Our messaging API makes no assumption about what kind of application you are developing.  
-The meta field is a general purpose field for you to store any chat-room specific information. For example, you can store the name of your chat-room, a globally shared notes for your chat-room, a base64 encoded small icon for your chatroom, etc. Again, our messaging makes no assumption about what kind of application you are developing, so it's up to you on what you need to store along with the chat-room's meta data.  
-For `whiteList` field, you can leave it `null` to indicate that everyone is allowed to join, or include all the user IDs that are allowed to join in the room.  
+For **members** field, put the ids of all the people you wish to include the
+chatroom as an array. (Note that the ID should be the **sub** field when you
+are creating your JWT token)
 
+How you obtain other users' IDs is application specific, and is not the
+responsibility of our messaging API.
+
+For a chatting application, you might have a query API on your own account server,
+to allow your user to query their own friends / other contacts they wish to message to.
+
+For a IOT application, you might have a list of pre-written contacts in your
+firmware instead.
+
+Our messaging API makes no assumption about what kind of application you are
+developing.
+
+<hr/>
+
+To create a public chatroom where everyone can freely join, set **whiteList**
+field to null. To set a restricted chatroom where only certain people can join,
+set the **whitelist** field to the array of user Ids that can join the room.
+
+<hr/>
+
+The **meta** field is a general purpose field for you to store any chat-room
+specific information.
+
+For example, you can store the name of your chat-room, a globally shared notes
+for your chat-room, a base64 encoded small icon for your chatroom, etc.
+
+Again, our messaging makes no assumption about what kind of application you are
+developing, so it's up to you on what you need to store along with the chat-room's
+meta data.
+
+But please noted that the meta field can only store up to 5kb of serialized JSON
+string.
 
 ```java
-    
+
     // @params serialOfUsers : put all users you want to join init this string array
     // @params meta : you can put attribute of the chat, ex, {'name' : 'this is my new chatroom'}
     DiuitAPI.current.createChat(String[] serialOfUsers, JSONObject meta, new DiuitAPICallback<DiuitChat>()
@@ -293,16 +393,15 @@ For `whiteList` field, you can leave it `null` to indicate that everyone is allo
 ```http
 ```
 
-
 ## Join a Chat Room
 
 To join a chat-room, you emit a "chats/join" message, with the following payload:
 
 <aside class="note">
 
-{  
-chatId: ${CHATROOM_ID}  
-}  
+{
+  chatId: ${CHATROOM_ID}
+}
 
 </aside>
 <br></br>
@@ -334,16 +433,14 @@ chatId: ${CHATROOM_ID}
 ```
 
 
-
-
 ## Leave a Chat Room
 
 To leave a chat-room, you emit a "chats/leave" message, with the following payload:
 
 <aside class="note">
-{  
-chatId: ${CHATROOM_ID}  
-}  
+{
+  chatId: ${CHATROOM_ID}
+}
 </aside>
 <br></br>
 
@@ -377,20 +474,25 @@ chatId: ${CHATROOM_ID}
 
 ## Updating Chat Room Meta Info
 
-To update the chat-room's infomation, emit a "chats/meta/update" message, with the following payload:
+To update the chat-room's information, emit a "chats/meta/update" message, with
+the following payload:
 
 <aside class="note">
-{  
-    chatId: ${CHATROOM_ID}  
-    meta: { ${CHATROOM_META} }  
-}  
+{
+  chatId: ${CHATROOM_ID}
+  meta: { ${CHATROOM_META} }
+}
+
+Note that you have to modify the whole meta as whole; you cannot just update
+individual keys.
+
 </aside>
 <br></br>
 
 
 ```java
 
-    // create new meta for updating the attribute of the chat 
+    // create new meta for updating the attribute of the chat
     JSONObject newMeta = new JSONObject();
     newMeta("name", newName);
 
@@ -422,25 +524,27 @@ To update the chat-room's infomation, emit a "chats/meta/update" message, with t
 
 ## Updating Chat Room White List
 
-To update the chat-room's white list info, emit a "chats/whiteList/update" message, with the following payload:  
+To update the chat-room's **whiteList**, emit a "chats/whiteList/update"
+message, with the following payload:
 
 <aside class="note">
-{ 
-    chatId: ${CHATROOM_ID}  
-    whiteList: [ ${USER_ID_1} ]   
-}  
+{
+  chatId: ${CHATROOM_ID}
+  whiteList: [ ${USER_ID_1} ]
+}
 </aside>
 <br></br>
 
-Note, to clear whiteList to `null`, pass a `null for thewhiteList` field.  
-And that removing a persom from the white list doesn't kick a person from the chat-room if he's already joined to the chat room.  
+Note, to clear whiteList to `null`, pass a `null for thewhiteList` field.
 
+Also note that removing a person from the white list doesn't kick a person
+from the chat-room if he's already joined to the chat room.
 
 ```java
 
     // @param serialsOfUsers : all users who you want to set into this chat whitelist
-    // @param diuitChat : the chat which you want to update 
-    DiuitAPI.current.updateWhiteList(DiuitChat diuitChat, String[] serialsOfUsers, 
+    // @param diuitChat : the chat which you want to update
+    DiuitAPI.current.updateWhiteList(DiuitChat diuitChat, String[] serialsOfUsers,
                     new DiuitAPICallback<DiuitChat>()
     {
         @Override
@@ -466,20 +570,25 @@ And that removing a persom from the white list doesn't kick a person from the ch
 ```
 
 
-## Kick a user from Chat Room
+## Kick a User from Chat Room
 
-To kick a user from the chat room, emit a "chat/kick" message, with the following payload  
+To kick a user from the chat room, emit a "chat/kick" message, with the
+following payload
 
 <aside class="note">
-    {  
-        chatId: ${CHATROOM_ID}  
-        userId: ${TARGET_USER_TO_KICK}  
-    }  
+{
+  chatId: ${CHATROOM_ID}
+  userId: ${TARGET_USER_TO_KICK}
+}
 </aside>
 <br></br>
 
-Note that kicking a user from the chat room doesn't change the whiteList status. So if the user is in the white list of the chat room, he can join back to the room himself.  
-To completely ban a user from the chat room, emit a "chat/whiteList/update" first, before kicking them out.  '
+Note that kicking a user from the chat room doesn't change the chatRoom's
+**whiteList**. So if the user is in the white list of the chat room, he can
+join back to the room himself.
+
+To completely ban a user from the chat room, emit a "chat/whiteList/update"
+first, before kicking him out.
 
 ```java
 
@@ -509,28 +618,33 @@ To completely ban a user from the chat room, emit a "chat/whiteList/update" firs
 
 ## Receiving a Message
 
-When a user send a message to the chatroom you are joined in. You will receive a "message" event.  
-You should listen for the event to receive real-time messages. The message will have the following format:  
+When a user send a message to the chatroom you are joined in. You will receive
+a "message" event. You should listen for the event to receive real-time messages.
+The message will have the following format:
 
 <aside class="note">
-{  
-    chatId: ${CHATROOM_ID},  
-    data: ${SOME_DATA}  
-    mime: ${DATA_MIME_TYPE}  
-    encoding: ${DATA_ENCOIDNG}  
-    meta: {$USER_SPECIFIC_META_FIELD}  
-}  
+{
+  chatId: ${CHATROOM_ID},
+  data: ${SOME_DATA}
+  mime: ${DATA_MIME_TYPE}
+  encoding: ${DATA_ENCOIDNG}
+  meta: {$USER_SPECIFIC_META_FIELD}
+}
 </aside>
 <br></br>
 
-For text message, the mime type will be text/plain and the encoding will be utf8, and the data will be the text message itself.  
-For rich media messages, the mime type will be the mime type of the media, and the data will contain a url pointing to the rich media itself.  
+For text message, the mime type will be **text/plain** and the encoding will be
+**utf8**, and the **data** will be the text message itself.
+
+For rich media messages, the **mime** type will be the mime type of the media
+and **encoding** will be **url**, and  **data** will contain a url pointing to
+the rich media itself.
 
 ```java
     // If you want to receive messages , you have to register receiving listener with your object  
     // This object could be Activity, Fragment , or any kind of object   
     // Once someone send you a message , you would get these in the callback
-    
+
     DiuitAPI.current.registerReceivingMessage(DiuitAPICallback<DiuitMessage> callback)
 
     // Before you leave the activity, or change the object to be `NULL`, you have to unregister this listener  
@@ -549,24 +663,24 @@ For rich media messages, the mime type will be the mime type of the media, and t
 
 
 
-
 ## Send a Text Message
 
-To send a message to a chat room, emit a "message/create" message, with the following payload  
+To send a message to a chat room, emit a "message/create" message, with the
+following payload
 
 <aside class="note">
-    {
-        chatId: ${CHATROOM_ID},
-        data: ${SOME_TEXT_TO_SEND}
-        mime: 'text/plain'
-        encoding: 'utf8'
-        meta: {$USER_SPECIFIC_META_FIELD}
-    }
+{
+  chatId: ${CHATROOM_ID},
+  data: ${SOME_TEXT_TO_SEND}
+  mime: 'text/plain'
+  encoding: 'utf8'
+  meta: {$USER_SPECIFIC_META_FIELD}
+}
 </aside>
 <br></br>
 
 > There three main type of message , text, photo, and file.
-> According different type, you have to call differen API.
+> According different type, you have to call different API.
 > Example, if you want to send a text to your friends:
 
 ```java
@@ -599,16 +713,17 @@ To send a message to a chat room, emit a "message/create" message, with the foll
 
 ## Send a Rich Media Message
 
-To send a rich media message to a chat room, emit a "messages/create" message, with the following payload  
+To send a rich media message to a chat room, emit a "messages/create" message,
+with the following payload
 
 <aside class="note">
-    {
-        chatId: ${CHATROOM_ID},  
-        data: ${BASE64_ENCODED_DATA}  
-        mime: ${MIME_TYPE_OF_DATA}  
-        encoding: 'base64'  
-        meta: {$USER_SPECIFIC_META_FIELD}  
-    }
+{
+  chatId: ${CHATROOM_ID},
+  data: ${BASE64_ENCODED_DATA}
+  mime: ${MIME_TYPE_OF_DATA}
+  encoding: 'base64'
+  meta: {$USER_SPECIFIC_META_FIELD}
+}
 </aside>
 <br></br>
 
@@ -650,23 +765,31 @@ To send a rich media message to a chat room, emit a "messages/create" message, w
 > Remember , each message has file size limit <= 5MB
 
 
-## List Messages In a Chat Room 
+## List Messages In a Chat Room
 
-To list messages in a chat room, emit a "messages/list" message, with the following payload  
+To list messages in a chat room, emit a "messages/list" message, with the
+following payload
 
 <aside class="note">
-    {  
-        chatId: ${CHATROOM_ID},  
-        page: ${PAGE_NUMBER_TO_GET},  
-        count: ${MESSAGES_PER_PAGE},  
-        before: ${TIMESTAMP_IN_SEC},  
-    }
+{
+  chatId: ${CHATROOM_ID},
+  page: ${PAGE_NUMBER_TO_GET},
+  count: ${MESSAGES_PER_PAGE},
+  before: ${TIMESTAMP_IN_SEC},
+}
 </aside>
 <br></br>
 
-Response will contains `count` number of message before the timestamp specified in `before` field, skipping over `page` * `count` number of messages. (In another word, page start at 0)  
-Messages are returned in reverse chronological order, with the newest message returned first.  
-So, in general, you call the API with the current timestamp to obtain all the latest messages, and required, call the API with an older timestamp to obtain older messages.  
+Response will contain **count** number of message before the timestamp specified
+in **before** field, skipping over **page** * **count** number of messages.
+(In another word, page start at 0)
+
+Messages are returned in reverse chronological order, with the newest message
+returned first.
+
+So, in general, you call the API with the current timestamp to obtain all the
+latest messages, and required, call the API with an older timestamp to obtain
+older messages.
 
 
 ```java
@@ -699,12 +822,13 @@ So, in general, you call the API with the current timestamp to obtain all the la
 
 ## Mark a Message as being Read
 
-To mark a message as being read, emit "messages/markAsRead" message, with the following payload.  
+To mark a message as being read, emit "messages/markAsRead" message, with the
+following payload.
 
 <aside class="note">
-    {
-        messageId: ${MESSAGE_ID}  
-    }
+{
+  messageId: ${MESSAGE_ID}
+}
 </aside>
 <br></br>
 
@@ -736,64 +860,50 @@ The message will be marked as read by the currently logged in user.
 ```http
 ```
 
-## Appendex
+## System Messages
 
-System Message Definitions
+Our messaging system will automatically send **system messages** to chatrooms
+when interesting events happen in them.
 
-Type | Payload Keys
----------- | -------
-user.left | userId
-user.joined | userId
-whiteList.updated | whiteList
-user.kicked | userId
-meta.updated | meta
+There are currently 5 system messages.
 
+### User Left Chatroom
 
+When a user left a chatroom, all members of the chatroom will receive a message
+with type **user.left** and a single key **userId** signifying which user has
+left the chatroom.
+
+### User Joined Chatroom
+
+When a user joined a chatroom, all members of the chatroom will receive a message
+with type **user.joined** and a single key **userId** signifying which user has
+joined the chatroom.
+
+## White List Updated
+
+When a member of the chatroom update the white list, all members of the chatroom
+will receive a message with type **whiteList.updated**, and a single key
+**whiteList** providing the latest state of the white list.
+
+## User Kicked
+
+When a user is kicked from a chatroom, all members of the chatroom will receive
+a message with type **user.kicked**, and a single key **userId** signifying which
+user has been kicked from the chatroom.
+
+## Chatroom Meta Updated
+
+When a member of the chatroom updates the chatroom meta field, all members of
+the chatroom will receive a message with type **meta.updated**, and a single
+key **meta** providing the latest state of the chatroom meta field.
 
 # Models
 
-Diuit message api models are defined by implementing something very similar to [socket.io](http://socket.io)   
-Simply extend our DiuitObject class and let the Diuit annotations processor generate proxy classes.  
-In out api, there are 4 models you might to know:  
+Diuit message api models are defined by implementing something very similar to [socket.io](http://socket.io)
+Simply extend our DiuitObject class and let the Diuit annotations processor generate proxy classes.
+In out api, there are 4 models you might to know:
 
-### **DiuitUser**  
-### **DiuitDevice**  
-### **DiuitChat**  
-### **DiuitMessage**  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### **DiuitUser**
+### **DiuitDevice**
+### **DiuitChat**
+### **DiuitMessage**
