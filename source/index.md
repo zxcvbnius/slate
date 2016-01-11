@@ -16,9 +16,10 @@ includes:
 search: true
 ---
 
-updated : 2016/01/10
 
 # Getting Started
+
+updated : 2016/01/11 11:50
 
 
 ## Prerequisites for API v0.1.0
