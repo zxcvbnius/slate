@@ -422,11 +422,11 @@ Emit the following message to the server
 with the following parameters
 
 <aside class='notice'>
-  {<br/>
-    members: [ ${USER_ID_1}, ${USER_ID_2} ..]<br/>
-    whiteList: [ ${USER_ID_1} ... ]<br/>
-    meta: { ${ANY_CHAT_ROOM_SPECIFIC_META_DATA} }<br/>
-  }
+{<br/>
+&nbsp;&nbsp;members: [ ${USER_ID_1}, ${USER_ID_2} ..]<br/>
+&nbsp;&nbsp;whiteList: [ ${USER_ID_1} ... ]<br/>
+&nbsp;&nbsp;meta: { ${ANY_CHAT_ROOM_SPECIFIC_META_DATA} }<br/>
+}
 </aside>
 
 For **members** field, put the ids of all the people you wish to include the
