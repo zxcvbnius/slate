@@ -70,7 +70,7 @@ end
 
 You can either use Maven or manually add a Jar to your project.
 
-** Maven **
+**Maven**
 
 1.  Navigate to your build.gradle file at the app level (not project level) and ensure that you include the following:  
 
@@ -79,7 +79,7 @@ You can either use Maven or manually add a Jar to your project.
 2. Add compile **'com.duolc.diuitapi:message:0.1.1'** to the dependencies of your project
 3. In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files  
 
-** Jar **
+**Jar**
 
 1. Download the release package and unzip  
 2. Create a new project with Android Studio  
@@ -416,21 +416,17 @@ in the chat-room.
 Emit the following message to the server
 
 <aside class='notice'>
-  <pre>
-    "chats/create"
-  </pre>
+  "chats/create"
 <aside>
 
 with the following parameters
 
 <aside class='notice'>
-  <pre>
-    {
-      members: [ ${USER_ID_1}, ${USER_ID_2} ..]
-      whiteList: [ ${USER_ID_1} ... ]
-      meta: { ${ANY_CHAT_ROOM_SPECIFIC_META_DATA} }
-    }
-  </pre>
+  {<br/>
+    members: [ ${USER_ID_1}, ${USER_ID_2} ..]<br/>
+    whiteList: [ ${USER_ID_1} ... ]<br/>
+    meta: { ${ANY_CHAT_ROOM_SPECIFIC_META_DATA} }<br/>
+  }
 </aside>
 
 For **members** field, put the ids of all the people you wish to include the
