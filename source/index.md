@@ -36,7 +36,7 @@ updated : 2016/01/12 13:00
 
 ### Installation for iOS
 
-- Use Cocoapods to retrieve the framework
+Use Cocoapods to retrieve the framework
 
 1. Execute command `pod init` under your Xcode project directory to create a Podfile for the project
 2.  Make your Podfile look like as right：
@@ -66,25 +66,23 @@ end
 
 ### Installation for Android
 
-- You can either use Maven or manually add a Jar to your project.  
+You can either use Maven or manually add a Jar to your project.
 
+#### Maven
 
-1. **Maven**
-<br></br>
-*  Navigate to your build.gradle file at the app level (not project level) and ensure that you include the following:  
-` maven { url "https://dl.bintray.com/zxcvbnius/maven"} `  
-* Add compile **'com.duolc.diuitapi:message:0.1.1'** to the dependencies of your project  
-* In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files  
-<br></br>
+1.  Navigate to your build.gradle file at the app level (not project level) and ensure that you include the following:  
 
-2. **Jar**
-<br></br>
-* Download the release package and unzip  
-* Create a new project with Android Studio  
-* Copy the **diuit-api-VERSION.jar** folder into app/libs  
-* In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files  
+    ` maven { url "https://dl.bintray.com/zxcvbnius/maven"}`
 
+2. Add compile **'com.duolc.diuitapi:message:0.1.1'** to the dependencies of your project
+3. In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files  
 
+#### Jar
+
+1. Download the release package and unzip  
+2. Create a new project with Android Studio  
+3. Copy the **diuit-api-VERSION.jar** folder into app/libs  
+4. In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files  
 
 ## Initialization
 
