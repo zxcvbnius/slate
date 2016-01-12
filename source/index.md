@@ -2,10 +2,10 @@
 title: API Reference
 
 language_tabs:
-- java: android
-- objective_c: ios ObjC
-- swift: ios Swift
-- shell: restful
+- java: Android
+- objective_c: iOS Obj-C
+- swift: iOS Swift
+- shell: REST / Socket.IO
 
 toc_footers:
 - <a href='#'>Sign Up for a Developer Key</a>
@@ -22,15 +22,16 @@ updated : 2016/01/12 13:00
 
 ## Prerequisites for API v0.1.0
 
-* **iOS**
+### iOS
+
 - Support iOS 8.0+
 - OS X support coming soon :)
-* **Android**
+
+### Android
+
 - We do not support Java outside of Android at the moment.
 - A recent version of the Android SDK  
 - We support all Android versions since API Level 14 (Android 4.0 & above).
-
-
 
 ### Installation for iOS
 
@@ -39,19 +40,28 @@ updated : 2016/01/12 13:00
 1. Execute command `pod init` under your Xcode project directory to create a Podfile for the project
 2.  Make your Podfile look like as right：
 
-```ruby
-platform :ios, '8.0'
-use_frameworks!
+    ```objective_c
+    platform :ios, '8.0'
+    use_frameworks!
 
-target 'MyApp' do
-pod 'DUMessaging'
-end
-```
+    target 'MyApp' do
+    pod 'DUMessaging'
+    end
+    ```
 
-2. Run `pod install` to install the framework and dependecies
-3. Make sure to always open the Xcode workspace instead of the project file when building your project:
-`$ open MyApp.xcworkspace`  
+    ```swift
+    platform :ios, '8.0'
+    use_frameworks!
 
+    target 'MyApp' do
+    pod 'DUMessaging'
+    end
+    ```
+
+3. Run `pod install` to install the framework and dependencies
+4. Make sure to always open the Xcode workspace instead of the project file when building your project:
+
+    `$ open MyApp.xcworkspace`
 
 ### Installation for Android
 
@@ -90,6 +100,7 @@ DiuitAPI.current = [[DiuitAPI alloc] initWithAppId:@"YOUR_APP_ID" appKey:@"YOUR_
 return YES;
 }
 ```
+
 ```swift
 import DUMessaging
 
@@ -183,7 +194,7 @@ messaging server. This nonce is used to prevent replay-attack of the JWT token.
 
 To obtain the nonce from our server, send a GET request to the /1/auth/nonce endpoint.
 
-```http
+```shell
 curl -X GET \
 -H "X-Diuit-Application-Id: ${APPLICATION_ID}" \
 -H "X-Diuit-API-Key: ${REST_API_KEY}" \
