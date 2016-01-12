@@ -208,9 +208,11 @@ curl -X GET \
 
 The response body is a JSON object containing the `nonce` key.
 
+<aside class="note">
     {
       "nonce": "123asdf123asdf12321adf",
     }
+</aside>
 
 ### 2. Authenticate User On Your Account Server
 
@@ -221,16 +223,18 @@ authentication check you've implement to authenticate the user logging in.
 
 If the user's identity is verified, your server should generate a JWT token with the following header:
 
+<aside class="note">
     {
       "typ": "JWT",
       "alg": "RS256"
       "cty": "diuit-eit;v=1"
       "kid": ${EncryptionKeyId}
     }
+</aside>
 
 ...and with the following claim body:
 
-
+<aside class="note">
     {
       "iss": ${DIUIT_APP_ID}
       "sub": ${UNIQUE_USER_ID}
@@ -238,6 +242,7 @@ If the user's identity is verified, your server should generate a JWT token with
       "exp": ${SESSION_EXPIRATION_TIME_IN_ISO8601_FORMAT}
       "nce": ${AUTHENTICATION_NONCE}
     }
+</aside>
 
 ... then encrypt the whole thing with your **Encryption Key** obtained when
 registering for your account.
@@ -301,13 +306,17 @@ curl -X POST \
   https://api.diuit.net/1/auth/login
 ```
 
-If successful, the response will be a JSON object contains the `sessionToken`
+If successful, the response will be a JSON object contains the `session`
 key that should be set in future API calls as `x-diuit-session-token` header to
 authenticate the user.
 
+<aside class="note">
     {
-      "sessionToken": "123asdf123asdf12321adf",
+      "session": "123asdf123asdf12321adf",
+      "userId": ${USER_ID}
+      "deviceId": ${DEVICE_ID}
     }
+</aside>
 
 # Real-time Communication
 
@@ -325,9 +334,11 @@ connection to our `http://www.diuit.net` server.
 After the socket.io session is connected, you emit a `authenticate` message
 with payload
 
+<aside class="note">
     {
       "authToken": ${SESSION_TOKEN}
     }
+</aside>
 
 to authenticate the user.
 
@@ -383,8 +394,8 @@ if code == 200 {
 ```
 
 ```shell  
-# Request:
-# emit a message "chats/list" to the server
+# Request, emit the following message to server
+"chats/list"
 
 # Response is a JSON
 {
@@ -397,7 +408,15 @@ if code == 200 {
 
 ## Create a Chat Room
 
-To create a chat-room, emit a "chats/creat" message, with the following payload:
+Use this command to create a chat-room and optionally include a list of person
+in the chat-room.
+
+```shell
+# Request, emit the following message
+
+"chats/creat"
+
+#response
 
 <aside class="note">
 {
