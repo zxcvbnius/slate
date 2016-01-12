@@ -2,43 +2,55 @@
 title: API Reference
 
 language_tabs:
-  - java: android
-  - objective_c: ios
-  - http: restful
+- java: android
+- objective_c: ios ObjC
+- swift: ios Swift
+- http: restful
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a>
+- <a href='#'>Sign Up for a Developer Key</a>
+- <a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a>
 
 includes:
-  - errors
+- errors
 
 search: true
 ---
 
-
 # Getting Started
-
-updated : 2016/01/11 11:50
-
+updated : 2016/01/12 13:00
 
 ## Prerequisites for API v0.1.0
 
 * **iOS**
-<br></br>
-
+- Support iOS 8.0+
+- OS X support coming soon :)
 * **Android**
-    - We do not support Java outside of Android at the moment.
-    - A recent version of the Android SDK  
-    - We support all Android versions since API Level 14 (Android 4.0 & above).
+- We do not support Java outside of Android at the moment.
+- A recent version of the Android SDK  
+- We support all Android versions since API Level 14 (Android 4.0 & above).
 
 
 
 ### Installation for iOS
 
-- ` pod 'DUMessaging'`  
-- ` pod install`  
-- _TODO_  
+- Use Cocoapods to retrieve the framework
+
+1. Execute command `pod init` under your Xcode project directory to create a Podfile for the project
+2.  Make your Podfile look like as right：
+
+```ruby
+platform :ios, '8.0'
+use_frameworks!
+
+target 'MyApp' do
+pod 'DUMessaging'
+end
+```
+
+2. Run `pod install` to install the framework and dependecies
+3. Make sure to always open the Xcode workspace instead of the project file when building your project:
+`$ open MyApp.xcworkspace`  
 
 
 ### Installation for Android
@@ -48,54 +60,70 @@ updated : 2016/01/11 11:50
 
 1. **Maven**
 <br></br>
-    *  Navigate to your build.gradle file at the app level (not project level) and ensure that you include the following:  
-        ` maven { url "https://dl.bintray.com/zxcvbnius/maven"} `  
-    * Add compile **'com.duolc.diuitapi:message:0.1.1'** to the dependencies of your project  
-    * In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files  
+*  Navigate to your build.gradle file at the app level (not project level) and ensure that you include the following:  
+` maven { url "https://dl.bintray.com/zxcvbnius/maven"} `  
+* Add compile **'com.duolc.diuitapi:message:0.1.1'** to the dependencies of your project  
+* In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files  
 <br></br>
 
 2. **Jar**
 <br></br>
-    * Download the release package and unzip  
-    * Create a new project with Android Studio  
-    * Copy the **diuit-api-VERSION.jar** folder into app/libs  
-    * In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files  
+* Download the release package and unzip  
+* Create a new project with Android Studio  
+* Copy the **diuit-api-VERSION.jar** folder into app/libs  
+* In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files  
 
 
 
 ## Initialization
 
 * **iOS**
-<br></br>
+
+- In your **AppDelegate.m** or **AppDelegate.swift**, add following:
+
+```objective_c
+#import <DUMessaging/DUMessaging-Swift.h>
+
+-(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions { 
+
+DiuitAPI.current = [[DiuitAPI alloc] initWithAppId:@"YOUR_APP_ID" appKey:@"YOUR_APP_KEY"];
+return YES;
+}
+```
+```swift
+import DUMessaging
+
+func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+DiuitAPI.current = DiuitAPI(appId: "YOUR_APP_ID", appKey: "YOUR_APP_KEY")
+return true
+}
+```
 
 * **Android**
-    - Open your main activity or the activity in which you want to integrate the update process.  
-    - Add the following lines:    
+- Open your main activity or the activity in which you want to integrate the update process.  
+- Add the following lines:    
 
 
 
 ```java
-    public class YourActivity extends Activity {
+public class YourActivity extends Activity {
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
+@Override
+protected void onCreate(Bundle savedInstanceState) {
 
-            // Your own code to create the view
-            // ...
+// Your own code to create the view
+// ...
 
-            DiuitAPI.current = new DiuitAPI( DIUIT_APP_ID, DIUIT_APP_KEY );
-        }
+DiuitAPI.current = new DiuitAPI( DIUIT_APP_ID, DIUIT_APP_KEY );
+}
 
-        // Probably more methods
-    }
+// Probably more methods
+}
 ```  
 
-```objective_c  
- iOS
-```  
 
 ```http  
- Restful
+Restful
 ```  
 
 # Authentication Module
@@ -156,18 +184,18 @@ messaging server. This nonce is used to prevent replay-attack of the JWT token.
 To obtain the nonce from our server, send a GET request to the /1/auth/nonce endpoint.
 
 ```http
-  curl -X GET \
-    -H "X-Diuit-Application-Id: ${APPLICATION_ID}" \
-    -H "X-Diuit-API-Key: ${REST_API_KEY}" \
-    https://api.diuit.net/1/auth/nonce
+curl -X GET \
+-H "X-Diuit-Application-Id: ${APPLICATION_ID}" \
+-H "X-Diuit-API-Key: ${REST_API_KEY}" \
+https://api.diuit.net/1/auth/nonce
 ```
 
 The response body is a JSON object containing the `nonce` key.
 
 ```http
-  {
-    "nonce": "123asdf123asdf12321adf",
-  }
+{
+"nonce": "123asdf123asdf12321adf",
+}
 ```
 
 ### 2. Authenticate User On Your Account Server
@@ -180,24 +208,24 @@ authentication check you've implement to authenticate the user logging in.
 If the user's identity is verified, your server should generate a JWT token with the following header:
 
 ```http
-  {
-    "typ": "JWT",
-    "alg": "RS256"
-    "cty": "diuit-eit;v=1"
-    "kid": ${EncryptionKeyId}
-  }
+{
+"typ": "JWT",
+"alg": "RS256"
+"cty": "diuit-eit;v=1"
+"kid": ${EncryptionKeyId}
+}
 ```
 
 ...and with the following claim body:
 
 ```http
-  {
-    "iss": ${APPLICATION_ID}
-    "sub": ${UNIQUE_USER_ID}
-    "iat": ${CURRENT_TIME_IN_ISO8601_FORMAT}
-    "exp": ${SESSION_EXPIRATION_TIME_IN_ISO8601_FORMAT}
-    "nce": ${AUTHENTICATION_NONCE}
-  }
+{
+"iss": ${APPLICATION_ID}
+"sub": ${UNIQUE_USER_ID}
+"iat": ${CURRENT_TIME_IN_ISO8601_FORMAT}
+"exp": ${SESSION_EXPIRATION_TIME_IN_ISO8601_FORMAT}
+"nce": ${AUTHENTICATION_NONCE}
+}
 ```
 
 ... then encrypt the whole thing with your **Encryption Key** obtained when
@@ -245,12 +273,12 @@ used (valid values are one of "gcm", "ios_sandbox", "ios_production"), and a
 **pushToken** field to indicate the pushToken specific to the push platform.
 
 ```http
-  curl -X POST \
-    -H "X-Diuit-Application-Id: ${APPLICATION_ID}" \
-    -H "X-Diuit-API-Key: ${REST_API_KEY}" \
-    -H "Content-Type: application/json" \
-    -d '{"authToken":"JWT_TOKEN", "deviceId": "DEVICE_ID", "platform": "PUSH_PLATFORM", "pushToken": "PUSH_TOKEN"}' \
-    https://api.diuit.net/1/auth/login
+curl -X POST \
+-H "X-Diuit-Application-Id: ${APPLICATION_ID}" \
+-H "X-Diuit-API-Key: ${REST_API_KEY}" \
+-H "Content-Type: application/json" \
+-d '{"authToken":"JWT_TOKEN", "deviceId": "DEVICE_ID", "platform": "PUSH_PLATFORM", "pushToken": "PUSH_TOKEN"}' \
+https://api.diuit.net/1/auth/login
 ```
 
 If successful, the response will be a JSON object contains the `sessionToken`
@@ -291,30 +319,45 @@ with empty payload.
 The server should respond with with a list of all chats you are currently joined in.
 
 ```java  
-    // In Android, if you have already authenticated your devices, you can get all your chatroom easily.
+// In Android, if you have already authenticated your devices, you can get all your chatroom easily.
 
-    DiuitAPI.current.listChats(new DiuitAPICallback<ArrayList<DiuitChat>>()
-    {
-        @Override
-        public void onSuccess(final ArrayList<DiuitChat> chatArrayList)
-        {
-            // if success, retrun chatArrayList
-        }
+DiuitAPI.current.listChats(new DiuitAPICallback<ArrayList<DiuitChat>>()
+{
+@Override
+public void onSuccess(final ArrayList<DiuitChat> chatArrayList)
+{
+// if success, retrun chatArrayList
+}
 
-        @Override
-        public void onFailure(final int code, final JSONObject resultObj)
-        {
-            // if failure, it will return error code and result
-        }
-    });
+@Override
+public void onFailure(final int code, final JSONObject resultObj)
+{
+// if failure, it will return error code and result
+}
+});
 
 ```
 
 ```objective_c
+
+[DiuitAPI.current listChats:^(NSInteger statusCode, id result) {
+if (statusCode == 200) {
+// if statusCode return 200, then you will get the result as @[DUChat]. Otherwise you will get error message in result
+}
+
+}];
+```
+```swift
+
+DiuitAPI.current?.listChats(){ code, result in
+if code == 200 {
+// if statusCode return 200, then you will get the result as [DUChat]. Otherwise you will get error message in result
+}
+}
 ```
 
-
 ```http  
+
 ```
 
 ## Create a Chat Room
@@ -323,9 +366,9 @@ To create a chat-room, emit a "chats/creat" message, with the following payload:
 
 <aside class="note">
 {
-    members: [ ${USER_ID_1}, ${USER_ID_2} ..]
-    whiteList: [ ${USER_ID_1} ... ]
-    meta: { ${ANY_CHAT_ROOM_SPECIFIC_META_DATA} }
+members: [ ${USER_ID_1}, ${USER_ID_2} ..]
+whiteList: [ ${USER_ID_1} ... ]
+meta: { ${ANY_CHAT_ROOM_SPECIFIC_META_DATA} }
 }
 </aside>
 <br></br>
@@ -369,31 +412,50 @@ string.
 
 ```java
 
-    // @params serialOfUsers : put all users you want to join init this string array
-    // @params meta : you can put attribute of the chat, ex, {'name' : 'this is my new chatroom'}
-    DiuitAPI.current.createChat(String[] serialOfUsers, JSONObject meta, new DiuitAPICallback<DiuitChat>()
-    {
-        @Override
-        public void onSuccess(final DiuitChat diuitChat)
-        {
-            // If success, will return a DiuitChat object
-        }
+// @params serialOfUsers : put all users you want to join init this string array
+// @params meta : you can put attribute of the chat, ex, {'name' : 'this is my new chatroom'}
+DiuitAPI.current.createChat(String[] serialOfUsers, JSONObject meta, new DiuitAPICallback<DiuitChat>()
+{
+@Override
+public void onSuccess(final DiuitChat diuitChat)
+{
+// If success, will return a DiuitChat object
+}
 
-        @Override
-        public void onFailure(final int code, final JSONObject resultObj)
-        {
-                // if failure, it will return error code and result        
-        }
-    });
+@Override
+public void onFailure(final int code, final JSONObject resultObj)
+{
+// if failure, it will return error code and result        
+}
+});
 
 ```
-
 
 ```objective_c
+// @[USER_SERIALS] : put all users' serial you want to join in this NSArray of NSString
+
+// @{YOUR_META} (Optional) : any meta data you want to append on this chatroom, as long as it's an NSDictionary
+
+[DiuitAPI.current createChat:@[USER_SERIALS] meta:@{YOUR_META} done:^(NSInteger statusCode, id result) {
+if (statusCode == 200) {
+// if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
+}
+}];
+```
+```swift
+// [USER_SERIALS] : put all users' serial you want to join in this NSArray of NSString
+
+// [YOUR_META] (Optional) : any meta data you want to append on this chatroom, as long as it's an NSDictionary
+
+DiuitAPI.current?.createChat([USER_SERIALS], meta: [YOUR_META]) { code, result in
+if code == 200 {
+// if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
+}
+}
 ```
 
-
 ```http
+
 ```
 
 ## Join a Chat Room
@@ -403,7 +465,7 @@ To join a chat-room, you emit a "chats/join" message, with the following payload
 <aside class="note">
 
 {
-  chatId: ${CHATROOM_ID}
+chatId: ${CHATROOM_ID}
 }
 
 </aside>
@@ -412,27 +474,42 @@ To join a chat-room, you emit a "chats/join" message, with the following payload
 
 ```java
 
-    //@param chatId , the id of the chat you want to join
-    DiuitAPI.current.joinChat(int chatId, new DiuitAPICallback<DiuitChat>()
-    {
-        @Override
-        public void onFailure(final int code, final JSONObject resultObj)
-        {
-            // if failure, it will return error code and result                
-        }
-        @Override
-        public void onSuccess(final DiuitChat diuitChat)
-        {
-            // if success, it will return the DiuitChat object
-        }
-    });
+//@param chatId , the id of the chat you want to join
+DiuitAPI.current.joinChat(int chatId, new DiuitAPICallback<DiuitChat>()
+{
+@Override
+public void onFailure(final int code, final JSONObject resultObj)
+{
+// if failure, it will return error code and result                
+}
+@Override
+public void onSuccess(final DiuitChat diuitChat)
+{
+// if success, it will return the DiuitChat object
+}
+});
 ```
 
 ```objective_c
+
+// chatId(NSInteger) : the id of the chat you want to join
+
+[DiuitAPI.current joinChat:chatId done:^(NSInteger statusCode, id result) {
+if(statsCode == 200) {
+// if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
+}
+}];
+```
+```swift
+DiuitAPI.current?.joinChat(chatId){ code, result in
+if code == 200 {
+// if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
+}
+}
 ```
 
-
 ```http
+
 ```
 
 
@@ -442,7 +519,7 @@ To leave a chat-room, you emit a "chats/leave" message, with the following paylo
 
 <aside class="note">
 {
-  chatId: ${CHATROOM_ID}
+chatId: ${CHATROOM_ID}
 }
 </aside>
 <br></br>
@@ -450,28 +527,42 @@ To leave a chat-room, you emit a "chats/leave" message, with the following paylo
 
 ```java
 
-    //@param chatId , the id of the chat you want to join
-    DiuitAPI.current.leaveChat(diuitChat, new DiuitAPICallback<DiuitChat>()
-    {
-        @Override
-        public void onFailure(final int code, final JSONObject resultObj)
-        {
-            // if failure, it will return error code and result        
-        }
-        @Override
-        public void onSuccess(final DiuitChat diuitChat)
-        {
-            // if success, it will return the DiuitChat object
-        }
+//@param chatId , the id of the chat you want to leave
+DiuitAPI.current.leaveChat(diuitChat, new DiuitAPICallback<DiuitChat>()
+{
+@Override
+public void onFailure(final int code, final JSONObject resultObj)
+{
+// if failure, it will return error code and result        
+}
+@Override
+public void onSuccess(final DiuitChat diuitChat)
+{
+// if success, it will return the DiuitChat object
+}
 
-    });
+});
 ```
 
 ```objective_c
+//chatId : the id of the chat you want to leave
+[DiuitAPI.current leaveChat:chatId done:^(NSInteger statusCode, id result) {
+if (statusCode != 200) {
+// if statusCode doesn't return 200, you can check result to get error message
+}
+}];
 ```
 
-
+```swift
+//chatId : the id of the chat you want to leave
+DiuitAPI.current?.leaveChat(chatId){ code, result in
+if code != 200 {
+// if code doesn't return 200, you can check result to get error message   
+}
+}
+```
 ```http
+
 ```
 
 
@@ -482,8 +573,8 @@ the following payload:
 
 <aside class="note">
 {
-  chatId: ${CHATROOM_ID}
-  meta: { ${CHATROOM_META} }
+chatId: ${CHATROOM_ID}
+meta: { ${CHATROOM_META} }
 }
 
 Note that you have to modify the whole meta as whole; you cannot just update
@@ -495,32 +586,50 @@ individual keys.
 
 ```java
 
-    // create new meta for updating the attribute of the chat
-    JSONObject newMeta = new JSONObject();
-    newMeta("name", newName);
+// create new meta for updating the attribute of the chat
+JSONObject newMeta = new JSONObject();
+newMeta("name", newName);
 
-    DiuitAPI.current.updateChat(diuitChat, newMeta, new DiuitAPICallback<DiuitChat>()
-    {
-        @Override
-        public void onFailure(final int code, final JSONObject resultObj)
-        {
-            // if failure, it will return error code and result  
-        }
+DiuitAPI.current.updateChat(diuitChat, newMeta, new DiuitAPICallback<DiuitChat>()
+{
+@Override
+public void onFailure(final int code, final JSONObject resultObj)
+{
+// if failure, it will return error code and result  
+}
 
-        @Override
-        public void onSuccess(DiuitChat diuitChat)
-        {
-            // if success, it will return the DiuitChat object            
-        }
-    });
+@Override
+public void onSuccess(DiuitChat diuitChat)
+{
+// if success, it will return the DiuitChat object            
+}
+});
 
 ```
 
 ```objective_c
+// chat(DUChat)               : the chat you want to update
+// @{YOUR_META}(NSDictionary) : meta you'd like to append
+
+[DiuitAPI.current updateChat:chat meta:@{YOUR_META} done:^(NSInteger statusCode, id result) {
+if (statusCode == 200) {
+// if statusCode returns 200, you can get returned DUChat instance in result. Otherwise, an error message
+}
+}];
+```
+```swift
+// chat(DUChat)              : the chat you want to update
+// [YOUR_META](NSDictionary) : meta you'd like to append
+
+DiuitAPI.current?.updateChat(chat, meta:[YOUR_META]){ code, result in
+if code == 200 {
+// if code returns 200, you can get returned DUChat instance in result. Otherwise, an error message
+}
+}
 ```
 
-
 ```http
+
 ```
 
 
@@ -532,8 +641,8 @@ message, with the following payload:
 
 <aside class="note">
 {
-  chatId: ${CHATROOM_ID}
-  whiteList: [ ${USER_ID_1} ]
+chatId: ${CHATROOM_ID}
+whiteList: [ ${USER_ID_1} ]
 }
 </aside>
 <br></br>
@@ -545,31 +654,48 @@ from the chat-room if he's already joined to the chat room.
 
 ```java
 
-    // @param serialsOfUsers : all users who you want to set into this chat whitelist
-    // @param diuitChat : the chat which you want to update
-    DiuitAPI.current.updateWhiteList(DiuitChat diuitChat, String[] serialsOfUsers,
-                    new DiuitAPICallback<DiuitChat>()
-    {
-        @Override
-        public void onFailure(final int code, final JSONObject resultObj)
-        {
-            // if failure, it will return error code and result  
-        }
+// @param serialsOfUsers : all users who you want to set into this chat whitelist
+// @param diuitChat : the chat which you want to update
+DiuitAPI.current.updateWhiteList(DiuitChat diuitChat, String[] serialsOfUsers,
+new DiuitAPICallback<DiuitChat>()
+{
+@Override
+public void onFailure(final int code, final JSONObject resultObj)
+{
+// if failure, it will return error code and result  
+}
 
-        @Override
-        public void onSuccess(DiuitChat diuitChat)
-        {
-            // if success, it will return the DiuitChat object            
-        }
-    });
+@Override
+public void onSuccess(DiuitChat diuitChat)
+{
+// if success, it will return the DiuitChat object            
+}
+});
 
 ```
 
 ```objective_c
+// chat(DUChat)    : the chat you want to update
+// @[USER_SERIALS] : NSArray of NSString of user serials
+
+[DiuitAPI.current updateWhiteList:chat users:@[USER_SERIALS] done:^(NSInteger statusCode, id result) {
+if (statusCode == 200) {
+// if statusCode returns 200, you can get returned DUChat instance in result
+}
+}];
+```
+```swift
+// chat(DUChat)             : the chat you want to update
+// [USER_SERIALS]([String]) : string array of user serials
+DiuitAPI.current?.updateWhiteList(chat, users: [USER_SERIALS]){ code, result in
+if code == 200 {
+// if code returns 200, you can get returned DUChat instance in result. Otherwise, an error message
+}
+}
 ```
 
-
 ```http
+
 ```
 
 
@@ -580,8 +706,8 @@ following payload
 
 <aside class="note">
 {
-  chatId: ${CHATROOM_ID}
-  userId: ${TARGET_USER_TO_KICK}
+chatId: ${CHATROOM_ID}
+userId: ${TARGET_USER_TO_KICK}
 }
 </aside>
 <br></br>
@@ -595,27 +721,44 @@ first, before kicking him out.
 
 ```java
 
-    DiuitAPI.current.kick(diuitChat, diuitUser, new DiuitAPICallback<JSONObject>()
-    {
-        @Override
-        public void onSuccess(JSONObject resultObj)
-        {
-            // if success, it will return result
-        }
+DiuitAPI.current.kick(diuitChat, diuitUser, new DiuitAPICallback<JSONObject>()
+{
+@Override
+public void onSuccess(JSONObject resultObj)
+{
+// if success, it will return result
+}
 
-        @Override
-        public void onFailure(final int code, final JSONObject resultObj)
-        {
-            // if failure, it will return error code and result
-        }
-    });
+@Override
+public void onFailure(final int code, final JSONObject resultObj)
+{
+// if failure, it will return error code and result
+}
+});
 ```
 
 ```objective_c
+// chat(DUChat) : 
+// user(DUUser) : the user you want to kick out
+[DiuitAPI.current kick:chat user:user done:^(NSInteger statusCode, id result) {
+if (statusCode != 200) {
+// if statusode doesn't return 200, you can get error message in result
+}
+}];
 ```
 
+```swift
+// chat(DUChat) : 
+// user(DUUser) : the user you want to kick out
+DiuitAPI.current?.kick(chat, user: user) { code, result in
+if code != 200 {
+// if code doesn't return 200, you can get error message in result
+}
+}
+```
 
 ```http
+
 ```
 
 
@@ -627,11 +770,11 @@ The message will have the following format:
 
 <aside class="note">
 {
-  chatId: ${CHATROOM_ID},
-  data: ${SOME_DATA}
-  mime: ${DATA_MIME_TYPE}
-  encoding: ${DATA_ENCOIDNG}
-  meta: {$USER_SPECIFIC_META_FIELD}
+chatId: ${CHATROOM_ID},
+data: ${SOME_DATA}
+mime: ${DATA_MIME_TYPE}
+encoding: ${DATA_ENCOIDNG}
+meta: {$USER_SPECIFIC_META_FIELD}
 }
 </aside>
 <br></br>
@@ -644,24 +787,41 @@ and **encoding** will be **url**, and  **data** will contain a url pointing to
 the rich media itself.
 
 ```java
-    // If you want to receive messages , you have to register receiving listener with your object  
-    // This object could be Activity, Fragment , or any kind of object   
-    // Once someone send you a message , you would get these in the callback
+// If you want to receive messages , you have to register receiving listener with your object  
+// This object could be Activity, Fragment , or any kind of object   
+// Once someone send you a message , you would get these in the callback
 
-    DiuitAPI.current.registerReceivingMessage(DiuitAPICallback<DiuitMessage> callback)
+DiuitAPI.current.registerReceivingMessage(DiuitAPICallback<DiuitMessage> callback)
 
-    // Before you leave the activity, or change the object to be `NULL`, you have to unregister this listener  
+// Before you leave the activity, or change the object to be `NULL`, you have to unregister this listener  
 
-    DiuitAPI.current.unregisterReceivingMessage(DiuitAPICallback<DiuitMessage> callback)
+DiuitAPI.current.unregisterReceivingMessage(DiuitAPICallback<DiuitMessage> callback)
 
 ```
 
 
 ```objective_c
+// If you want to receive messages , you have to register receiving listener with your object
 ```
 
+```swift
+// If you want to receive all messages , you have to add observer for notification named "messageReceived"
+
+NSNotificationCenter.defaultCenter().addObserverForName("messageReceived", object: nil, queue: NSOperationQueue.mainQueue()) { notif in
+let message = notif.userInfo!["message"] as! Message
+NSLog("Got new message #\(message.id):\n\(message.data)")
+}
+
+// Or add observer for "messageReceived.${CHAT_ID}" to receive messages belong to the certain chat
+
+NSNotificationCenter.defaultCenter().addObserverForName("messageReceived.5566", object: nil, queue: NSOperationQueue.mainQueue()) { notif in
+let message = notif.userInfo!["message"] as! Message
+NSLog("Got new message #\(message.id) in chat #5566:\n\(message.data)")
+}
+```
 
 ```http
+
 ```
 
 
@@ -673,11 +833,11 @@ following payload
 
 <aside class="note">
 {
-  chatId: ${CHATROOM_ID},
-  data: ${SOME_TEXT_TO_SEND}
-  mime: 'text/plain'
-  encoding: 'utf8'
-  meta: {$USER_SPECIFIC_META_FIELD}
+chatId: ${CHATROOM_ID},
+data: ${SOME_TEXT_TO_SEND}
+mime: 'text/plain'
+encoding: 'utf8'
+meta: {$USER_SPECIFIC_META_FIELD}
 }
 </aside>
 <br></br>
@@ -688,29 +848,48 @@ following payload
 
 ```java
 
-    // @param text , your text message string
-    // @param chat, choose a chat which you want to send
-    DiuitAPI.current.sendToChat(DiuitChat chat, String text, new DiuitAPICallback<DiuitMessage>()
-    {
-        @Override
-        public void onSuccess(final DiuitMessage diuitMessage)
-        {
-            // if success, it will return your DiuitMessage
-        }
+// @param text , your text message string
+// @param chat, choose a chat which you want to send
+DiuitAPI.current.sendToChat(DiuitChat chat, String text, new DiuitAPICallback<DiuitMessage>()
+{
+@Override
+public void onSuccess(final DiuitMessage diuitMessage)
+{
+// if success, it will return your DiuitMessage
+}
 
-        @Override
-        public void onFailure(final int code, final JSONObject resultObj)
-        {
-            // if failure, it will return error code and result                
-        }
-    });
+@Override
+public void onFailure(final int code, final JSONObject resultObj)
+{
+// if failure, it will return error code and result                
+}
+});
 ```
 
 ```objective_c
+// @"YOUR_MESSAGE": your text message NSString
+// chat(DUChat)   : chat to which you want to send messages
+
+[DiuitAPI.current sendToChat:chat text:@"YOUR_MESSAGE" done:^(NSInteger statusCode, id result) {
+if (statusCode != 200) {
+// handle error
+}
+}];
+```
+```swift
+// text(String) : your text message string
+// chat(DUChat) : chat to which you want to send messages
+
+DiuitAPI.current?.sendToChat(chat!, text: self.textfield.text!) { code, message in
+if code != 200 {
+// handle error
+}
+}
 ```
 
 
 ```http
+
 ```
 
 
@@ -721,11 +900,11 @@ with the following payload
 
 <aside class="note">
 {
-  chatId: ${CHATROOM_ID},
-  data: ${BASE64_ENCODED_DATA}
-  mime: ${MIME_TYPE_OF_DATA}
-  encoding: 'base64'
-  meta: {$USER_SPECIFIC_META_FIELD}
+chatId: ${CHATROOM_ID},
+data: ${BASE64_ENCODED_DATA}
+mime: ${MIME_TYPE_OF_DATA}
+encoding: 'base64'
+meta: {$USER_SPECIFIC_META_FIELD}
 }
 </aside>
 <br></br>
@@ -735,34 +914,73 @@ with the following payload
 
 ```java
 
-    // @param bitmap , the bitmap of your photo
-    // @param chat, choose a chat which you want to send
-    DiuitAPI.current.sendToChat(DiuitChat chat, Bitmap bitmap, new DiuitAPICallback<DiuitMessage>(){...})  
+// @param bitmap , the bitmap of your photo
+// @param chat, choose a chat which you want to send
+DiuitAPI.current.sendToChat(DiuitChat chat, Bitmap bitmap, new DiuitAPICallback<DiuitMessage>(){...})  
 
 ```
 
 ```objective_c
+// YOUR_IMAGE(UIImage): your image message
+// chat(DUChat)       : chat to which you want to send messages
+
+[DiuitAPI.current sendToChat:chat image:YOUR_IMAGE done:^(NSInteger statusCode, id result) {
+if (statusCode != 200) {
+// handle error
+}
+}];
+```
+```swift
+// YOUR_IMAGE(UIImage): your image message
+// chat(DUChat)       : chat to which you want to send 
+
+DiuitAPI.current?.sendToChat(chat, image: YOUR_IMAGE) { code, message in
+if code != 200 {
+// handle error
+}
+}
 ```
 
-
 ```http
+
 ```
 
 > If you want to send your file , just call this API:
 
 ```java
 
-    // @param file , the File object of your file
-    // @param chat, choose a chat which you want to send
-    DiuitAPI.current.sendToChat(DiuitChat chat, File file, new DiuitAPICallback<DiuitMessage>(){...})
+// @param file , the File object of your file
+// @param chat, choose a chat which you want to send
+DiuitAPI.current.sendToChat(DiuitChat chat, File file, new DiuitAPICallback<DiuitMessage>(){...})
 
 ```
 
 ```objective_c
+// FILE_PATH(NSString) : path of your file message 
+// chat(DUChat)        : chat to which you want to send messages
+// meta                : meta you'd like to append, here we pass the file name in meta
+
+[DiuitAPI.current sendToChat: chat file: FILE_PATH meta:@{@"name":@"sampleFile.pdf"} done:^(NSInteger statusCode, id result) {
+if (statusCode != 200) {
+// handle error
+}
+}];
 ```
 
+```swift
+// FILE_PATH(String) : path of your file message 
+// chat(DUChat)      : chat to which you want to send messages
+// meta              : meta you'd like to append, here we pass the file name in meta
+
+DiuitAPI.current?.sendToChat(chat!, file: path!, meta: ["name":"sampleFile.pdf"]) { code, message in
+if code != 200 {
+// handle error
+}
+}
+```
 
 ```http
+
 ```
 
 > Remember , each message has file size limit <= 5MB
@@ -775,10 +993,10 @@ following payload
 
 <aside class="note">
 {
-  chatId: ${CHATROOM_ID},
-  page: ${PAGE_NUMBER_TO_GET},
-  count: ${MESSAGES_PER_PAGE},
-  before: ${TIMESTAMP_IN_SEC},
+chatId: ${CHATROOM_ID},
+page: ${PAGE_NUMBER_TO_GET},
+count: ${MESSAGES_PER_PAGE},
+before: ${TIMESTAMP_IN_SEC},
 }
 </aside>
 <br></br>
@@ -797,29 +1015,52 @@ older messages.
 
 ```java
 
-    // @param chat , the chat you want to query
-    // @param before, before the timestamp, UTC+0
-    DiuitAPI.current.listMessagesInChat(DiuitChat chat, Date before, int count, int page, new DiuitAPICallback<ArrayList<DiuitMessage>>()
-    {
-        @Override
-        public void onSuccess(final ArrayList<DiuitMessage> diuitMessageArrayList)
-        {
-            // if success, it will return message arraylist
-        }
-        @Override
-        public void onFailure(final int code, final JSONObject resultObj)
-        {
-            // if failure, it will return error code and result
-        }
-    });
+// @param chat , the chat you want to query
+// @param before, before the timestamp, UTC+0
+DiuitAPI.current.listMessagesInChat(DiuitChat chat, Date before, int count, int page, new DiuitAPICallback<ArrayList<DiuitMessage>>()
+{
+@Override
+public void onSuccess(final ArrayList<DiuitMessage> diuitMessageArrayList)
+{
+// if success, it will return message arraylist
+}
+@Override
+public void onFailure(final int code, final JSONObject resultObj)
+{
+// if failure, it will return error code and result
+}
+});
 
 ```
 
 ```objective_c
+// chat(DUChat)    : the chat you want to query
+// date(NSDate)    : you will get messages before this time
+// count(NSInteger): message numbers for each page, set to 20
+// page(NSInteger) : paging is supported
+
+[DiuitAPI.current listMessagesInChat:chat  before:date count:20 page:0 done:^(NSInteger statusCode, id result) {
+if (statusCode == 200) {
+// result will return an NSArray of DUMessage
+}
+}];
+
 ```
 
+```swift
+// chat(DUChat)              : the chat you want to query
+// date(NSDate, optional)    : you will get messages before this time, default is current time
+// count(NSInteger): message numbers for each page, default is 20
+// page(NSInteger, optional) : paging is supported, default is 0
+
+DiuitAPI.current?.listMessagesInChat(chat) { code, result in
+if code == 200 {
+// result will return [DUMessage]
+}
+```
 
 ```http
+
 ```
 
 
@@ -830,7 +1071,7 @@ following payload.
 
 <aside class="note">
 {
-  messageId: ${MESSAGE_ID}
+messageId: ${MESSAGE_ID}
 }
 </aside>
 <br></br>
@@ -839,28 +1080,45 @@ The message will be marked as read by the currently logged in user.
 
 ```java
 
-    // @param message, the message which you want to mark as readed
-    DiuitAPI.current.markAsRead(DiuitMessage message, callback()
-    {
-        @Override
-        public void onSuccess(final JSONObject resultObj)
-        {
-            // if success, it will return result
-        }
-        @Override
-        public void onFailure(final int code, final JSONObject resultObj)
-        {
-            // if failure, it will return error code and result
-        }
-    });
+// @param message, the message which you want to mark as readed
+DiuitAPI.current.markAsRead(DiuitMessage message, callback()
+{
+@Override
+public void onSuccess(final JSONObject resultObj)
+{
+// if success, it will return result
+}
+@Override
+public void onFailure(final int code, final JSONObject resultObj)
+{
+// if failure, it will return error code and result
+}
+});
 
 ```
 
 ```objective_c
+// message(DUMessage) : message to be marked
+
+[DiuitAPI.current markAsReadWithMessage:message done:^(NSInteger statusCode, id result){
+if (statusCode != 200) {
+// handle error
+}
+}];
 ```
 
+```swift
+// message(DUMessage) : message to be marked
+
+DiuitAPI.current?.markAsReadWithMessage(message) { code, result in
+if code != 200 {
+// handle error
+}
+}
+```
 
 ```http
+
 ```
 
 ## System Messages
