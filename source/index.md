@@ -417,15 +417,11 @@ in the chat-room.
 "chats/creat"
 
 #response
-
-<aside class="note">
 {
-members: [ ${USER_ID_1}, ${USER_ID_2} ..]
-whiteList: [ ${USER_ID_1} ... ]
-meta: { ${ANY_CHAT_ROOM_SPECIFIC_META_DATA} }
+  members: [ ${USER_ID_1}, ${USER_ID_2} ..]
+  whiteList: [ ${USER_ID_1} ... ]
+  meta: { ${ANY_CHAT_ROOM_SPECIFIC_META_DATA} }
 }
-</aside>
-<br></br>
 
 For **members** field, put the ids of all the people you wish to include the
 chatroom as an array. (Note that the ID should be the **sub** field when you
@@ -443,13 +439,9 @@ firmware instead.
 Our messaging API makes no assumption about what kind of application you are
 developing.
 
-<hr/>
-
 To create a public chatroom where everyone can freely join, set **whiteList**
 field to null. To set a restricted chatroom where only certain people can join,
 set the **whitelist** field to the array of user Ids that can join the room.
-
-<hr/>
 
 The **meta** field is a general purpose field for you to store any chat-room
 specific information.
@@ -463,6 +455,8 @@ meta data.
 
 But please noted that the meta field can only store up to 5kb of serialized JSON
 string.
+
+```
 
 ```java
 
