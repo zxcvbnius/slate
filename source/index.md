@@ -18,6 +18,7 @@ search: true
 ---
 
 # Getting Started
+
 updated : 2016/01/12 13:00
 
 ## Prerequisites for API v0.1.0
@@ -40,23 +41,23 @@ updated : 2016/01/12 13:00
 1. Execute command `pod init` under your Xcode project directory to create a Podfile for the project
 2.  Make your Podfile look like as right：
 
-    ```objective_c
-    platform :ios, '8.0'
-    use_frameworks!
+```objective_c
+platform :ios, '8.0'
+use_frameworks!
 
-    target 'MyApp' do
-    pod 'DUMessaging'
-    end
-    ```
+target 'MyApp' do
+pod 'DUMessaging'
+end
+```
 
-    ```swift
-    platform :ios, '8.0'
-    use_frameworks!
+```swift
+platform :ios, '8.0'
+use_frameworks!
 
-    target 'MyApp' do
-    pod 'DUMessaging'
-    end
-    ```
+target 'MyApp' do
+pod 'DUMessaging'
+end
+```
 
 3. Run `pod install` to install the framework and dependencies
 4. Make sure to always open the Xcode workspace instead of the project file when building your project:
