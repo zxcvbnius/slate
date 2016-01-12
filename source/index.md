@@ -417,7 +417,7 @@ Emit the following message to the server
 
 <aside class='notice'>
   "chats/create"
-<aside>
+</aside>
 
 with the following parameters
 
