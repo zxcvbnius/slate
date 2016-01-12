@@ -68,7 +68,7 @@ end
 
 You can either use Maven or manually add a Jar to your project.
 
-#### Maven
+** Maven **
 
 1.  Navigate to your build.gradle file at the app level (not project level) and ensure that you include the following:  
 
@@ -77,7 +77,7 @@ You can either use Maven or manually add a Jar to your project.
 2. Add compile **'com.duolc.diuitapi:message:0.1.1'** to the dependencies of your project
 3. In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files  
 
-#### Jar
+** Jar **
 
 1. Download the release package and unzip  
 2. Create a new project with Android Studio  
@@ -86,7 +86,7 @@ You can either use Maven or manually add a Jar to your project.
 
 ## Initialization
 
-* **iOS**
+### iOS
 
 - In your **AppDelegate.m** or **AppDelegate.swift**, add following:
 
@@ -109,11 +109,10 @@ return true
 }
 ```
 
-* **Android**
+### Android
+
 - Open your main activity or the activity in which you want to integrate the update process.  
 - Add the following lines:    
-
-
 
 ```java
 public class YourActivity extends Activity {
@@ -129,12 +128,18 @@ DiuitAPI.current = new DiuitAPI( DIUIT_APP_ID, DIUIT_APP_KEY );
 
 // Probably more methods
 }
-```  
+```
 
+### RESTful
 
-```shell  
-Restful
-```  
+When sending any API commands, set the `x-diuit-application-id` and `x-diuit-api-key` headers with your `DIUIT_APP_ID` and `DIUIT_APP_KEY` respectively.
+
+```shell
+curl -X GET \
+  -H "x-diuit-application-id: ${DIUIT_APP_ID}" \
+  -H "x-diuit-api-key: ${DIUIT_APP_KEY}" \
+  https://api.diuit.net/${API_END_POINT}
+```
 
 # Authentication Module
 
