@@ -411,17 +411,23 @@ if code == 200 {
 Use this command to create a chat-room and optionally include a list of person
 in the chat-room.
 
-```shell
-# Request, emit the following message
+### Restful
 
-"chats/creat"
+Emit the following message to the server
 
-#response
-{
-  members: [ ${USER_ID_1}, ${USER_ID_2} ..]
-  whiteList: [ ${USER_ID_1} ... ]
-  meta: { ${ANY_CHAT_ROOM_SPECIFIC_META_DATA} }
-}
+<pre>
+    "chats/creat"
+</pre>
+
+with the following parameters
+
+<pre>
+    {
+      members: [ ${USER_ID_1}, ${USER_ID_2} ..]
+      whiteList: [ ${USER_ID_1} ... ]
+      meta: { ${ANY_CHAT_ROOM_SPECIFIC_META_DATA} }
+    }
+</pre>
 
 For **members** field, put the ids of all the people you wish to include the
 chatroom as an array. (Note that the ID should be the **sub** field when you
@@ -456,7 +462,7 @@ meta data.
 But please noted that the meta field can only store up to 5kb of serialized JSON
 string.
 
-```
+### Android
 
 ```java
 
@@ -478,6 +484,8 @@ public void onFailure(final int code, final JSONObject resultObj)
 });
 
 ```
+
+### iOS
 
 ```objective_c
 // @[USER_SERIALS] : put all users' serial you want to join in this NSArray of NSString
@@ -508,17 +516,19 @@ if code == 200 {
 
 ## Join a Chat Room
 
+Join a chatroom to receive messages in it.
+
+### Socket.IO
+
 To join a chat-room, you emit a "chats/join" message, with the following payload:
 
-<aside class="note">
+<pre>
+    {
+      chatId: ${CHATROOM_ID}
+    }
+</pre>
 
-{
-chatId: ${CHATROOM_ID}
-}
-
-</aside>
-<br></br>
-
+### Android
 
 ```java
 
@@ -538,6 +548,8 @@ public void onSuccess(final DiuitChat diuitChat)
 });
 ```
 
+### iOS
+
 ```objective_c
 
 // chatId(NSInteger) : the id of the chat you want to join
@@ -556,22 +568,22 @@ if code == 200 {
 }
 ```
 
-```http
-
-```
-
 
 ## Leave a Chat Room
 
+Leave a chat room to stop receiving messages in it.
+
+### Socket.IO
+
 To leave a chat-room, you emit a "chats/leave" message, with the following payload:
 
-<aside class="note">
-{
-chatId: ${CHATROOM_ID}
-}
-</aside>
-<br></br>
+<pre>
+    {
+      chatId: ${CHATROOM_ID}
+    }
+</pre>
 
+### Android
 
 ```java
 
@@ -591,6 +603,8 @@ public void onSuccess(final DiuitChat diuitChat)
 
 });
 ```
+
+### iOS
 
 ```objective_c
 //chatId : the id of the chat you want to leave
@@ -616,21 +630,28 @@ if code != 200 {
 
 ## Updating Chat Room Meta Info
 
+You can update a chat-room's meta info by using this command.
+
+A chatroom's meta info can be used to hold anything application specific to the
+chatroom. Command things to put in it is the name of the chat-room. You can also
+implement chat-room notes by including the notes info in this key.
+
+### Socket.IO
+
 To update the chat-room's information, emit a "chats/meta/update" message, with
 the following payload:
 
-<aside class="note">
-{
-chatId: ${CHATROOM_ID}
-meta: { ${CHATROOM_META} }
-}
+<pre>
+    {
+      chatId: ${CHATROOM_ID}
+      meta: { ${CHATROOM_META} }
+    }
+</pre>
 
 Note that you have to modify the whole meta as whole; you cannot just update
 individual keys.
 
-</aside>
-<br></br>
-
+### Android
 
 ```java
 
@@ -655,6 +676,8 @@ public void onSuccess(DiuitChat diuitChat)
 
 ```
 
+### iOS
+
 ```objective_c
 // chat(DUChat)               : the chat you want to update
 // @{YOUR_META}(NSDictionary) : meta you'd like to append
@@ -676,29 +699,31 @@ if code == 200 {
 }
 ```
 
-```http
-
-```
-
-
 
 ## Updating Chat Room White List
+
+You can use this command to update a chat-room's white list.
+
+The white-list controls who is allowed to join the chat-room. Setting this value
+to `null` allows all people to join the chat-room, and setting this value to an
+array of user ids will allow only people in the array to join the chatroom.
+
+Note that removing a person from the white list doesn't kick a person
+from the chat-room if he's already joined to the chat room.
+
+### Socket.IO
 
 To update the chat-room's **whiteList**, emit a "chats/whiteList/update"
 message, with the following payload:
 
-<aside class="note">
-{
-chatId: ${CHATROOM_ID}
-whiteList: [ ${USER_ID_1} ]
-}
-</aside>
-<br></br>
+<pre>
+    {
+      chatId: ${CHATROOM_ID}
+      whiteList: [ ${USER_ID_1} ]
+    }
+</pre>
 
-Note, to clear whiteList to `null`, pass a `null for thewhiteList` field.
-
-Also note that removing a person from the white list doesn't kick a person
-from the chat-room if he's already joined to the chat room.
+### Android
 
 ```java
 
@@ -722,6 +747,8 @@ public void onSuccess(DiuitChat diuitChat)
 
 ```
 
+### iOS
+
 ```objective_c
 // chat(DUChat)    : the chat you want to update
 // @[USER_SERIALS] : NSArray of NSString of user serials
@@ -742,23 +769,9 @@ if code == 200 {
 }
 ```
 
-```http
-
-```
-
-
 ## Kick a User from Chat Room
 
-To kick a user from the chat room, emit a "chat/kick" message, with the
-following payload
-
-<aside class="note">
-{
-chatId: ${CHATROOM_ID}
-userId: ${TARGET_USER_TO_KICK}
-}
-</aside>
-<br></br>
+Use this command to kick a user from chat room.
 
 Note that kicking a user from the chat room doesn't change the chatRoom's
 **whiteList**. So if the user is in the white list of the chat room, he can
@@ -766,6 +779,20 @@ join back to the room himself.
 
 To completely ban a user from the chat room, emit a "chat/whiteList/update"
 first, before kicking him out.
+
+### Socket.IO
+
+To kick a user from the chat room, emit a "chat/kick" message, with the
+following payload
+
+<pre>
+    {
+      chatId: ${CHATROOM_ID}
+      userId: ${TARGET_USER_TO_KICK}
+    }
+</pre>
+
+### Android
 
 ```java
 
@@ -784,6 +811,8 @@ public void onFailure(final int code, final JSONObject resultObj)
 }
 });
 ```
+
+### iOS
 
 ```objective_c
 // chat(DUChat) :
@@ -805,27 +834,24 @@ if code != 200 {
 }
 ```
 
-```http
-
-```
-
-
 ## Receiving a Message
 
+Add listener to this events to receive real-time messaging from the chatroom.
+
 When a user send a message to the chatroom you are joined in. You will receive
-a "message" event. You should listen for the event to receive real-time messages.
+a "message" event.
+
 The message will have the following format:
 
-<aside class="note">
-{
-chatId: ${CHATROOM_ID},
-data: ${SOME_DATA}
-mime: ${DATA_MIME_TYPE}
-encoding: ${DATA_ENCOIDNG}
-meta: {$USER_SPECIFIC_META_FIELD}
-}
-</aside>
-<br></br>
+<pre>
+    {
+      chatId: ${CHATROOM_ID},
+      data: ${SOME_DATA}
+      mime: ${DATA_MIME_TYPE}
+      encoding: ${DATA_ENCOIDNG}
+      meta: {$USER_SPECIFIC_META_FIELD}
+    }
+</pre>
 
 For text message, the mime type will be **text/plain** and the encoding will be
 **utf8**, and the **data** will be the text message itself.
@@ -833,6 +859,12 @@ For text message, the mime type will be **text/plain** and the encoding will be
 For rich media messages, the **mime** type will be the mime type of the media
 and **encoding** will be **url**, and  **data** will contain a url pointing to
 the rich media itself.
+
+### Socket.IO
+
+Listen to the `message` event
+
+### Android
 
 ```java
 // If you want to receive messages , you have to register receiving listener with your object  
@@ -847,6 +879,7 @@ DiuitAPI.current.unregisterReceivingMessage(DiuitAPICallback<DiuitMessage> callb
 
 ```
 
+### iOS
 
 ```objective_c
 // If you want to receive messages , you have to register receiving listener with your object
@@ -868,27 +901,24 @@ NSLog("Got new message #\(message.id) in chat #5566:\n\(message.data)")
 }
 ```
 
-```http
-
-```
-
-
-
 ## Send a Text Message
+
+Use this command to send a text message to the chat-room.
+
+### Socket.IO
 
 To send a message to a chat room, emit a "message/create" message, with the
 following payload
 
-<aside class="note">
-{
-chatId: ${CHATROOM_ID},
-data: ${SOME_TEXT_TO_SEND}
-mime: 'text/plain'
-encoding: 'utf8'
-meta: {$USER_SPECIFIC_META_FIELD}
-}
-</aside>
-<br></br>
+<pre>
+    {
+      chatId: ${CHATROOM_ID},
+      data: ${SOME_TEXT_TO_SEND}
+      mime: 'text/plain'
+      encoding: 'utf8'
+      meta: {$USER_SPECIFIC_META_FIELD}
+    }
+</pre>
 
 > There three main type of message , text, photo, and file.
 > According different type, you have to call different API.
@@ -935,28 +965,24 @@ if code != 200 {
 }
 ```
 
-
-```http
-
-```
-
-
 ## Send a Rich Media Message
+
+### Socket.IO
 
 To send a rich media message to a chat room, emit a "messages/create" message,
 with the following payload
 
-<aside class="note">
-{
-chatId: ${CHATROOM_ID},
-data: ${BASE64_ENCODED_DATA}
-mime: ${MIME_TYPE_OF_DATA}
-encoding: 'base64'
-meta: {$USER_SPECIFIC_META_FIELD}
-}
-</aside>
-<br></br>
+<pre>
+    {
+      chatId: ${CHATROOM_ID},
+      data: ${BASE64_ENCODED_DATA}
+      mime: ${MIME_TYPE_OF_DATA}
+      encoding: 'base64'
+      meta: {$USER_SPECIFIC_META_FIELD}
+    }
+</pre>
 
+### Android
 
 > Also, you can use those API to send your photos and files to your chat
 
@@ -967,6 +993,8 @@ meta: {$USER_SPECIFIC_META_FIELD}
 DiuitAPI.current.sendToChat(DiuitChat chat, Bitmap bitmap, new DiuitAPICallback<DiuitMessage>(){...})  
 
 ```
+
+## iOS
 
 ```objective_c
 // YOUR_IMAGE(UIImage): your image message
@@ -987,10 +1015,6 @@ if code != 200 {
 // handle error
 }
 }
-```
-
-```http
-
 ```
 
 > If you want to send your file , just call this API:
@@ -1027,27 +1051,25 @@ if code != 200 {
 }
 ```
 
-```http
-
-```
-
 > Remember , each message has file size limit <= 5MB
 
-
 ## List Messages In a Chat Room
+
+Use this command to list historic messages in the chat-room.
+
+### Socket.IO
 
 To list messages in a chat room, emit a "messages/list" message, with the
 following payload
 
-<aside class="note">
-{
-chatId: ${CHATROOM_ID},
-page: ${PAGE_NUMBER_TO_GET},
-count: ${MESSAGES_PER_PAGE},
-before: ${TIMESTAMP_IN_SEC},
-}
-</aside>
-<br></br>
+<pre>
+    {
+      chatId: ${CHATROOM_ID},
+      page: ${PAGE_NUMBER_TO_GET},
+      count: ${MESSAGES_PER_PAGE},
+      before: ${TIMESTAMP_IN_SEC},
+    }
+</pre>
 
 Response will contain **count** number of message before the timestamp specified
 in **before** field, skipping over **page** * **count** number of messages.
@@ -1060,6 +1082,7 @@ So, in general, you call the API with the current timestamp to obtain all the
 latest messages, and required, call the API with an older timestamp to obtain
 older messages.
 
+### Android
 
 ```java
 
@@ -1080,6 +1103,8 @@ public void onFailure(final int code, final JSONObject resultObj)
 });
 
 ```
+
+### iOS
 
 ```objective_c
 // chat(DUChat)    : the chat you want to query
@@ -1107,24 +1132,24 @@ if code == 200 {
 }
 ```
 
-```http
-
-```
-
-
 ## Mark a Message as being Read
+
+Use this command to mark a message as read by the currently logged in user. Note
+that you do not have to use this command. It's perfectly fine if you want to
+implement a chat system without read indications.
+
+### Socket.IO
 
 To mark a message as being read, emit "messages/markAsRead" message, with the
 following payload.
 
-<aside class="note">
-{
-messageId: ${MESSAGE_ID}
-}
-</aside>
-<br></br>
+<pre>
+    {
+      messageId: ${MESSAGE_ID}
+    }
+</pre>
 
-The message will be marked as read by the currently logged in user.  
+### Android
 
 ```java
 
@@ -1145,6 +1170,8 @@ public void onFailure(final int code, final JSONObject resultObj)
 
 ```
 
+### iOS
+
 ```objective_c
 // message(DUMessage) : message to be marked
 
@@ -1163,10 +1190,6 @@ if code != 200 {
 // handle error
 }
 }
-```
-
-```http
-
 ```
 
 ## System Messages
