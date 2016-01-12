@@ -84,7 +84,7 @@ end
 ```objective_c
 #import <DUMessaging/DUMessaging-Swift.h>
 
--(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions { 
+-(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
 DiuitAPI.current = [[DiuitAPI alloc] initWithAppId:@"YOUR_APP_ID" appKey:@"YOUR_APP_KEY"];
 return YES;
@@ -738,7 +738,7 @@ public void onFailure(final int code, final JSONObject resultObj)
 ```
 
 ```objective_c
-// chat(DUChat) : 
+// chat(DUChat) :
 // user(DUUser) : the user you want to kick out
 [DiuitAPI.current kick:chat user:user done:^(NSInteger statusCode, id result) {
 if (statusCode != 200) {
@@ -748,7 +748,7 @@ if (statusCode != 200) {
 ```
 
 ```swift
-// chat(DUChat) : 
+// chat(DUChat) :
 // user(DUUser) : the user you want to kick out
 DiuitAPI.current?.kick(chat, user: user) { code, result in
 if code != 200 {
@@ -932,7 +932,7 @@ if (statusCode != 200) {
 ```
 ```swift
 // YOUR_IMAGE(UIImage): your image message
-// chat(DUChat)       : chat to which you want to send 
+// chat(DUChat)       : chat to which you want to send
 
 DiuitAPI.current?.sendToChat(chat, image: YOUR_IMAGE) { code, message in
 if code != 200 {
@@ -956,7 +956,7 @@ DiuitAPI.current.sendToChat(DiuitChat chat, File file, new DiuitAPICallback<Diui
 ```
 
 ```objective_c
-// FILE_PATH(NSString) : path of your file message 
+// FILE_PATH(NSString) : path of your file message
 // chat(DUChat)        : chat to which you want to send messages
 // meta                : meta you'd like to append, here we pass the file name in meta
 
@@ -968,7 +968,7 @@ if (statusCode != 200) {
 ```
 
 ```swift
-// FILE_PATH(String) : path of your file message 
+// FILE_PATH(String) : path of your file message
 // chat(DUChat)      : chat to which you want to send messages
 // meta              : meta you'd like to append, here we pass the file name in meta
 
@@ -1140,19 +1140,19 @@ When a user joined a chatroom, all members of the chatroom will receive a messag
 with type **user.joined** and a single key **userId** signifying which user has
 joined the chatroom.
 
-## White List Updated
+### White List Updated
 
 When a member of the chatroom update the white list, all members of the chatroom
 will receive a message with type **whiteList.updated**, and a single key
 **whiteList** providing the latest state of the white list.
 
-## User Kicked
+### User Kicked
 
 When a user is kicked from a chatroom, all members of the chatroom will receive
 a message with type **user.kicked**, and a single key **userId** signifying which
 user has been kicked from the chatroom.
 
-## Chatroom Meta Updated
+### Chatroom Meta Updated
 
 When a member of the chatroom updates the chatroom meta field, all members of
 the chatroom will receive a message with type **meta.updated**, and a single
