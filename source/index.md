@@ -21,7 +21,7 @@ search: true
 
 updated : 2016/01/12 13:00
 
-## Prerequisites for API v0.1.0
+## Prerequisites
 
 ### iOS
 
@@ -34,7 +34,9 @@ updated : 2016/01/12 13:00
 - A recent version of the Android SDK  
 - We support all Android versions since API Level 14 (Android 4.0 & above).
 
-### Installation for iOS
+## Installation
+
+### iOS
 
 Use Cocoapods to retrieve the framework
 
@@ -64,7 +66,7 @@ end
 
     `$ open MyApp.xcworkspace`
 
-### Installation for Android
+### Android
 
 You can either use Maven or manually add a Jar to your project.
 
@@ -141,11 +143,7 @@ curl -X GET \
   https://api.diuit.net/${API_END_POINT}
 ```
 
-# Authentication Module
-
-The User / Authentication module provides functionalities for managing user information.
-
-### Authentication
+# Authenticating User
 
 Our messaging server does not directly store your users' credential. Instead,
 you will need to have your own account server to manager your users' credentials
@@ -158,6 +156,9 @@ The JWT contains a grant telling us which user is allowed access to the messagin
 server and how long the grant is effective.
 
 Thus, authenticating a user on our messaging server is a 4 steps process.
+
+The following description is RESTful by natural, and we do not provide SDK
+APIs for the following calls.
 
 1. Obtain a random **nonce** from our messaging server through /1/auth/nonce API.
 This nonce is used to prevent replay attack on our messaging server, should the
@@ -200,18 +201,16 @@ To obtain the nonce from our server, send a GET request to the /1/auth/nonce end
 
 ```shell
 curl -X GET \
--H "X-Diuit-Application-Id: ${APPLICATION_ID}" \
--H "X-Diuit-API-Key: ${REST_API_KEY}" \
-https://api.diuit.net/1/auth/nonce
+  -H "x-diuit-application-id: ${DIUIT_APP_ID}" \
+  -H "x-diuit-api-key: ${DIUIT_APP_KEY}" \
+  https://api.diuit.net/1/auth/nonce
 ```
 
 The response body is a JSON object containing the `nonce` key.
 
-```http
-{
-"nonce": "123asdf123asdf12321adf",
-}
-```
+    {
+      "nonce": "123asdf123asdf12321adf",
+    }
 
 ### 2. Authenticate User On Your Account Server
 
@@ -222,26 +221,23 @@ authentication check you've implement to authenticate the user logging in.
 
 If the user's identity is verified, your server should generate a JWT token with the following header:
 
-```http
-{
-"typ": "JWT",
-"alg": "RS256"
-"cty": "diuit-eit;v=1"
-"kid": ${EncryptionKeyId}
-}
-```
+    {
+      "typ": "JWT",
+      "alg": "RS256"
+      "cty": "diuit-eit;v=1"
+      "kid": ${EncryptionKeyId}
+    }
 
 ...and with the following claim body:
 
-```http
-{
-"iss": ${APPLICATION_ID}
-"sub": ${UNIQUE_USER_ID}
-"iat": ${CURRENT_TIME_IN_ISO8601_FORMAT}
-"exp": ${SESSION_EXPIRATION_TIME_IN_ISO8601_FORMAT}
-"nce": ${AUTHENTICATION_NONCE}
-}
-```
+
+    {
+      "iss": ${DIUIT_APP_ID}
+      "sub": ${UNIQUE_USER_ID}
+      "iat": ${CURRENT_TIME_IN_ISO8601_FORMAT}
+      "exp": ${SESSION_EXPIRATION_TIME_IN_ISO8601_FORMAT}
+      "nce": ${AUTHENTICATION_NONCE}
+    }
 
 ... then encrypt the whole thing with your **Encryption Key** obtained when
 registering for your account.
@@ -268,7 +264,7 @@ For the "kid" field, put the **Encryption Key Id**, not **Encryption Key** itsel
 The JWT header itself is not encrypted, so never put any private data in the
 JWT header
 
-### 4. Obtaining Session Token with Authentication Token
+### 4. Login to Messaging Server
 
 With the JWT token generated, you then POST to the /1/auth/login API with the
 **auth-token** parameter set to the JWT token to obtain a session token for
@@ -287,28 +283,53 @@ additional fields: **platform** to indicate what is the push platform to be
 used (valid values are one of "gcm", "ios_sandbox", "ios_production"), and a
 **pushToken** field to indicate the pushToken specific to the push platform.
 
-```http
+```objective_c
+```
+
+```swift
+```
+
+```Android
+```
+
+```shell
 curl -X POST \
--H "X-Diuit-Application-Id: ${APPLICATION_ID}" \
--H "X-Diuit-API-Key: ${REST_API_KEY}" \
--H "Content-Type: application/json" \
--d '{"authToken":"JWT_TOKEN", "deviceId": "DEVICE_ID", "platform": "PUSH_PLATFORM", "pushToken": "PUSH_TOKEN"}' \
-https://api.diuit.net/1/auth/login
+  -H "x-diuit-application-id: ${DIUIT_APP_ID}" \
+  -H "x-diuit-api-key: ${DIUIT_APP_KEY}" \
+  -H "Content-Type: application/json" \
+  -d '{"authToken":${JWT_TOKEN}, "deviceId": ${DEVICE_ID}, "platform": ${PUSH_PLATFORM}, "pushToken": ${PUSH_TOKEN}' \
+  https://api.diuit.net/1/auth/login
 ```
 
 If successful, the response will be a JSON object contains the `sessionToken`
-key that should be set in future API calls as `X-Diuit-Session-Token` header to
+key that should be set in future API calls as `x-diuit-session-token` header to
 authenticate the user.
 
-### Authenticate With Socket.IO
+    {
+      "sessionToken": "123asdf123asdf12321adf",
+    }
 
-After authenticating the user, and obtaining the session-token, you can start
-the real-time messaging session by opening a Socket.IO connection to our
-`http://www.diuit.net` server.
+# Real-time Communication
 
-After the socket.io session is connected, you have 15 seconds to emit a
-`authenticate` message with payload `{authToken: ${SESSION_TOKEN}}` to authenticate
-the user.
+Diuit is a powerful tool that lets you add in-app messaging with very little
+overhead. Diuit can work with any existing User Management system, and includes f
+eatures such as querying, Message delivery and read receipts, Conversation
+metadata, and typing indicators.
+
+## Authentication for Socket.IO
+
+For iOS and Android, this is done for you in the SDK, for direct Socket.IO
+interface, you start the real-time messaging session by opening a Socket.IO
+connection to our `http://www.diuit.net` server.
+
+After the socket.io session is connected, you emit a `authenticate` message
+with payload
+
+    {
+      "authToken": ${SESSION_TOKEN}
+    }
+
+to authenticate the user.
 
 The server should respond with a JSON payload containing your device info to
 signify login success. After which you can use the other Socket.IO APIs.
@@ -319,19 +340,9 @@ will be terminated by our server automatically.
 Upon re-connection, you should repeat the authentication message to ensure you
 are properly authenticated and call other APIs.
 
-# Integration
-
-Diuit is a powerful tool that lets you add in-app messaging with very little
-overhead. Diuit can work with any existing User Management system, and includes f
-eatures such as querying, Message delivery and read receipts, Conversation
-metadata, and typing indicators.
-
 ## Listing Chat Rooms
 
-To list all chat-rooms you are currently joined in, emit a "chats/list" message,
-with empty payload.
-
-The server should respond with with a list of all chats you are currently joined in.
+Use this commands to list chatrooms that the current user is currently joined.
 
 ```java  
 // In Android, if you have already authenticated your devices, you can get all your chatroom easily.
@@ -371,7 +382,16 @@ if code == 200 {
 }
 ```
 
-```http  
+```shell  
+# Request:
+# emit a message "chats/list" to the server
+
+# Response is a JSON
+{
+  "chats": [
+    <array of chat info>
+  ]
+}
 
 ```
 
