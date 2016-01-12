@@ -510,10 +510,6 @@ if code == 200 {
 }
 ```
 
-```http
-
-```
-
 ## Join a Chat Room
 
 Join a chatroom to receive messages in it.
@@ -522,10 +518,10 @@ Join a chatroom to receive messages in it.
 
 To join a chat-room, you emit a "chats/join" message, with the following payload:
 
-<pre>
-    {
-      chatId: ${CHATROOM_ID}
-    }
+<aside class='notice'><br/>
+{<br/>
+&nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
+}
 </pre>
 
 ### Android
@@ -577,11 +573,11 @@ Leave a chat room to stop receiving messages in it.
 
 To leave a chat-room, you emit a "chats/leave" message, with the following payload:
 
-<pre>
-    {
-      chatId: ${CHATROOM_ID}
-    }
-</pre>
+<aside class='note'><br/>
+{<br/>
+&nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
+}
+</aside>
 
 ### Android
 
@@ -641,12 +637,12 @@ implement chat-room notes by including the notes info in this key.
 To update the chat-room's information, emit a "chats/meta/update" message, with
 the following payload:
 
-<pre>
-    {
-      chatId: ${CHATROOM_ID}
-      meta: { ${CHATROOM_META} }
-    }
-</pre>
+<aside class='note'><br/>
+{<br/>
+&nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
+&nbsp;&nbsp;meta: { ${CHATROOM_META} }<br/>
+}
+</aside>
 
 Note that you have to modify the whole meta as whole; you cannot just update
 individual keys.
@@ -716,12 +712,12 @@ from the chat-room if he's already joined to the chat room.
 To update the chat-room's **whiteList**, emit a "chats/whiteList/update"
 message, with the following payload:
 
-<pre>
-    {
-      chatId: ${CHATROOM_ID}
-      whiteList: [ ${USER_ID_1} ]
-    }
-</pre>
+<aside class='note'><br/>
+{<br/>
+&nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
+&nbsp;&nbsp;whiteList: [ ${USER_ID_1} ]<br/>
+}
+</aside>
 
 ### Android
 
@@ -785,12 +781,12 @@ first, before kicking him out.
 To kick a user from the chat room, emit a "chat/kick" message, with the
 following payload
 
-<pre>
-    {
-      chatId: ${CHATROOM_ID}
-      userId: ${TARGET_USER_TO_KICK}
-    }
-</pre>
+<aside class='note'><br/>
+{<br/>
+&nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
+&nbsp;&nbsp;userId: ${TARGET_USER_TO_KICK}<br/>
+}
+</aside>
 
 ### Android
 
@@ -843,15 +839,15 @@ a "message" event.
 
 The message will have the following format:
 
-<pre>
-    {
-      chatId: ${CHATROOM_ID},
-      data: ${SOME_DATA}
-      mime: ${DATA_MIME_TYPE}
-      encoding: ${DATA_ENCOIDNG}
-      meta: {$USER_SPECIFIC_META_FIELD}
-    }
-</pre>
+<aside class='note'><br/>
+{<br/>
+&nbsp;&nbsp;chatId: ${CHATROOM_ID},<br/>
+&nbsp;&nbsp;data: ${SOME_DATA},<br/>
+&nbsp;&nbsp;mime: ${DATA_MIME_TYPE},<br/>
+&nbsp;&nbsp;encoding: ${DATA_ENCOIDNG},<br/>
+&nbsp;&nbsp;meta: {$USER_SPECIFIC_META_FIELD}<br/>
+}
+</aside>
 
 For text message, the mime type will be **text/plain** and the encoding will be
 **utf8**, and the **data** will be the text message itself.
@@ -910,15 +906,15 @@ Use this command to send a text message to the chat-room.
 To send a message to a chat room, emit a "message/create" message, with the
 following payload
 
-<pre>
-    {
-      chatId: ${CHATROOM_ID},
-      data: ${SOME_TEXT_TO_SEND}
-      mime: 'text/plain'
-      encoding: 'utf8'
-      meta: {$USER_SPECIFIC_META_FIELD}
-    }
-</pre>
+<aside class='note'>
+{<br/>
+&nbsp;&nbsp;chatId: ${CHATROOM_ID},<br/>
+&nbsp;&nbsp;data: ${SOME_TEXT_TO_SEND},<br/>
+&nbsp;&nbsp;mime: 'text/plain',<br/>
+&nbsp;&nbsp;encoding: 'utf8',<br/>
+&nbsp;&nbsp;meta: {$USER_SPECIFIC_META_FIELD}<br/>
+}
+</aside>
 
 > There three main type of message , text, photo, and file.
 > According different type, you have to call different API.
@@ -972,15 +968,15 @@ if code != 200 {
 To send a rich media message to a chat room, emit a "messages/create" message,
 with the following payload
 
-<pre>
-    {
-      chatId: ${CHATROOM_ID},
-      data: ${BASE64_ENCODED_DATA}
-      mime: ${MIME_TYPE_OF_DATA}
-      encoding: 'base64'
-      meta: {$USER_SPECIFIC_META_FIELD}
-    }
-</pre>
+<aside class='note'>
+{<br/>
+&nbsp;&nbsp;chatId: ${CHATROOM_ID},<br/>
+&nbsp;&nbsp;data: ${BASE64_ENCODED_DATA},<br/>
+&nbsp;&nbsp;mime: ${MIME_TYPE_OF_DATA},<br/>
+&nbsp;&nbsp;encoding: 'base64',<br/>
+&nbsp;&nbsp;meta: {$USER_SPECIFIC_META_FIELD}<br/>
+}
+</aside>
 
 ### Android
 
@@ -1062,14 +1058,14 @@ Use this command to list historic messages in the chat-room.
 To list messages in a chat room, emit a "messages/list" message, with the
 following payload
 
-<pre>
-    {
-      chatId: ${CHATROOM_ID},
-      page: ${PAGE_NUMBER_TO_GET},
-      count: ${MESSAGES_PER_PAGE},
-      before: ${TIMESTAMP_IN_SEC},
-    }
-</pre>
+<aside class='note'>
+{<br/>
+&nbsp;&nbsp;chatId: ${CHATROOM_ID},<br/>
+&nbsp;&nbsp;page: ${PAGE_NUMBER_TO_GET},<br/>
+&nbsp;&nbsp;count: ${MESSAGES_PER_PAGE},<br/>
+&nbsp;&nbsp;before: ${TIMESTAMP_IN_SEC}<br/>
+}
+</aside>
 
 Response will contain **count** number of message before the timestamp specified
 in **before** field, skipping over **page** * **count** number of messages.
@@ -1143,11 +1139,11 @@ implement a chat system without read indications.
 To mark a message as being read, emit "messages/markAsRead" message, with the
 following payload.
 
-<pre>
-    {
-      messageId: ${MESSAGE_ID}
-    }
-</pre>
+<aside class='note'>
+{<br/>
+&nbsp;&nbsp;messageId: ${MESSAGE_ID}<br/>
+}
+</aside>
 
 ### Android
 
