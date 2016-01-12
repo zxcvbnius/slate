@@ -415,13 +415,13 @@ in the chat-room.
 
 Emit the following message to the server
 
-<aside class='notice'>
-  "chats/create"
+<aside class='notice'><br/>
+"chats/create"
 </aside>
 
 with the following parameters
 
-<aside class='notice'>
+<aside class='notice'><br/>
 {<br/>
 &nbsp;&nbsp;members: [ ${USER_ID_1}, ${USER_ID_2} ..]<br/>
 &nbsp;&nbsp;whiteList: [ ${USER_ID_1} ... ]<br/>
