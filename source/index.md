@@ -148,32 +148,32 @@ Thus, authenticating a user on our messaging server is a 4 steps process.
 This nonce is used to prevent replay attack on our messaging server, should the
 nonce is leaked to a malicious user.
 
-Note that this step can be performed either by the your messaging clients or by
+  Note that this step can be performed either by the your messaging clients or by
 your account server depending on your system architecture.
 
 2. With the nonce at hand, you authenticate your client on your account server
 using whatever method you like.
 
-If authentication is successful, your account server should create a JWT token
+  If authentication is successful, your account server should create a JWT token
 granting the authenticated user access to our messaging server.
 
 3. You should then call our /1/auth/login API using the JWT token as the parameter
 to obtain a **session token**.
 
-Note that this step can also be done either on your messaging clients side or
+  Note that this step can also be done either on your messaging clients side or
 on your account server, depending on your system architecture.
 
 4. With the session token on hand, the messaging client should use it as the
 value for the **X-Diuit-Session-Token** header** for all future API calls that
 requires a specific user session.
 
-Please note that the **Encryption Key** should be kept private on your account
+  Please note that the **Encryption Key** should be kept private on your account
 server, and should not be stored on your client devices, unless you have security
 measures ensuring that the key can be kept secret. (For Android / iOS clients,
 this is impossible, there are many ways of rooting devices, and storing your
 encryption key on iOS/Android clients will make your system vulnerable to attack.)
 
-If you suspect that your encryption key has been compromised, please generate a
+  If you suspect that your encryption key has been compromised, please generate a
 new one on [http://www.diuit.net](http://www.diuit.net) and revoke the old key.
 
 ### 1. Obtaining Authentication Nonce
