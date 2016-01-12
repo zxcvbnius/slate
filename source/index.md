@@ -415,19 +415,23 @@ in the chat-room.
 
 Emit the following message to the server
 
-<pre>
-    "chats/creat"
-</pre>
+<aside class='notice'>
+  <pre>
+    "chats/create"
+  </pre>
+<aside>
 
 with the following parameters
 
-<pre>
+<aside class='notice'>
+  <pre>
     {
       members: [ ${USER_ID_1}, ${USER_ID_2} ..]
       whiteList: [ ${USER_ID_1} ... ]
       meta: { ${ANY_CHAT_ROOM_SPECIFIC_META_DATA} }
     }
-</pre>
+  </pre>
+</aside>
 
 For **members** field, put the ids of all the people you wish to include the
 chatroom as an array. (Note that the ID should be the **sub** field when you
