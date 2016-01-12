@@ -355,6 +355,16 @@ are properly authenticated and call other APIs.
 
 Use this commands to list chatrooms that the current user is currently joined.
 
+### Socket.IO
+
+Emit the "chats/list" message to server, with no params, and server will respond with
+
+<aside class='notice'><br/>
+{<br/>
+&nbsp;&nbsp;"chats": [...array of chats...]<br/>
+}
+</aside>
+
 ```java  
 // In Android, if you have already authenticated your devices, you can get all your chatroom easily.
 
@@ -393,19 +403,6 @@ if code == 200 {
 }
 ```
 
-```shell  
-# Request, emit the following message to server
-"chats/list"
-
-# Response is a JSON
-{
-  "chats": [
-    <array of chat info>
-  ]
-}
-
-```
-
 ## Create a Chat Room
 
 Use this command to create a chat-room and optionally include a list of person
@@ -413,13 +410,7 @@ in the chat-room.
 
 ### Restful
 
-Emit the following message to the server
-
-<aside class='notice'><br/>
-"chats/create"
-</aside>
-
-with the following parameters
+Emit the 'chats/chreate' message to the server with the following parameters:
 
 <aside class='notice'><br/>
 {<br/>
@@ -522,7 +513,7 @@ To join a chat-room, you emit a "chats/join" message, with the following payload
 {<br/>
 &nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
 }
-</pre>
+</aside>
 
 ### Android
 
