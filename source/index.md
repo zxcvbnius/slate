@@ -208,7 +208,7 @@ curl -X GET \
 
 The response body is a JSON object containing the `nonce` key.
 
-<aside class="note">
+<aside class="notice">
     {
       "nonce": "123asdf123asdf12321adf",
     }
@@ -223,7 +223,7 @@ authentication check you've implement to authenticate the user logging in.
 
 If the user's identity is verified, your server should generate a JWT token with the following header:
 
-<aside class="note">
+<aside class="notice">
     {
       "typ": "JWT",
       "alg": "RS256"
@@ -234,7 +234,7 @@ If the user's identity is verified, your server should generate a JWT token with
 
 ...and with the following claim body:
 
-<aside class="note">
+<aside class="notice">
     {
       "iss": ${DIUIT_APP_ID}
       "sub": ${UNIQUE_USER_ID}
@@ -310,7 +310,7 @@ If successful, the response will be a JSON object contains the `session`
 key that should be set in future API calls as `x-diuit-session-token` header to
 authenticate the user.
 
-<aside class="note">
+<aside class="notice">
     {
       "session": "123asdf123asdf12321adf",
       "userId": ${USER_ID}
@@ -334,7 +334,7 @@ connection to our `http://www.diuit.net` server.
 After the socket.io session is connected, you emit a `authenticate` message
 with payload
 
-<aside class="note">
+<aside class="notice">
     {
       "authToken": ${SESSION_TOKEN}
     }
@@ -408,7 +408,7 @@ if code == 200 {
 Use this command to create a chat-room and optionally include a list of person
 in the chat-room.
 
-### Restful
+### Socket.IO
 
 Emit the 'chats/chreate' message to the server with the following parameters:
 
@@ -564,7 +564,7 @@ Leave a chat room to stop receiving messages in it.
 
 To leave a chat-room, you emit a "chats/leave" message, with the following payload:
 
-<aside class='note'><br/>
+<aside class='notice'><br/>
 {<br/>
 &nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
 }
@@ -628,7 +628,7 @@ implement chat-room notes by including the notes info in this key.
 To update the chat-room's information, emit a "chats/meta/update" message, with
 the following payload:
 
-<aside class='note'><br/>
+<aside class='notice'><br/>
 {<br/>
 &nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
 &nbsp;&nbsp;meta: { ${CHATROOM_META} }<br/>
