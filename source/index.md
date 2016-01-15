@@ -309,7 +309,7 @@ are properly authenticated and call other APIs.
 > Example  
 
 ```java
-    // In Android, if you have already authenticated your devices, you can get all your chatroom easily.
+    // In Android, if you have already authenticated the user’s device, you can easily list all the chat room.
 
     DiuitMessagingAPI.listChats(new DiuitAPICallback<ArrayList<DiuitChat>>()
     {
@@ -369,7 +369,7 @@ Users can start a conversation by creating a chat room. Use the following comman
 
 ```java
 
-    // @params serialOfUsers : put all users you want to join init this string array
+    // @params serialOfUsers : put all the users you want to join into this string array
     // @params meta : you can put attribute of the chat, ex, {'name' : 'this is my new chatroom'}
 
     DiuitMessagingAPI.createChat(ArrayList<String> serials, JSONObject meta, new DiuitAPICallback<DiuitChat>()
@@ -453,7 +453,7 @@ Once getting invited, your users can join an one-on-one or group conversation. D
 
 ```java
 
-    //@param chatId , the id of the chat you want to join
+    //@param chatId, the id of the chat room you want the user to join
 
     DiuitMessagingAPI.joinChat(int chatId, new DiuitAPICallback<DiuitChat>()
     {
@@ -505,7 +505,7 @@ Users can also leave a conversation and they will stop receiving messages.
 
 ```java
 
-    // Instead of calling by DiuitMessageAPI, leaving chat you can use the method
+    // Instead of calling DiuitMessageAPI, you can user the method to let your use leave a chat room
     diuitChat.leaveChat( new DiuitAPICallback<DiuitChat>()
     {
         @Override
@@ -558,7 +558,7 @@ To leave a chat-room, you emit a “chats/leave” message, with the following p
 
 ```java
 
-    // create new meta for updating the attribute of the chat
+    // create new meta for updating the attribute of the chat room
     JSONObject newMeta = new JSONObject();
     newMeta.put("name", newName);
 
@@ -624,7 +624,7 @@ Note that you have to modify the whole meta as whole; you cannot only update ind
 
 ```java
 
-    // @param serialsOfUsers : all users who you want to set into this chat whitelist
+    // @param serialsOfUsers : all users  you want to set into the white list of this chat room
     // @param diuitChat : the chat which you want to update
     diuitChat.updateWhiteList(ArrayList<String> memberSerials, new DiuitAPICallback<DiuitChat>()
     {
@@ -749,7 +749,7 @@ following payload
 ```java
     // If you want to receive messages , you have to register receiving listener with your object
     // This object could be Activity, Fragment , or any kind of object
-    // Once someone send you a message , you would get these in the callback
+    // Once someone sends a message, you would get these in the callback
 
     DiuitAPI.registerReceivingMessage(DiuitAPICallback<DiuitMessage> callback)
 
@@ -879,7 +879,7 @@ following payload
 RIch media message refers to photo and file. Use this command to send rich media message in a chat room
 
 
-> You can use those API to send your photos and files to your chat
+> You can use those APIs to send photos and files
 
 ```java
 
@@ -927,7 +927,7 @@ To send a rich media message to a chat room, emit a “messages/create” messag
 
 
 
-> If you want to send your file , just call this API:
+> If you want to send a file, just call this API:
 
 ```java
 
@@ -962,7 +962,7 @@ DiuitAPI.current?.sendToChat(chat!, file: FILE_PATH!, meta: ["name":"sampleFile.
 }
 ```
 
-> Remember , each message has file size limit <= 5MB
+> Remember that each message has file size limitation <= 5MB
 
 ## List Historical Messages
 
@@ -1042,7 +1042,7 @@ In modern ways of communication, user would like to know if her message is read 
 
 ```java
 
-    // @param message, the message which you want to mark as readed
+    // @param message, the message that you want to mark as read
     diuitMessage.markAsRead(new DiuitMessagingAPICallback<DiuitMessage>()
     {
         @Override
