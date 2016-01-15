@@ -370,7 +370,7 @@ Users can start a conversation by creating a chat room. Use the following comman
 ```java
 
     // @params serialOfUsers : put all the users you want to join into this string array
-    // @params meta : you can put attribute of the chat, ex, {'name' : 'this is my new chatroom'}
+    // @params meta : you can put attribute of the chat, ex, {'name' : 'this is my new chat room'}
 
     DiuitMessagingAPI.createChat(ArrayList<String> serials, JSONObject meta, new DiuitAPICallback<DiuitChat>()
     {
@@ -392,7 +392,7 @@ Users can start a conversation by creating a chat room. Use the following comman
 
 ```objective_c
 // @[USER_SERIALS] : put all users' serial you want to join in this NSArray of NSString
-// @{YOUR_META} (Optional) : any meta data you want to append on this chatroom, as long as it's an NSDictionary
+// @{YOUR_META} (Optional) : any meta data you want to append on this chat room, as long as it's an NSDictionary
 
 [DiuitAPI.current createChat:@[USER_SERIALS] meta:@{YOUR_META} done:^(NSInteger statusCode, id result) {
 if (statusCode == 200) {
@@ -403,7 +403,7 @@ if (statusCode == 200) {
 
 ```swift
 // [USER_SERIALS] : put all users' serial you want to join in this NSArray of NSString
-// [YOUR_META] (Optional) : any meta data you want to append on this chatroom, as long as it's an NSDictionary
+// [YOUR_META] (Optional) : any meta data you want to append on this chat room, as long as it's an NSDictionary
 
 DiuitAPI.current?.createChat([USER_SERIALS], meta: [YOUR_META]) { code, result in
 if code == 200 {
@@ -499,7 +499,7 @@ To join a chat-room, you emit a “chats/join” message, with the following pay
 </aside>
 
 
-## Leave a Chat Room
+## Leave Chat Room
 
 Users can also leave a conversation and they will stop receiving messages.
 
@@ -1036,7 +1036,7 @@ Messages return in reverse chronological order, with the newest message returned
 
 Therefore, in general, you call the API with the current timestamp to obtain all the latest messages, and required, call the API with an older timestamp to obtain older messages.
 
-## Mark a Message as being Read
+## Mark Message as being Read
 
 In modern ways of communication, user would like to know if her message is read by other users. Use this command to mark a message as read. Note that it is not necessary to use this command. In some cases it may be not appropriate to have this feature. It’s perfectly fine if you want to implement a chat system without read indications.
 
@@ -1095,11 +1095,11 @@ Our messaging system will automatically send **system messages** to chat rooms i
 
 There are currently 5 kinds of system messages.
 
-### User Left Chatroom
+### User Left Chat Room
 
 When a user left a chat room, all members of the chat room will receive a message with type **user.left** and a single key **userId** signifying which user has left the chat room.
 
-### User Joined Chatroom
+### User Joined Chat Room
 
 When a user joined a chat room, all members of the chat room will receive a message with type **user.joined** and a single key **userId** signifying which user has joined the chat room.
 
