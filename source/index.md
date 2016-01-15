@@ -19,8 +19,6 @@ search: true
 
 # Getting Started
 
-updated : 2016/01/12 15:00
-
 ## Prerequisites
 
 ### iOS
@@ -73,9 +71,9 @@ You can either use Maven or manually add a Jar to your project.
 
 1.  Navigate to your build.gradle file at the app level (not project level) and ensure that you include the following:
 
-    ` maven { url "https://dl.bintray.com/zxcvbnius/maven"}`
+    ` maven { url "https://dl.bintray.com/duolc/maven"}`
 
-2. Add compile **'com.duolc.diuitapi:message:0.1.1'** to the dependencies of your project
+2. Add compile **'com.duolc.diuitapi:message:0.2.1'** to the dependencies of your project
 3. In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files
 
 **Jar**
