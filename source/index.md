@@ -1194,4 +1194,3 @@ user has been kicked from the chatroom.
 When a member of the chatroom updates the chatroom meta field, all members of
 the chatroom will receive a message with type **meta.updated**, and a single
 key **meta** providing the latest state of the chatroom meta field.
-
