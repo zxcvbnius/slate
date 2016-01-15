@@ -2,6 +2,27 @@ body {
   font-size: 14px !important;
 }
 
+.content h2 {
+    font-size: 24px !important;
+}
+
+.content h3 {
+    font-size: 18px !important;
+    margin-top: 1em !important;
+}
+
+p strong {
+  font-size: 16px !important;
+}
+
+li p strong {
+  font-size: 14px !important;
+}
+
+.content > ul, .content > ol {
+    padding: 0 4.5em !important;
+}
+
 .page-wrapper {
   background-color: white !important;
 }
@@ -13,7 +34,9 @@ body {
 
 .tocify-wrapper .tocify-subheader .tocify-item > a {
   padding-left: 25px;
-  font-size: 14px !important;
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+  font-size: 12px !important;
 }
 
 .page-wrapper .lang-selector {
