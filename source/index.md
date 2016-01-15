@@ -19,7 +19,7 @@ search: true
 
 # Getting Started
 
-Diuit provides a simple and powerful API to enable real-time communication in web and mobile apps, or any other Internet connected device. 
+Diuit provides a simple and powerful API to enable real-time communication in web and mobile apps, or any other Internet connected device.
 This document provides a guide on how to get you start integrating and interacting with Diuit API.  
 
 ## Prerequisites
@@ -665,7 +665,7 @@ DiuitAPI.current?.updateWhiteList(chat, users: [USER_SERIALS]){ code, result in
 }
 ```
 
-In a modern communication platform, the administrator of a chat room has the authority to manage and decide who can be in a chat room. This feature is presented as White List. You can use the following command to update the White List of a chat room. 
+In a modern communication platform, the administrator of a chat room has the authority to manage and decide who can be in a chat room. This feature is presented as White List. You can use the following command to update the White List of a chat room.
 
 This UpdateWhiteList function who is allowed to join the chat room. Setting this value to `null` allows everyone to join the chat room; setting this value to an array of user IDs will allow a specific group of users to join the chat room.
 
@@ -1113,11 +1113,4 @@ When a user is kicked from a chat room, all members in the chat room will receiv
 
 ### Chat Room Meta Update
 
-<<<<<<< HEAD
-When a member of the chatroom updates the chatroom meta field, all members of
-the chatroom will receive a message with type **meta.updated**, and a single
-key **meta** providing the latest state of the chatroom meta field.
-=======
 When a member in the chat room updates the chat room’s meta field, all members of the chat room will receive a message with type **meta.updated**, and a single key **meta** providing the latest state of the chat room’s meta field.
-
->>>>>>> fa8664fb82a39f82c684a0f723d356771984965e
