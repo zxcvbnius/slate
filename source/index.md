@@ -485,7 +485,7 @@ Once getting invited, your users can join an one-on-one or group conversation. D
 ```
 
 ```swift
-DUMessaging.joinChatroomWithId:(chatId){ code, result in
+DUMessaging.joinChatroomWithId(chatId){ code, result in
   if code == 200 {
     // if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
   }
