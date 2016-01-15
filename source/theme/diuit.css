@@ -1,7 +1,31 @@
+body {
+  font-size: 14px !important;
+}
+
 .page-wrapper {
   margin-left: $nav-width;
   position: relative;
   z-index: 10;
   background-color: white !important;
   min-height: 100%;
+}
+
+.content code.prettyprint {
+  background-color: #FAFAFA !important;
+  color: rgb(185, 61, 106) !important;
+}
+
+.tocify-wrapper .tocify-subheader .tocify-item > a {
+  padding-left: 25px;
+  font-size: 14px !important;
+}
+
+.page-wrapper .lang-selector {
+    padding: 0.5em 1em;
+    font-size: 12px;
+}
+
+.lang-selector a.active {
+    background-color: #157CFF !important;
+    border-radius: 10px;
 }
