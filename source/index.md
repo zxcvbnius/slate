@@ -392,9 +392,9 @@ Users can start a conversation by creating a chat room. Use the following comman
 
 
 ```objective_c
-// @[USER_SERIALS]         : put all users' serial you want to join in this NSArray of NSString
-// @{YOUR_META} (Nullable) : any meta data you want to append on this chatroom, as long as it's an NSDictionary
-// @[WHITE_USER_SERIALS]   : users' serials allowed to be joined
+// @[USER_SERIALS]             : put all users' serial you want to join in this NSString array
+// @{YOUR_META} (NSDictionary) : can be nil if unnecessary
+// @[WHITE_USER_SERIALS]       : can be nil if unnecessary; users' serials allowed to be joined
 
 [DUMessaging createChatroomWith:@[USER_SERIALS] meta:@{YOUR_META} whiteList:@[WHITE_USER_SERIALS] completion:^(NSInteger statusCode, id result) {
   if (statusCode == 200) {
@@ -404,9 +404,9 @@ Users can start a conversation by creating a chat room. Use the following comman
 ```
 
 ```swift
-// [USER_SERIALS]                  : put all users' serial you want to join in this NSArray of NSString
-// [YOUR_META] (Optional)          : any meta data you want to append on this chatroom, as long as it's an NSDictionary
-// [WHITE_USER_SERIALS] (Optional) : users' serials allowed to be joined
+// [USER_SERIALS]                              : put all users' serial you want to join in this NSArray of NSString
+// [YOUR_META] ([String, AnyObject], optional) : any meta data you want to append on this chatroom, as long as it's an NSDictionary
+// [WHITE_USER_SERIALS] ([String], optional)   : users' serials allowed to be joined
 
 DUMessaging.createChatroomWith([USER_SERIALS], meta: [YOUR_META], whiteList:[WHITE_USER_SERIALS]) { code, result in
   if code == 200 {
