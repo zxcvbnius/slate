@@ -234,15 +234,15 @@ If the user’s identity is verified, your server will generate a JWT token with
 
 ...  then encrypt the whole thing with your **Encryption Key** obtained when registering for your account.
 
-Note that you can put anything in the “sub” field, as long as you can co-relate this to the user on your system. Our messaging server will use this field to identify this user.
+Note that you can put anything in the "sub" field, as long as you can co-relate this to the user on your system. Our messaging server will use this field to identify this user.
 
-In the “exp” field, you can specify when this grant will be expired. This field controls for how long the session token generated in the next step will be valid.
+In the "exp" field, you can specify when this grant will be expired. This field controls for how long the session token generated in the next step will be valid.
 
 Setting this to a relative short value makes the system more secure; leaking a session token will have limited damage. But the drawback is that you will have to re-authenticate your users every so often.
 
 Setting this to a long value can also be useful for Internet of Things (IoT) applications, because you are very confident that the device will not be hacked. You can pre-generate your session token, and set a extremely long expiration date to effectively make the device always authenticated. But in this case, you will have to ensure that the session token is never leaked. (The session token will essentially behaves like a randomly generated password in this case).
 
-In the “kid” field, note to put Encryption Key ID, not **Encryption Key** itself. The JWT header itself is not encrypted, so never put any private data in the JWT header.
+In the "kid" field, note to put Encryption Key ID, not **Encryption Key** itself. The JWT header itself is not encrypted, so never put any private data in the JWT header.
 The JWT header itself is not encrypted, so never put any private data in the
 JWT header.
 
@@ -254,7 +254,7 @@ This step can be done either on the server side or client side. It depends on yo
 
 If you are using a web platform, please generate a unique UUID to link with the current web session. (And possibly store the UUID in local storage / cookie).
 
-If your wish to enable push notification on mobile devices, please pass two additional fields: **platform** to indicate what is the push platform to be used (valid values are one of “gcm”, “ios_sandbox”, “ios_production”), and **pushToken** field to indicate the pushToken specific to the push platform.
+If your wish to enable push notification on mobile devices, please pass two additional fields: **platform** to indicate what is the push platform to be used (valid values are one of "gcm", "ios_sandbox", "ios_production"), and **pushToken** field to indicate the pushToken specific to the push platform.
 
 
 
@@ -346,24 +346,21 @@ DiuitAPI.current?.listChats(){ code, result in
 }
 ```
 
-Diuit provides convenient and flexible features for users to communicate with each other. It can be real-time one-on-one or group messaging, on-line forum, or review system that we see in modern Internet services. The concept “Chat Room” means the ongoing conversation that a user is currently involving. Diuit API allows you to list and create chat room for users and let your users join or leave a chat room.
+```shell
+    // Emit the "chats/list" message to server, 
+    // with no params, and server will respond with
+    {   
+        "chats": [...array of chats...]
+    }
 
+```
 
-### Socket.IO
+Diuit provides convenient and flexible features for users to communicate with each other. It can be real-time one-on-one or group messaging, on-line forum, or review system that we see in modern Internet services. The concept "Chat Room" means the ongoing conversation that a user is currently involving. Diuit API allows you to list and create chat room for users and let your users join or leave a chat room.
 
-Emit the “chats/list” message to server, with no params, and server will respond with
-
-<aside class="note"><br/>
-{<br/>
-&nbsp;&nbsp;"chats": [...array of chats...]<br/>
-}
-</aside>
 
 ## Create Chat Room
 
 Users can start a conversation by creating a chat room. Use the following command to create a chat room and generate a list of people who are in the chat room.
-
-### Socket.IO
 
 >Example  
 
@@ -412,16 +409,16 @@ if code == 200 {
 }
 ```
 
+```shell
+    // Emit the "chats/chreate" message to the server 
+    // with the following parameters:
+    {
+        members: [ ${USER_ID_1}, ${USER_ID_2} ..],
+        whiteList: [ ${USER_ID_1} ... ]
+        meta: { ${ANY_CHAT_ROOM_SPECIFIC_META_DATA} }
+    }
 
-Emit the 'chats/chreate’ message to the server with the following parameters:
-
-<aside class="note"><br/>
-{<br/>
-&nbsp;&nbsp;members: [ ${USER_ID_1}, ${USER_ID_2} ..]<br/>
-&nbsp;&nbsp;whiteList: [ ${USER_ID_1} ... ]<br/>
-&nbsp;&nbsp;meta: { ${ANY_CHAT_ROOM_SPECIFIC_META_DATA} }<br/>
-}
-</aside>
+```
 
 In the **members** field, put the ids of all the people you’d like to include in the chat room as an array. (Note that the ID should be the **sub** field when you are creating your JWT token)
 
@@ -449,7 +446,6 @@ string.
 
 Once getting invited, your users can join an one-on-one or group conversation. Diuit provides a simple way to do it.
 
-### Socket.IO
 
 ```java
 
@@ -489,15 +485,13 @@ if code == 200 {
 }
 ```
 
-
-To join a chat-room, you emit a “chats/join” message, with the following payload.
-
-<aside class="note"><br/>
-{<br/>
-&nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
-}
-</aside>
-
+```shell
+    // To join a chat-room, you emit a "chats/join" message, 
+    // with the following payload.
+    {
+        chatId: ${CHATROOM_ID}
+    }
+```
 
 ## Leave Chat Room
 
@@ -543,15 +537,13 @@ if code != 200 {
 
 Leave a chat room to stop receiving messages in it.
 
-### Socket.IO
-
-To leave a chat-room, you emit a “chats/leave” message, with the following payload.
-
-<aside class="note"><br/>
-{<br/>
-&nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
-}
-</aside>
+```shell
+    // To leave a chat-room, you emit a "chats/leave" message, 
+    // with the following payload.
+    {
+        chatId: ${CHATROOM_ID}
+    }
+```
 
 
 ## Updating Chat Room Meta Info
@@ -607,16 +599,15 @@ A chat room’s meta info can be used to hold anything application specific to t
 
 
 
-### Socket.IO
-
-To update the chat-room’s information, emit a “chats/meta/update” message, with the following payload.
-
-<aside class="note"><br/>
-{<br/>
-&nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
-&nbsp;&nbsp;meta: { ${CHATROOM_META} }<br/>
-}
-</aside>
+```shell
+    // To update the chat-room’s information, 
+    // emit a "chats/meta/update" message, 
+    // with the following payload.
+    {
+        chatId: ${CHATROOM_ID}
+        meta: { ${CHATROOM_META} }
+    }
+```
 
 Note that you have to modify the whole meta as whole; you cannot only update individual keys.
 
@@ -672,17 +663,15 @@ This UpdateWhiteList function who is allowed to join the chat room. Setting this
 Note that if an user has already joined the chat room, excluding her from the WhiteList doesn’t kick her out from the chat room.
 
 
-### Socket.IO
-
-To update the chat-room's **whiteList**, emit a "chats/whiteList/update"
-message, with the following payload.
-
-<aside class='note'><br/>
-{<br/>
-&nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
-&nbsp;&nbsp;whiteList: [ ${USER_ID_1} ]<br/>
-}
-</aside>
+```shell
+    // To update the **whiteList** of chat room, 
+    // emit a "chats/whiteList/update" message, 
+    // with the following payload.
+    {
+        chatId: ${CHATROOM_ID}
+        whiteList: [ ${USER_ID_1} ]
+    }
+```
 
 ## Kick User from the Chat Room
 
@@ -729,20 +718,18 @@ This command is a function for admins to manage members in a chat room. They can
 
 Note that kicking a user from the chat room doesn’t change the **WhiteList**. So if the user is in the White List of the chat room, she can join back to the room by himself.
 
-To completely block a user from joining the chat room, please emit a “chat/whiteList/update” before kicking him out.
+To completely block a user from joining the chat room, please emit a "chat/whiteList/update" before kicking him out.
 
 
-### Socket.IO
-
-To kick a user from the chat room, emit a "chat/kick" message, with the
-following payload
-
-<aside class='note'><br/>
-{<br/>
-&nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
-&nbsp;&nbsp;userId: ${TARGET_USER_TO_KICK}<br/>
-}
-</aside>
+```shell
+    // To kick a user from the chat room, 
+    // emit a "chat/kick" message, 
+    // with the following payload
+    {
+        chatId: ${CHATROOM_ID}
+        userId: ${TARGET_USER_TO_KICK}
+    }
+```
 
 ## Receiving Message
 
@@ -791,9 +778,22 @@ NSNotificationCenter.defaultCenter().addObserverForName("messageReceived.5566", 
 }
 ```
 
+```shell
+    // Listen to the `message` event
+    
+    {
+        chatId: ${CHATROOM_ID},
+        data: ${SOME_DATA},
+        mime: ${DATA_MIME_TYPE},
+        encoding: ${DATA_ENCOIDNG},
+        meta: {$USER_SPECIFIC_META_FIELD}
+    }
+```
+
+
 This is a function to add listener to this events to receive real-time messaging from the chat room.
 
-When another user sends a message to the chat room, the listener will receive a “message” event. This message will have the following format:
+When another user sends a message to the chat room, the listener will receive a "message" event. This message will have the following format:
 
 <aside class='note'><br/>
 {<br/>
@@ -808,9 +808,8 @@ When another user sends a message to the chat room, the listener will receive a 
 For a text message, the **data** will be the text message itself; MIME type will be **text/plain** and the encoding will be **utf8**.
 
 For rich media messages, the **data** will contain a url pointing to the rich media itself; the **mime** type will be the mime type of the media, and **encoding** will be an **url**.
-### Socket.IO
 
-Listen to the `message` event
+
 
 ## Send Text Message
 
@@ -858,20 +857,19 @@ DiuitAPI.current?.sendToChat(chat!, text: text) { code, message in
 }
 ```
 
-### Socket.IO
+```shell
 
-To send a message to a chat room, emit a "message/create" message, with the
-following payload
-
-<aside class='note'>
-{<br/>
-&nbsp;&nbsp;chatId: ${CHATROOM_ID},<br/>
-&nbsp;&nbsp;data: ${SOME_TEXT_TO_SEND},<br/>
-&nbsp;&nbsp;mime: 'text/plain',<br/>
-&nbsp;&nbsp;encoding: 'utf8',<br/>
-&nbsp;&nbsp;meta: {$USER_SPECIFIC_META_FIELD}<br/>
-}
-</aside>
+    // To send a message to a chat room, 
+    // emit a "message/create" message, 
+    // with the following payload
+    {
+        chatId: ${CHATROOM_ID},
+        data: ${SOME_TEXT_TO_SEND},
+        mime: 'text/plain',
+        encoding: 'utf8',
+        meta: {$USER_SPECIFIC_META_FIELD}
+    }
+```
 
 
 ## Send Rich Media Message
@@ -911,20 +909,19 @@ if code != 200 {
 }
 }
 ```
-### Socket.IO
+```shell
 
-To send a rich media message to a chat room, emit a “messages/create” message, with the following payload.
-
-<aside class='note'>
-{<br/>
-&nbsp;&nbsp;chatId: ${CHATROOM_ID},<br/>
-&nbsp;&nbsp;data: ${BASE64_ENCODED_DATA},<br/>
-&nbsp;&nbsp;mime: ${MIME_TYPE_OF_DATA},<br/>
-&nbsp;&nbsp;encoding: 'base64',<br/>
-&nbsp;&nbsp;meta: {$USER_SPECIFIC_META_FIELD}<br/>
-}
-</aside>
-
+    // To send a rich media message to a chat room, 
+    // emit a "messages/create" message, 
+    // with the following payload.
+    {
+        chatId: ${CHATROOM_ID},
+        data: ${BASE64_ENCODED_DATA},
+        mime: ${MIME_TYPE_OF_DATA},
+        encoding: 'base64',
+        meta: {$USER_SPECIFIC_META_FIELD}
+    }
+```
 
 
 > If you want to send a file, just call this API:
@@ -1017,18 +1014,17 @@ DiuitAPI.current?.listMessagesInChat(chat) { code, result in
 }
 ```
 
-### Socket.IO
+```shell
 
-To list messages in a chat room, emit a “messages/list” message, with the following payload.
-
-<aside class='note'>
-{<br/>
-&nbsp;&nbsp;chatId: ${CHATROOM_ID},<br/>
-&nbsp;&nbsp;page: ${PAGE_NUMBER_TO_GET},<br/>
-&nbsp;&nbsp;count: ${MESSAGES_PER_PAGE},<br/>
-&nbsp;&nbsp;before: ${TIMESTAMP_IN_SEC}<br/>
-}
-</aside>
+    // To list messages in a chat room, 
+    // emit a "messages/list" message, with the following payload.
+    {
+        chatId: ${CHATROOM_ID},
+        page: ${PAGE_NUMBER_TO_GET},
+        count: ${MESSAGES_PER_PAGE},
+        before: ${TIMESTAMP_IN_SEC}
+    }
+```
 
 Response will contain **count** number of message before the timestamp specified in **before** field, skipping over **page * count** number of messages. (In another word, page start at 0)
 
@@ -1079,15 +1075,14 @@ DiuitAPI.current?.markAsReadWithMessage(message) { code, result in
 }
 ```
 
-### Socket.IO
-
-To mark a message as read, emit “messages/markAsRead” message, with the following payload.
-
-<aside class='note'>
-{<br/>
-&nbsp;&nbsp;messageId: ${MESSAGE_ID}<br/>
-}
-</aside>
+```shell
+    // To mark a message as read, 
+    // emit "messages/markAsRead" message, 
+    // with the following payload.
+    {
+        messageId: ${MESSAGE_ID}
+    }
+```
 
 ## System Messages
 
