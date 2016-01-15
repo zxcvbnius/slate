@@ -3,11 +3,7 @@ body {
 }
 
 .page-wrapper {
-  margin-left: $nav-width;
-  position: relative;
-  z-index: 10;
   background-color: white !important;
-  min-height: 100%;
 }
 
 .content code.prettyprint {
