@@ -26,6 +26,7 @@ This document provides a guide on how to get you start integrating and interacti
 ### iOS
 
 - Support iOS 8.0+
+- Not available for simulator 
 - OS X support coming soon :)
 
 ### Android
@@ -94,7 +95,7 @@ Use Cocoapods to retrieve the framework
 
     -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
-        DiuitAPI.current = [[DiuitAPI alloc] initWithAppId:@"YOUR_APP_ID" appKey:@"YOUR_APP_KEY"];
+        [DUMessaging setAppId:@"YOUR_APP_ID" appKey:@"YOUR_APP_KEY"];
         return YES;
     }
 ```
@@ -103,7 +104,7 @@ Use Cocoapods to retrieve the framework
     import DUMessaging
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        DiuitAPI.current = DiuitAPI(appId: "YOUR_APP_ID", appKey: "YOUR_APP_KEY")
+        DUMessaging.setAppId("YOUR_APP_ID", appKey: "YOUR_APP_KEY")
         return true
     }
 ```
@@ -330,7 +331,7 @@ are properly authenticated and call other APIs.
 
 ```objective_c
 
-[DiuitAPI.current listChats:^(NSInteger statusCode, id result) {
+[DUMessaging listChatroomsOnCompletion:^(NSInteger statusCode, id result) {
     if (statusCode == 200) {
         // if statusCode return 200, then you will get the result as @[DUChat]. Otherwise you will get error message in result
     }
@@ -339,7 +340,7 @@ are properly authenticated and call other APIs.
 
 ```swift
 
-DiuitAPI.current?.listChats(){ code, result in
+DUMessaging.listChatroomsOnCompletion() { code, result in
     if code == 200 {
         // if statusCode return 200, then you will get the result as [DUChat]. Otherwise you will get error message in result
     }
@@ -391,24 +392,26 @@ Users can start a conversation by creating a chat room. Use the following comman
 
 
 ```objective_c
-// @[USER_SERIALS] : put all users' serial you want to join in this NSArray of NSString
-// @{YOUR_META} (Optional) : any meta data you want to append on this chatroom, as long as it's an NSDictionary
+// @[USER_SERIALS]         : put all users' serial you want to join in this NSArray of NSString
+// @{YOUR_META} (Nullable) : any meta data you want to append on this chatroom, as long as it's an NSDictionary
+// @[WHITE_USER_SERIALS]   : users' serials allowed to be joined
 
-[DiuitAPI.current createChat:@[USER_SERIALS] meta:@{YOUR_META} done:^(NSInteger statusCode, id result) {
-if (statusCode == 200) {
-// if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
-}
+[DUMessaging createChatroomWith:@[USER_SERIALS] meta:@{YOUR_META} whiteList:@[WHITE_USER_SERIALS] completion:^(NSInteger statusCode, id result) {
+  if (statusCode == 200) {
+    // if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
+  }
 }];
 ```
 
 ```swift
-// [USER_SERIALS] : put all users' serial you want to join in this NSArray of NSString
-// [YOUR_META] (Optional) : any meta data you want to append on this chatroom, as long as it's an NSDictionary
+// [USER_SERIALS]                  : put all users' serial you want to join in this NSArray of NSString
+// [YOUR_META] (Optional)          : any meta data you want to append on this chatroom, as long as it's an NSDictionary
+// [WHITE_USER_SERIALS] (Optional) : users' serials allowed to be joined
 
-DiuitAPI.current?.createChat([USER_SERIALS], meta: [YOUR_META]) { code, result in
-if code == 200 {
-// if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
-}
+DUMessaging.createChatroomWith([USER_SERIALS], meta: [YOUR_META], whiteList:[WHITE_USER_SERIALS]) { code, result in
+  if code == 200 {
+    // if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
+  }
 }
 ```
 
@@ -474,18 +477,18 @@ Once getting invited, your users can join an one-on-one or group conversation. D
 
 // chatId(NSInteger) : the id of the chat you want to join
 
-[DiuitAPI.current joinChat:chatId done:^(NSInteger statusCode, id result) {
-if(statsCode == 200) {
-// if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
-}
+[DUMessaging joinChatroomWithId:chatId completion:^(NSInteger statusCode, id result) {
+  if(statsCode == 200) {
+    // if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
+  }
 }];
 ```
 
 ```swift
-DiuitAPI.current?.joinChat(chatId){ code, result in
-if code == 200 {
-// if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
-}
+DUMessaging.joinChatroomWithId:(chatId){ code, result in
+  if code == 200 {
+    // if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
+  }
 }
 ```
 
@@ -505,7 +508,7 @@ Users can also leave a conversation and they will stop receiving messages.
 
 ```java
 
-    // Instead of calling DiuitMessageAPI, you can user the method to let your use leave a chat room
+    // Instead of calling DiuitMessageAPI, you can use the method to let your user leave a chat room
     diuitChat.leaveChat( new DiuitAPICallback<DiuitChat>()
     {
         @Override
@@ -523,20 +526,22 @@ Users can also leave a conversation and they will stop receiving messages.
 
 
 ```objective_c
-//chatId : the id of the chat you want to leave
-[DiuitAPI.current leaveChat:chatId done:^(NSInteger statusCode, id result) {
-if (statusCode != 200) {
-// if statusCode doesn't return 200, you can check result to get error message
-}
+// Execute this method of the chatroom instance which you want to leave, simple
+
+[duchat leaveOncompletion:^(NSInteger statusCode, id result) {
+  if (statusCode != 200) {
+    // if statusCode doesn't return 200, you can check result to get error message
+  }
 }];
 ```
 
 ```swift
-//chatId : the id of the chat you want to leave
-DiuitAPI.current?.leaveChat(chatId){ code, result in
-if code != 200 {
-// if code doesn't return 200, you can check result to get error message
-}
+// Execute this method of the chatroom instance which you want to leave, simple
+
+duchat.leaveOncompletion(){ code, result in
+  if code != 200 {
+    // if code doesn't return 200, you can check result to get error message
+  }
 }
 ```
 
@@ -580,10 +585,10 @@ To leave a chat-room, you emit a “chats/leave” message, with the following p
 ```
 
 ```objective_c
-// chat(DUChat)               : the chat you want to update
-// @{YOUR_META}(NSDictionary) : meta you'd like to append
+// just call update method of the chatroom instance
+// @{YOUR_META}(NSDictionary) : meta you'd like to update
 
-[DiuitAPI.current updateChat:chat meta:@{YOUR_META} done:^(NSInteger statusCode, id result) {
+[duchat updateMeta:@{YOUR_META} completion:^(NSInteger statusCode, id result) {
     if (statusCode == 200) {
         // if statusCode returns 200, you can get returned DUChat instance in result. Otherwise, an error message
     }
@@ -591,10 +596,10 @@ To leave a chat-room, you emit a “chats/leave” message, with the following p
 ```
 
 ```swift
-// chat(DUChat)              : the chat you want to update
-// [YOUR_META](NSDictionary) : meta you'd like to append
+// just call update method of the chatroom instance
+// [YOUR_META]([String: AnyObject]) : meta you'd like to update
 
-DiuitAPI.current?.updateChat(chat, meta:[YOUR_META]){ code, result in
+duchat.updateMeta([YOUR_META]){ code, result in
     if code == 200 {
         // if code returns 200, you can get returned DUChat instance in result. Otherwise, an error message
     }
@@ -644,10 +649,10 @@ Note that you have to modify the whole meta as whole; you cannot only update ind
 ```
 
 ```objective_c
-// chat(DUChat)    : the chat you want to update
-// @[USER_SERIALS] : NSArray of NSString of user serials
+// just call update method of the chatroom instance
+// @[USER_SERIALS] : NSString array of user serials
 
-[DiuitAPI.current updateWhiteList:chat users:@[USER_SERIALS] done:^(NSInteger statusCode, id result) {
+[duchat updateWhiteList:@[USER_SERIALS] completion:^(NSInteger statusCode, id result) {
     if (statusCode == 200) {
         // if statusCode returns 200, you can get returned DUChat instance in result
     }
@@ -655,10 +660,10 @@ Note that you have to modify the whole meta as whole; you cannot only update ind
 ```
 
 ```swift
-// chat(DUChat)             : the chat you want to update
+// just call update method of the chatroom instance
 // [USER_SERIALS]([String]) : string array of user serials
 
-DiuitAPI.current?.updateWhiteList(chat, users: [USER_SERIALS]){ code, result in
+duchat.updateWhiteList([USER_SERIALS]){ code, result in
     if code == 200 {
         // if code returns 200, you can get returned DUChat instance in result. Otherwise, an error message
     }
@@ -705,10 +710,9 @@ message, with the following payload.
 ```
 
 ```objective_c
-// chat(DUChat) :
-// user(DUUser) : the user you want to kick out
+// @"USER_SERIAL" : serial of user who you want to kick
 
-[DiuitAPI.current kick:chat user:user done:^(NSInteger statusCode, id result) {
+[duchat kickUser:@"USER_SERIAL" completion:^(NSInteger statusCode, id result) {
     if (statusCode != 200) {
         // if statusode doesn't return 200, you can get error message in result
     }
@@ -716,10 +720,9 @@ message, with the following payload.
 ```
 
 ```swift
-// chat(DUChat) :
-// user(DUUser) : the user you want to kick out
+// "USER_SERIAL" : serial of user who you want to kick
 
-DiuitAPI.current?.kick(chat, user: user) { code, result in
+duchat.kickUser("USER_SERIAL") { code, result in
     if code != 200 {
         // if code doesn't return 200, you can get error message in result
     }
@@ -763,15 +766,15 @@ following payload
 // If you want to receive all messages , you have to add observer for notification named "messageReceived"
 
 [[NSNotificationCenter defaultCenter] addObserverForName:@"messageReceived" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * note) {
-        DUMessage *newMessage = note.userInfo[@"message"];
-        NSLog("Got new message #%zd:\n%@", newMessage.id, newMessage.data);
+  DUMessage *newMessage = note.userInfo[@"message"];
+    NSLog("Got new message #%zd:\n%@", newMessage.id, newMessage.data);
 }];
 
 // Or add observer for "messageReceived.${CHAT_ID}" to receive messages belong to the certain chat
 
 [[NSNotificationCenter defaultCenter] addObserverForName:@"messageReceived.5566" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * note) {
-DUMessage *newMessage = note.userInfo[@"message"];
-NSLog("Got new message #%zd in chat #5566:\n%@", newMessage.id, newMessage.data);
+  DUMessage *newMessage = note.userInfo[@"message"];
+  NSLog("Got new message #%zd in chat #5566:\n%@", newMessage.id, newMessage.data);
 }];
 ```
 
@@ -779,15 +782,15 @@ NSLog("Got new message #%zd in chat #5566:\n%@", newMessage.id, newMessage.data)
 // If you want to receive all messages , you have to add observer for notification named "messageReceived"
 
 NSNotificationCenter.defaultCenter().addObserverForName("messageReceived", object: nil, queue: NSOperationQueue.mainQueue()) { notif in
-        let message = notif.userInfo!["message"] as! Message
-        NSLog("Got new message #\(message.id):\n\(message.data)")
+  let message = notif.userInfo!["message"] as! Message
+    NSLog("Got new message #\(message.id):\n\(message.data)")
 }
 
 // Or add observer for "messageReceived.${CHAT_ID}" to receive messages belong to the certain chat
 
 NSNotificationCenter.defaultCenter().addObserverForName("messageReceived.5566", object: nil, queue: NSOperationQueue.mainQueue()) { notif in
-        let message = notif.userInfo!["message"] as! Message
-        NSLog("Got new message #\(message.id) in chat #5566:\n\(message.data)")
+  let message = notif.userInfo!["message"] as! Message
+  NSLog("Got new message #\(message.id) in chat #5566:\n\(message.data)")
 }
 ```
 
@@ -838,22 +841,22 @@ There are mainly three message types: text, photo, and file. According to the fi
 
 ```objective_c
 // @"YOUR_MESSAGE"(NSString) : your text message
-// chat(DUChat)              : chat to which you want to send messages
+// @{META}(NSDictionary)     : can be nil if unnecessary
 
-[DiuitAPI.current sendToChat:chat text:@"YOUR_MESSAGE" done:^(NSInteger statusCode, id result) {
-    if (statusCode != 200) {
-        // handle error
+[duchat sendText:@"YOUR_MESSAGE" meta:@{META} completion:^(NSInteger statusCode, id result) {
+    if (statusCode == 200) {
+        // will return DUMessage instance in result
     }
 }];
 ```
 
 ```swift
-// text(String) : your text message string
-// chat(DUChat) : chat to which you want to send messages
+// "YOUR_MESSAGE"                        : your text message
+// [META]([String: AnyObject], optional) : meta you'd like to append
 
-DiuitAPI.current?.sendToChat(chat!, text: text) { code, message in
-    if code != 200 {
-        // handle error
+duchat.sendText(text, meta:[META]) { code, message in
+    if code == 200 {
+        // will return DUMessage instance in result
     }
 }
 ```
@@ -891,24 +894,24 @@ RIch media message refers to photo and file. Use this command to send rich media
 ```
 
 ```objective_c
-// YOUR_IMAGE(UIImage): your image message
-// chat(DUChat)       : chat to which you want to send messages
+// YOUR_IMAGE(UIImage)   : your image message
+// @{META}(NSDictionary) : can be nil if unnecessary
 
-[DiuitAPI.current sendToChat:chat image:YOUR_IMAGE done:^(NSInteger statusCode, id result) {
-if (statusCode != 200) {
-// handle error
-}
+[duchat sendImage:YOUR_IMAGE meta:@{META} completion:^(NSInteger statusCode, id result) {
+  if (statusCode == 200) {
+    // will return DUMessage instance in result
+  }
 }];
 ```
 
 ```swift
-// YOUR_IMAGE(UIImage): your image message
-// chat(DUChat)       : chat to which you want to send
+// YOUR_IMAGE(UIImage)                   : your image message
+// [META]([String: AnyObject], optional) : meta you'd like to append
 
-DiuitAPI.current?.sendToChat(chat, image: YOUR_IMAGE) { code, message in
-if code != 200 {
-// handle error
-}
+duchat.sendImage(YOUR_IMAGE, meta:[META]) { code, message in
+  if code == 200 {
+    // will return DUMessage instance in result
+  }
 }
 ```
 ### Socket.IO
@@ -940,24 +943,22 @@ To send a rich media message to a chat room, emit a “messages/create” messag
 
 ```objective_c
 // FILE_PATH(NSString) : path of your file message
-// chat(DUChat)        : chat to which you want to send messages
-// meta                : meta you'd like to append, here we pass the file name in meta
+// meta(NSDictionary)  : can be nil if unnecessary, you should pass your filename here
 
-[DiuitAPI.current sendToChat: chat file: FILE_PATH meta:@{@"name":@"sampleFile.pdf"} done:^(NSInteger statusCode, id result) {
-    if (statusCode != 200) {
-        // handle error
+[duchat sendFileWithPath: FILE_PATH meta:@{@"name":@"sampleFile.pdf"} completion:^(NSInteger statusCode, id result) {
+    if (statusCode == 200) {
+        // will return DUMessage instance in result
     }
 }];
 ```
 
 ```swift
-// FILE_PATH(String) : path of your file message
-// chat(DUChat)      : chat to which you want to send messages
-// meta              : meta you'd like to append, here we pass the file name in meta
+// FILE_PATH(String)                   : path of your file message
+// meta([String: AnyObject], optional) : meta you'd like to append, , you should pass your filename here
 
-DiuitAPI.current?.sendToChat(chat!, file: FILE_PATH!, meta: ["name":"sampleFile.pdf"]) { code, message in
-    if code != 200 {
-        // handle error
+duchat.sendFileWithPath(chat!, file: FILE_PATH!, meta: ["name":"sampleFile.pdf"]) { code, message in
+    if code == 200 {
+        // will return DUMessage instance in result
     }
 }
 ```
@@ -989,12 +990,11 @@ When a new user joins a chat room, you may want her to see the historical messag
 ```
 
 ```objective_c
-// chat(DUChat)    : the chat you want to query
 // date(NSDate)    : you will get messages before this time
-// count(NSInteger): message numbers for each page, set to 20
-// page(NSInteger) : paging is supported
+// count(NSInteger): message numbers for each page, set to nil if you want to use default value(20)
+// page(NSInteger) : paging is supported, set to nil if you want to use default value(0)
 
-[DiuitAPI.current listMessagesInChat:chat  before:date count:20 page:0 done:^(NSInteger statusCode, id result) {
+[duchat listMessagesBefore:date count:nil page:nil completion:^(NSInteger statusCode, id result) {
     if (statusCode == 200) {
         // result will return an NSArray of DUMessage
         NSArray *messages = [NSArray arrayWithArray: result];
@@ -1004,12 +1004,11 @@ When a new user joins a chat room, you may want her to see the historical messag
 ```
 
 ```swift
-// chat(DUChat)              : the chat you want to query
-// date(NSDate, optional)    : you will get messages before this time, default is current time
-// count(NSInteger): message numbers for each page, default is 20
+// before(NSDate, optional)  : you will get messages before this time, default is current time
+// count(NSInteger, optional): message numbers for each page, default is 20
 // page(NSInteger, optional) : paging is supported, default is 0
 
-DiuitAPI.current?.listMessagesInChat(chat) { code, result in
+duchat.listMessagesBefore() { code, result in
     if code == 200 {
         // result will return [DUMessage]
         let messages = result as! [DUMessage]
@@ -1060,21 +1059,21 @@ In modern ways of communication, user would like to know if her message is read 
 ```
 
 ```objective_c
-// message(DUMessage) : message to be marked
+// instance method of DUMessage
 
-[DiuitAPI.current markAsReadWithMessage:message done:^(NSInteger statusCode, id result){
-    if (statusCode != 200) {
-        // handle error
+[dumessage marAsReadOnCompletion^(NSInteger statusCode, id result){
+    if (statusCode == 200) {
+        // return DUMessage instance in result
     }
 }];
 ```
 
 ```swift
-// message(DUMessage) : message to be marked
+// instance method of DUMessage
 
-DiuitAPI.current?.markAsReadWithMessage(message) { code, result in
-    if code != 200 {
-        // handle error
+dumessage.markAsReadOnCompletion() { code, result in
+    if code == 200 {
+        // return DUMessage instance in result
     }
 }
 ```
