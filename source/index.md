@@ -65,7 +65,7 @@ Use Cocoapods to retrieve the framework
 
 ### Android
 
-You can either use Maven or manually add a Jar to your project.
+    You can either use Maven or manually add a Jar to your project.
 
 **Maven**
 
@@ -127,7 +127,7 @@ func application(application: UIApplication, didFinishLaunchingWithOptions launc
 ### Android
 
 - Open your main activity or the activity in which you want to integrate the update process.
-- Add the following lines:
+- Add the lines:
 
 
 ### RESTful
@@ -408,6 +408,53 @@ in the chat-room.
 
 ### Socket.IO
 
+
+```java
+
+// @params serialOfUsers : put all users you want to join init this string array
+// @params meta : you can put attribute of the chat, ex, {'name' : 'this is my new chatroom'}
+DiuitAPI.current.createChat(String[] serialOfUsers, JSONObject meta, new DiuitAPICallback<DiuitChat>()
+{
+@Override
+public void onSuccess(final DiuitChat diuitChat)
+{
+// If success, will return a DiuitChat object
+}
+
+@Override
+public void onFailure(final int code, final JSONObject resultObj)
+{
+// if failure, it will return error code and result
+}
+});
+
+
+```
+
+
+```objective_c
+// @[USER_SERIALS] : put all users' serial you want to join in this NSArray of NSString
+// @{YOUR_META} (Optional) : any meta data you want to append on this chatroom, as long as it's an NSDictionary
+
+[DiuitAPI.current createChat:@[USER_SERIALS] meta:@{YOUR_META} done:^(NSInteger statusCode, id result) {
+if (statusCode == 200) {
+// if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
+}
+}];
+```
+
+```swift
+// [USER_SERIALS] : put all users' serial you want to join in this NSArray of NSString
+// [YOUR_META] (Optional) : any meta data you want to append on this chatroom, as long as it's an NSDictionary
+
+DiuitAPI.current?.createChat([USER_SERIALS], meta: [YOUR_META]) { code, result in
+if code == 200 {
+// if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
+}
+}
+```
+
+
 Emit the 'chats/chreate' message to the server with the following parameters:
 
 <aside class='notice'><br/>
@@ -451,59 +498,49 @@ meta data.
 But please noted that the meta field can only store up to 5kb of serialized JSON
 string.
 
-### Android
-
-```java
-
-    // @params serialOfUsers : put all users you want to join init this string array
-    // @params meta : you can put attribute of the chat, ex, {'name' : 'this is my new chatroom'}
-    DiuitAPI.current.createChat(String[] serialOfUsers, JSONObject meta, new DiuitAPICallback<DiuitChat>()
-    {
-        @Override
-        public void onSuccess(final DiuitChat diuitChat)
-        {
-            // If success, will return a DiuitChat object
-        }
-
-        @Override
-        public void onFailure(final int code, final JSONObject resultObj)
-        {
-                // if failure, it will return error code and result
-        }
-    });
-
-
-```
-
-### iOS
-
-```objective_c
-// @[USER_SERIALS] : put all users' serial you want to join in this NSArray of NSString
-// @{YOUR_META} (Optional) : any meta data you want to append on this chatroom, as long as it's an NSDictionary
-
-[DiuitAPI.current createChat:@[USER_SERIALS] meta:@{YOUR_META} done:^(NSInteger statusCode, id result) {
-    if (statusCode == 200) {
-        // if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
-    }
-}];
-```
-
-```swift
-// [USER_SERIALS] : put all users' serial you want to join in this NSArray of NSString
-// [YOUR_META] (Optional) : any meta data you want to append on this chatroom, as long as it's an NSDictionary
-
-DiuitAPI.current?.createChat([USER_SERIALS], meta: [YOUR_META]) { code, result in
-    if code == 200 {
-        // if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
-    }
-}
-```
-
 ## Join a Chat Room
 
 Join a chatroom to receive messages in it.
 
 ### Socket.IO
+
+```java
+
+//@param chatId , the id of the chat you want to join
+DiuitAPI.current.joinChat(int chatId, new DiuitAPICallback<DiuitChat>()
+{
+@Override
+public void onFailure(final int code, final JSONObject resultObj)
+{
+// if failure, it will return error code and result
+}
+@Override
+public void onSuccess(final DiuitChat diuitChat)
+{
+// if success, it will return the DiuitChat object
+}
+});
+```
+
+```objective_c
+
+// chatId(NSInteger) : the id of the chat you want to join
+
+[DiuitAPI.current joinChat:chatId done:^(NSInteger statusCode, id result) {
+if(statsCode == 200) {
+// if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
+}
+}];
+```
+
+```swift
+DiuitAPI.current?.joinChat(chatId){ code, result in
+if code == 200 {
+// if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
+}
+}
+```
+
 
 To join a chat-room, you emit a "chats/join" message, with the following payload:
 
@@ -512,47 +549,6 @@ To join a chat-room, you emit a "chats/join" message, with the following payload
 &nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
 }
 </aside>
-
-### Android
-
-```java
-
-    //@param chatId , the id of the chat you want to join
-    DiuitAPI.current.joinChat(int chatId, new DiuitAPICallback<DiuitChat>()
-    {
-        @Override
-        public void onFailure(final int code, final JSONObject resultObj)
-        {
-            // if failure, it will return error code and result
-        }
-        @Override
-        public void onSuccess(final DiuitChat diuitChat)
-        {
-            // if success, it will return the DiuitChat object
-        }
-    });
-```
-
-### iOS
-
-```objective_c
-
-// chatId(NSInteger) : the id of the chat you want to join
-
-[DiuitAPI.current joinChat:chatId done:^(NSInteger statusCode, id result) {
-    if(statsCode == 200) {
-        // if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
-    }
-}];
-```
-
-```swift
-DiuitAPI.current?.joinChat(chatId){ code, result in
-    if code == 200 {
-        // if statusCode returns 200, you will get returned result, a DUChat instance. Otherwise, an error message.
-    }
-}
-```
 
 
 ## Leave a Chat Room
@@ -580,6 +576,26 @@ we can desc how can they call the API via java here.
     });
 ```
 
+
+```objective_c
+//chatId : the id of the chat you want to leave
+[DiuitAPI.current leaveChat:chatId done:^(NSInteger statusCode, id result) {
+if (statusCode != 200) {
+// if statusCode doesn't return 200, you can check result to get error message
+}
+}];
+```
+
+```swift
+//chatId : the id of the chat you want to leave
+DiuitAPI.current?.leaveChat(chatId){ code, result in
+if code != 200 {
+// if code doesn't return 200, you can check result to get error message
+}
+}
+```
+
+
 Leave a chat room to stop receiving messages in it.
 
 ### Socket.IO
@@ -591,32 +607,6 @@ To leave a chat-room, you emit a "chats/leave" message, with the following paylo
 &nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
 }
 </aside>
-
-### Android
-
-### iOS
-
-```objective_c
-//chatId : the id of the chat you want to leave
-[DiuitAPI.current leaveChat:chatId done:^(NSInteger statusCode, id result) {
-    if (statusCode != 200) {
-        // if statusCode doesn't return 200, you can check result to get error message
-    }
-}];
-```
-
-```swift
-//chatId : the id of the chat you want to leave
-DiuitAPI.current?.leaveChat(chatId){ code, result in
-    if code != 200 {
-        // if code doesn't return 200, you can check result to get error message
-    }
-}
-```
-
-```http
-
-```
 
 
 ## Updating Chat Room Meta Info
@@ -952,13 +942,44 @@ following payload
 }
 </aside>
 
-> There three main type of message , text, photo, and file.
-> According different type, you have to call different API.
-> Example, if you want to send a text to your friends:
 
 ## Send a Rich Media Message
 
 ### Socket.IO
+
+> You can use those API to send your photos and files to your chat
+
+```java
+
+// @param bitmap , the bitmap of your photo
+// @param chat, choose a chat which you want to send
+DiuitAPI.current.sendToChat(DiuitChat chat, Bitmap bitmap, new DiuitAPICallback<DiuitMessage>(){...})
+
+```
+
+```objective_c
+// YOUR_IMAGE(UIImage): your image message
+// chat(DUChat)       : chat to which you want to send messages
+
+[DiuitAPI.current sendToChat:chat image:YOUR_IMAGE done:^(NSInteger statusCode, id result) {
+if (statusCode != 200) {
+// handle error
+}
+}];
+```
+
+```swift
+// YOUR_IMAGE(UIImage): your image message
+// chat(DUChat)       : chat to which you want to send
+
+DiuitAPI.current?.sendToChat(chat, image: YOUR_IMAGE) { code, message in
+if code != 200 {
+// handle error
+}
+}
+```
+
+
 
 To send a rich media message to a chat room, emit a "messages/create" message,
 with the following payload
@@ -973,41 +994,7 @@ with the following payload
 }
 </aside>
 
-### Android
 
-> Also, you can use those API to send your photos and files to your chat
-
-```java
-
-    // @param bitmap , the bitmap of your photo
-    // @param chat, choose a chat which you want to send
-    DiuitAPI.current.sendToChat(DiuitChat chat, Bitmap bitmap, new DiuitAPICallback<DiuitMessage>(){...})
-
-```
-
-## iOS
-
-```objective_c
-// YOUR_IMAGE(UIImage): your image message
-// chat(DUChat)       : chat to which you want to send messages
-
-[DiuitAPI.current sendToChat:chat image:YOUR_IMAGE done:^(NSInteger statusCode, id result) {
-    if (statusCode != 200) {
-        // handle error
-    }
-}];
-```
-
-```swift
-// YOUR_IMAGE(UIImage): your image message
-// chat(DUChat)       : chat to which you want to send
-
-DiuitAPI.current?.sendToChat(chat, image: YOUR_IMAGE) { code, message in
-    if code != 200 {
-        // handle error
-    }
-}
-```
 
 > If you want to send your file , just call this API:
 
@@ -1216,13 +1203,3 @@ When a member of the chatroom updates the chatroom meta field, all members of
 the chatroom will receive a message with type **meta.updated**, and a single
 key **meta** providing the latest state of the chatroom meta field.
 
-# Models
-
-Diuit message api models are defined by implementing something very similar to [socket.io](http://socket.io)
-Simply extend our DiuitObject class and let the Diuit annotations processor generate proxy classes.
-In out api, there are 4 models you might to know:
-
-### **DiuitUser**
-### **DiuitDevice**
-### **DiuitChat**
-### **DiuitMessage**
