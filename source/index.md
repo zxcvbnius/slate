@@ -286,14 +286,7 @@ additional fields: **platform** to indicate what is the push platform to be
 used (valid values are one of "gcm", "ios_sandbox", "ios_production"), and a
 **pushToken** field to indicate the pushToken specific to the push platform.
 
-```objective_c
-```
 
-```swift
-```
-
-```Android
-```
 
 ```shell
 curl -X POST \
@@ -352,9 +345,9 @@ are properly authenticated and call other APIs.
 ## Listing Chat Rooms
 
 ```java
-/    // In Android, if you have already authenticated your devices, you can get all your chatroom easily.
+    // In Android, if you have already authenticated your devices, you can get all your chatroom easily.
 
-    DiuitAPI.current.listChats(new DiuitAPICallback<ArrayList<DiuitChat>>()
+    DiuitMessagingAPI.listChats(new DiuitAPICallback<ArrayList<DiuitChat>>()
     {
         @Override
         public void onSuccess(final ArrayList<DiuitChat> chatArrayList)
@@ -411,23 +404,23 @@ in the chat-room.
 
 ```java
 
-// @params serialOfUsers : put all users you want to join init this string array
-// @params meta : you can put attribute of the chat, ex, {'name' : 'this is my new chatroom'}
-DiuitAPI.current.createChat(String[] serialOfUsers, JSONObject meta, new DiuitAPICallback<DiuitChat>()
-{
-@Override
-public void onSuccess(final DiuitChat diuitChat)
-{
-// If success, will return a DiuitChat object
-}
+    // @params serialOfUsers : put all users you want to join init this string array
+    // @params meta : you can put attribute of the chat, ex, {'name' : 'this is my new chatroom'}
 
-@Override
-public void onFailure(final int code, final JSONObject resultObj)
-{
-// if failure, it will return error code and result
-}
-});
+    DiuitMessagingAPI.createChat(ArrayList<String> serials, JSONObject meta, new DiuitAPICallback<DiuitChat>()
+    {
+        @Override
+        public void onSuccess(final DiuitChat diuitChat)
+        {
+            // If success, will return a DiuitChat object
+        }
 
+        @Override
+        public void onFailure(final int code, final JSONObject resultObj)
+        {
+            // if failure, it will return error code and result
+        }
+    });
 
 ```
 
@@ -506,20 +499,21 @@ Join a chatroom to receive messages in it.
 
 ```java
 
-//@param chatId , the id of the chat you want to join
-DiuitAPI.current.joinChat(int chatId, new DiuitAPICallback<DiuitChat>()
-{
-@Override
-public void onFailure(final int code, final JSONObject resultObj)
-{
-// if failure, it will return error code and result
-}
-@Override
-public void onSuccess(final DiuitChat diuitChat)
-{
-// if success, it will return the DiuitChat object
-}
-});
+    //@param chatId , the id of the chat you want to join
+
+    DiuitMessagingAPI.joinChat(int chatId, new DiuitAPICallback<DiuitChat>()
+    {
+        @Override
+        public void onSuccess(final DiuitChat diuitChat)
+        {
+            // if success, it will return the DiuitChat object
+        }
+        @Override
+        public void onFailure(final int code, final JSONObject resultObj)
+        {
+            // if failure, it will return error code and result
+        }
+    });
 ```
 
 ```objective_c
@@ -557,10 +551,8 @@ We can write more information about this API here.
 
 ```java
 
-we can desc how can they call the API via java here.
-
-    //@param chatId , the id of the chat you want to join
-    DiuitAPI.current.leaveChat(diuitChat, new DiuitAPICallback<DiuitChat>()
+    // Instead of calling by DiuitMessageAPI, leaving chat you can use the method
+    diuitChat.leaveChat( new DiuitAPICallback<DiuitChat>()
     {
         @Override
         public void onFailure(final int code, final JSONObject resultObj)
@@ -570,9 +562,8 @@ we can desc how can they call the API via java here.
         @Override
         public void onSuccess(final DiuitChat diuitChat)
         {
-            // if success, it will return the DiuitChat object
+            // if success, it will return the same DiuitChat object
         }
-
     });
 ```
 
@@ -615,9 +606,9 @@ To leave a chat-room, you emit a "chats/leave" message, with the following paylo
 
     // create new meta for updating the attribute of the chat
     JSONObject newMeta = new JSONObject();
-    newMeta("name", newName);
+    newMeta.put("name", newName);
 
-    DiuitAPI.current.updateChat(diuitChat, newMeta, new DiuitAPICallback<DiuitChat>()
+    diuitChat.updateChat(newMeta, new DiuitAPICallback<DiuitChat>()
     {
         @Override
         public void onFailure(final int code, final JSONObject resultObj)
@@ -628,7 +619,7 @@ To leave a chat-room, you emit a "chats/leave" message, with the following paylo
         @Override
         public void onSuccess(DiuitChat diuitChat)
         {
-            // if success, it will return the DiuitChat object
+            // if success, it will return the same DiuitChat object with new meta
         }
     });
 
@@ -683,8 +674,7 @@ individual keys.
 
     // @param serialsOfUsers : all users who you want to set into this chat whitelist
     // @param diuitChat : the chat which you want to update
-    DiuitAPI.current.updateWhiteList(DiuitChat diuitChat, String[] serialsOfUsers,
-                    new DiuitAPICallback<DiuitChat>()
+    diuitChat.updateWhiteList(ArrayList<String> memberSerials, new DiuitAPICallback<DiuitChat>()
     {
         @Override
         public void onFailure(final int code, final JSONObject resultObj)
@@ -695,7 +685,7 @@ individual keys.
         @Override
         public void onSuccess(DiuitChat diuitChat)
         {
-            // if success, it will return the DiuitChat object
+            // if success, it will return the same DiuitChat object
         }
     });
 
@@ -748,12 +738,12 @@ message, with the following payload:
 
 ```java
 
-    DiuitAPI.current.kick(diuitChat, diuitUser, new DiuitAPICallback<JSONObject>()
+    diuitChat.kick(String serial, new DiuitAPICallback<DiuitChat>()
     {
         @Override
-        public void onSuccess(JSONObject resultObj)
+        public void onSuccess(DiuitChat diuitChat)
         {
-            // if success, it will return result
+            // if success, it will return the same DiuitChat object
         }
 
         @Override
@@ -813,11 +803,11 @@ following payload
     // This object could be Activity, Fragment , or any kind of object
     // Once someone send you a message , you would get these in the callback
 
-    DiuitAPI.current.registerReceivingMessage(DiuitAPICallback<DiuitMessage> callback)
+    DiuitAPI.registerReceivingMessage(DiuitAPICallback<DiuitMessage> callback)
 
     // Before you leave the activity, or change the object to be `NULL`, you have to unregister this listener
 
-    DiuitAPI.current.unregisterReceivingMessage(DiuitAPICallback<DiuitMessage> callback)
+    DiuitAPI.unregisterReceivingMessage(DiuitAPICallback<DiuitMessage> callback)
 
 ```
 
@@ -888,8 +878,8 @@ Use this command to send a text message to the chat-room.
 ```java
 
     // @param text , your text message string
-    // @param chat, choose a chat which you want to send
-    DiuitAPI.current.sendToChat(DiuitChat chat, String text, new DiuitAPICallback<DiuitMessage>()
+    // @param meta, it's optional
+    diuitChat.sendText(String text, JSONObject meta, new DiuitAPICallback<DiuitMessage>()
     {
         @Override
         public void onSuccess(final DiuitMessage diuitMessage)
@@ -951,9 +941,10 @@ following payload
 
 ```java
 
-// @param bitmap , the bitmap of your photo
-// @param chat, choose a chat which you want to send
-DiuitAPI.current.sendToChat(DiuitChat chat, Bitmap bitmap, new DiuitAPICallback<DiuitMessage>(){...})
+    // @param bitmap , the bitmap of your photo
+    // @param meta, it's optional
+    // @param chat, choose a chat which you want to send
+    diuitChat.sendImage(Bitmap bitmap, JSONObject meta, new DiuitAPICallback<DiuitMessage>(){...})
 
 ```
 
@@ -1001,8 +992,9 @@ with the following payload
 ```java
 
     // @param file , the File object of your file
+    // @param meta, it's optional
     // @param chat, choose a chat which you want to send
-    DiuitAPI.current.sendToChat(DiuitChat chat, File file, new DiuitAPICallback<DiuitMessage>(){...})
+    diuitChat.sendFile(File file, JSONObject meta, new DiuitAPICallback<DiuitMessage>(){...})
 
 ```
 
@@ -1038,9 +1030,9 @@ Use this command to list historic messages in the chat-room.
 
 ```java
 
-    // @param chat , the chat you want to query
     // @param before, before the timestamp, UTC+0
-    DiuitAPI.current.listMessagesInChat(DiuitChat chat, Date before, int count, int page, new DiuitAPICallback<ArrayList<DiuitMessage>>()
+    // @param page, start at 0
+    diuitChat.listMessagesInChat(Date before, int count, int page, new DiuitAPICallback<ArrayList<DiuitMessage>>()
     {
         @Override
         public void onSuccess(final ArrayList<DiuitMessage> diuitMessageArrayList)
@@ -1119,12 +1111,12 @@ implement a chat system without read indications.
 ```java
 
     // @param message, the message which you want to mark as readed
-    DiuitAPI.current.markAsRead(DiuitMessage message, callback()
+    diuitMessage.markAsRead(new DiuitMessagingAPICallback<DiuitMessage>()
     {
         @Override
-        public void onSuccess(final JSONObject resultObj)
+        public void onSuccess(final DiuitMessage resultObj)
         {
-            // if success, it will return result
+            // if success, it will return the same diuitMessage object
         }
         @Override
         public void onFailure(final int code, final JSONObject resultObj)
