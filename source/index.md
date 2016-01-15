@@ -8,8 +8,8 @@ language_tabs:
   - shell: REST / Socket.IO
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a>
+  - <a href='#'>Want to develop Diuit API?</a>
+  - <a href='mailto:benchang@diuit.com'>Contact us to build your application</a>
 
 includes:
   - errors
@@ -206,7 +206,7 @@ curl -X GET \
 
 The response body is a JSON object containing the `nonce` key.
 
-<aside class="notice">
+<aside class="note">
     {
       "nonce": "123asdf123asdf12321adf",
     }
@@ -221,7 +221,7 @@ authentication check you've implement to authenticate the user logging in.
 
 If the user's identity is verified, your server should generate a JWT token with the following header:
 
-<aside class="notice">
+<aside class="note">
     {
       "typ": "JWT",
       "alg": "RS256"
@@ -232,7 +232,7 @@ If the user's identity is verified, your server should generate a JWT token with
 
 ...and with the following claim body:
 
-<aside class="notice">
+<aside class="note">
     {
       "iss": ${DIUIT_APP_ID}
       "sub": ${UNIQUE_USER_ID}
@@ -308,7 +308,7 @@ If successful, the response will be a JSON object contains the `session`
 key that should be set in future API calls as `x-diuit-session-token` header to
 authenticate the user.
 
-<aside class="notice">
+<aside class="note">
     {
       "session": "123asdf123asdf12321adf",
       "userId": ${USER_ID}
@@ -332,7 +332,7 @@ connection to our `http://www.diuit.net` server.
 After the socket.io session is connected, you emit a `authenticate` message
 with payload
 
-<aside class="notice">
+<aside class="note">
     {
       "authToken": ${SESSION_TOKEN}
     }
@@ -395,7 +395,7 @@ Use this commands to list chatrooms that the current user is currently joined.
 
 Emit the "chats/list" message to server, with no params, and server will respond with
 
-<aside class='notice'><br/>
+<aside class="note"><br/>
 {<br/>
 &nbsp;&nbsp;"chats": [...array of chats...]<br/>
 }
@@ -457,7 +457,7 @@ if code == 200 {
 
 Emit the 'chats/chreate' message to the server with the following parameters:
 
-<aside class='notice'><br/>
+<aside class="note"><br/>
 {<br/>
 &nbsp;&nbsp;members: [ ${USER_ID_1}, ${USER_ID_2} ..]<br/>
 &nbsp;&nbsp;whiteList: [ ${USER_ID_1} ... ]<br/>
@@ -544,7 +544,7 @@ if code == 200 {
 
 To join a chat-room, you emit a "chats/join" message, with the following payload:
 
-<aside class='notice'><br/>
+<aside class="note"><br/>
 {<br/>
 &nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
 }
@@ -602,7 +602,7 @@ Leave a chat room to stop receiving messages in it.
 
 To leave a chat-room, you emit a "chats/leave" message, with the following payload:
 
-<aside class='notice'><br/>
+<aside class="note"><br/>
 {<br/>
 &nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
 }
@@ -667,7 +667,7 @@ implement chat-room notes by including the notes info in this key.
 To update the chat-room's information, emit a "chats/meta/update" message, with
 the following payload:
 
-<aside class='notice'><br/>
+<aside class="note"><br/>
 {<br/>
 &nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
 &nbsp;&nbsp;meta: { ${CHATROOM_META} }<br/>
