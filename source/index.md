@@ -7,10 +7,6 @@ language_tabs:
   - swift: iOS Swift
   - shell: REST / Socket.IO
 
-toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a>
-
 includes:
   - errors
 
@@ -354,7 +350,7 @@ are properly authenticated and call other APIs.
 ## Listing Chat Rooms
 
 ```java
-/    // In Android, if you have already authenticated your devices, you can get all your chatroom easily.
+    // In Android, if you have already authenticated your devices, you can get all your chatroom easily.
 
     DiuitAPI.current.listChats(new DiuitAPICallback<ArrayList<DiuitChat>>()
     {
