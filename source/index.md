@@ -31,17 +31,10 @@ updated : 2016/01/12 15:00
 ### Android
 
 - We do not support Java outside of Android at the moment.
-- A recent version of the Android SDK  
+- A recent version of the Android SDK
 - We support all Android versions since API Level 14 (Android 4.0 & above).
 
 ## Installation
-
-### iOS
-
-Use Cocoapods to retrieve the framework
-
-1. Execute command `pod init` under your Xcode project directory to create a Podfile for the project
-2.  Make your Podfile look like as right：
 
 ```objective_c
 platform :ios, '8.0'
@@ -61,6 +54,12 @@ target 'MyApp' do
 end
 ```
 
+### iOS
+
+Use Cocoapods to retrieve the framework
+
+1. Execute command `pod init` under your Xcode project directory to create a Podfile for the project
+2.  Make your Podfile look like as right：
 3. Run `pod install` to install the framework and dependencies
 4. Make sure to always open the Xcode workspace instead of the project file when building your project:
 
@@ -72,25 +71,21 @@ You can either use Maven or manually add a Jar to your project.
 
 **Maven**
 
-1.  Navigate to your build.gradle file at the app level (not project level) and ensure that you include the following:  
+1.  Navigate to your build.gradle file at the app level (not project level) and ensure that you include the following:
 
     ` maven { url "https://dl.bintray.com/zxcvbnius/maven"}`
 
 2. Add compile **'com.duolc.diuitapi:message:0.1.1'** to the dependencies of your project
-3. In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files  
+3. In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files
 
 **Jar**
 
-1. Download the release package and unzip  
-2. Create a new project with Android Studio  
-3. Copy the **diuit-api-VERSION.jar** folder into app/libs  
-4. In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files  
+1. Download the release package and unzip
+2. Create a new project with Android Studio
+3. Copy the **diuit-api-VERSION.jar** folder into app/libs
+4. In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files
 
 ## Initialization
-
-### iOS
-
-- In your **AppDelegate.m** or **AppDelegate.swift**, add following:
 
 ```objective_c
 #import <DUMessaging/DUMessaging-Swift.h>
@@ -111,11 +106,6 @@ func application(application: UIApplication, didFinishLaunchingWithOptions launc
 }
 ```
 
-### Android
-
-- Open your main activity or the activity in which you want to integrate the update process.  
-- Add the following lines:    
-
 ```java
     public class YourActivity extends Activity {
 
@@ -131,6 +121,16 @@ func application(application: UIApplication, didFinishLaunchingWithOptions launc
         // Probably more methods
     }
 ```
+
+### iOS
+
+- In your **AppDelegate.m** or **AppDelegate.swift**, add following:
+
+### Android
+
+- Open your main activity or the activity in which you want to integrate the update process.
+- Add the following lines:
+
 
 ### RESTful
 
@@ -353,19 +353,7 @@ are properly authenticated and call other APIs.
 
 ## Listing Chat Rooms
 
-Use this commands to list chatrooms that the current user is currently joined.
-
-### Socket.IO
-
-Emit the "chats/list" message to server, with no params, and server will respond with
-
-<aside class='notice'><br/>
-{<br/>
-&nbsp;&nbsp;"chats": [...array of chats...]<br/>
-}
-</aside>
-
-```java  
+```java
 /    // In Android, if you have already authenticated your devices, you can get all your chatroom easily.
 
     DiuitAPI.current.listChats(new DiuitAPICallback<ArrayList<DiuitChat>>()
@@ -402,6 +390,18 @@ DiuitAPI.current?.listChats(){ code, result in
     }
 }
 ```
+
+Use this commands to list chatrooms that the current user is currently joined.
+
+### Socket.IO
+
+Emit the "chats/list" message to server, with no params, and server will respond with
+
+<aside class='notice'><br/>
+{<br/>
+&nbsp;&nbsp;"chats": [...array of chats...]<br/>
+}
+</aside>
 
 ## Create a Chat Room
 
@@ -470,7 +470,7 @@ string.
         @Override
         public void onFailure(final int code, final JSONObject resultObj)
         {
-                // if failure, it will return error code and result        
+                // if failure, it will return error code and result
         }
     });
 
@@ -525,7 +525,7 @@ To join a chat-room, you emit a "chats/join" message, with the following payload
         @Override
         public void onFailure(final int code, final JSONObject resultObj)
         {
-            // if failure, it will return error code and result                
+            // if failure, it will return error code and result
         }
         @Override
         public void onSuccess(final DiuitChat diuitChat)
@@ -559,6 +559,29 @@ DiuitAPI.current?.joinChat(chatId){ code, result in
 
 ## Leave a Chat Room
 
+We can write more information about this API here.
+
+```java
+
+we can desc how can they call the API via java here.
+
+    //@param chatId , the id of the chat you want to join
+    DiuitAPI.current.leaveChat(diuitChat, new DiuitAPICallback<DiuitChat>()
+    {
+        @Override
+        public void onFailure(final int code, final JSONObject resultObj)
+        {
+            // if failure, it will return error code and result
+        }
+        @Override
+        public void onSuccess(final DiuitChat diuitChat)
+        {
+            // if success, it will return the DiuitChat object
+        }
+
+    });
+```
+
 Leave a chat room to stop receiving messages in it.
 
 ### Socket.IO
@@ -572,25 +595,6 @@ To leave a chat-room, you emit a "chats/leave" message, with the following paylo
 </aside>
 
 ### Android
-
-```java
-
-    //@param chatId , the id of the chat you want to join
-    DiuitAPI.current.leaveChat(diuitChat, new DiuitAPICallback<DiuitChat>()
-    {
-        @Override
-        public void onFailure(final int code, final JSONObject resultObj)
-        {
-            // if failure, it will return error code and result        
-        }
-        @Override
-        public void onSuccess(final DiuitChat diuitChat)
-        {
-            // if success, it will return the DiuitChat object
-        }
-
-    });
-```
 
 ### iOS
 
@@ -607,7 +611,7 @@ To leave a chat-room, you emit a "chats/leave" message, with the following paylo
 //chatId : the id of the chat you want to leave
 DiuitAPI.current?.leaveChat(chatId){ code, result in
     if code != 200 {
-        // if code doesn't return 200, you can check result to get error message   
+        // if code doesn't return 200, you can check result to get error message
     }
 }
 ```
@@ -618,29 +622,6 @@ DiuitAPI.current?.leaveChat(chatId){ code, result in
 
 
 ## Updating Chat Room Meta Info
-
-You can update a chat-room's meta info by using this command.
-
-A chatroom's meta info can be used to hold anything application specific to the
-chatroom. Command things to put in it is the name of the chat-room. You can also
-implement chat-room notes by including the notes info in this key.
-
-### Socket.IO
-
-To update the chat-room's information, emit a "chats/meta/update" message, with
-the following payload:
-
-<aside class='notice'><br/>
-{<br/>
-&nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
-&nbsp;&nbsp;meta: { ${CHATROOM_META} }<br/>
-}
-</aside>
-
-Note that you have to modify the whole meta as whole; you cannot just update
-individual keys.
-
-### Android
 
 ```java
 
@@ -653,19 +634,17 @@ individual keys.
         @Override
         public void onFailure(final int code, final JSONObject resultObj)
         {
-            // if failure, it will return error code and result  
+            // if failure, it will return error code and result
         }
 
         @Override
         public void onSuccess(DiuitChat diuitChat)
         {
-            // if success, it will return the DiuitChat object            
+            // if success, it will return the DiuitChat object
         }
     });
 
 ```
-
-### iOS
 
 ```objective_c
 // chat(DUChat)               : the chat you want to update
@@ -689,31 +668,28 @@ DiuitAPI.current?.updateChat(chat, meta:[YOUR_META]){ code, result in
 }
 ```
 
+You can update a chat-room's meta info by using this command.
 
-## Updating Chat Room White List
-
-You can use this command to update a chat-room's white list.
-
-The white-list controls who is allowed to join the chat-room. Setting this value
-to `null` allows all people to join the chat-room, and setting this value to an
-array of user ids will allow only people in the array to join the chatroom.
-
-Note that removing a person from the white list doesn't kick a person
-from the chat-room if he's already joined to the chat room.
+A chatroom's meta info can be used to hold anything application specific to the
+chatroom. Command things to put in it is the name of the chat-room. You can also
+implement chat-room notes by including the notes info in this key.
 
 ### Socket.IO
 
-To update the chat-room's **whiteList**, emit a "chats/whiteList/update"
-message, with the following payload:
+To update the chat-room's information, emit a "chats/meta/update" message, with
+the following payload:
 
-<aside class='note'><br/>
+<aside class='notice'><br/>
 {<br/>
 &nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
-&nbsp;&nbsp;whiteList: [ ${USER_ID_1} ]<br/>
+&nbsp;&nbsp;meta: { ${CHATROOM_META} }<br/>
 }
 </aside>
 
-### Android
+Note that you have to modify the whole meta as whole; you cannot just update
+individual keys.
+
+## Updating Chat Room White List
 
 ```java
 
@@ -725,19 +701,17 @@ message, with the following payload:
         @Override
         public void onFailure(final int code, final JSONObject resultObj)
         {
-            // if failure, it will return error code and result  
+            // if failure, it will return error code and result
         }
 
         @Override
         public void onSuccess(DiuitChat diuitChat)
         {
-            // if success, it will return the DiuitChat object            
+            // if success, it will return the DiuitChat object
         }
     });
 
 ```
-
-### iOS
 
 ```objective_c
 // chat(DUChat)    : the chat you want to update
@@ -761,30 +735,28 @@ DiuitAPI.current?.updateWhiteList(chat, users: [USER_SERIALS]){ code, result in
 }
 ```
 
-## Kick a User from Chat Room
+You can use this command to update a chat-room's white list.
 
-Use this command to kick a user from chat room.
+The white-list controls who is allowed to join the chat-room. Setting this value
+to `null` allows all people to join the chat-room, and setting this value to an
+array of user ids will allow only people in the array to join the chatroom.
 
-Note that kicking a user from the chat room doesn't change the chatRoom's
-**whiteList**. So if the user is in the white list of the chat room, he can
-join back to the room himself.
-
-To completely ban a user from the chat room, emit a "chat/whiteList/update"
-first, before kicking him out.
+Note that removing a person from the white list doesn't kick a person
+from the chat-room if he's already joined to the chat room.
 
 ### Socket.IO
 
-To kick a user from the chat room, emit a "chat/kick" message, with the
-following payload
+To update the chat-room's **whiteList**, emit a "chats/whiteList/update"
+message, with the following payload:
 
 <aside class='note'><br/>
 {<br/>
 &nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
-&nbsp;&nbsp;userId: ${TARGET_USER_TO_KICK}<br/>
+&nbsp;&nbsp;whiteList: [ ${USER_ID_1} ]<br/>
 }
 </aside>
 
-### Android
+## Kick a User from Chat Room
 
 ```java
 
@@ -803,8 +775,6 @@ following payload
         }
     });
 ```
-
-### iOS
 
 ```objective_c
 // chat(DUChat) :
@@ -827,53 +797,41 @@ DiuitAPI.current?.kick(chat, user: user) { code, result in
     }
 }
 ```
+Use this command to kick a user from chat room.
 
-## Receiving a Message
+Note that kicking a user from the chat room doesn't change the chatRoom's
+**whiteList**. So if the user is in the white list of the chat room, he can
+join back to the room himself.
 
-Add listener to this events to receive real-time messaging from the chatroom.
-
-When a user send a message to the chatroom you are joined in. You will receive
-a "message" event.
-
-The message will have the following format:
-
-<aside class='note'><br/>
-{<br/>
-&nbsp;&nbsp;chatId: ${CHATROOM_ID},<br/>
-&nbsp;&nbsp;data: ${SOME_DATA},<br/>
-&nbsp;&nbsp;mime: ${DATA_MIME_TYPE},<br/>
-&nbsp;&nbsp;encoding: ${DATA_ENCOIDNG},<br/>
-&nbsp;&nbsp;meta: {$USER_SPECIFIC_META_FIELD}<br/>
-}
-</aside>
-
-For text message, the mime type will be **text/plain** and the encoding will be
-**utf8**, and the **data** will be the text message itself.
-
-For rich media messages, the **mime** type will be the mime type of the media
-and **encoding** will be **url**, and  **data** will contain a url pointing to
-the rich media itself.
+To completely ban a user from the chat room, emit a "chat/whiteList/update"
+first, before kicking him out.
 
 ### Socket.IO
 
-Listen to the `message` event
+To kick a user from the chat room, emit a "chat/kick" message, with the
+following payload
 
-### Android
+<aside class='note'><br/>
+{<br/>
+&nbsp;&nbsp;chatId: ${CHATROOM_ID}<br/>
+&nbsp;&nbsp;userId: ${TARGET_USER_TO_KICK}<br/>
+}
+</aside>
+
+## Receiving a Message
 
 ```java
-    // If you want to receive messages , you have to register receiving listener with your object  
-    // This object could be Activity, Fragment , or any kind of object   
+    // If you want to receive messages , you have to register receiving listener with your object
+    // This object could be Activity, Fragment , or any kind of object
     // Once someone send you a message , you would get these in the callback
 
     DiuitAPI.current.registerReceivingMessage(DiuitAPICallback<DiuitMessage> callback)
 
-    // Before you leave the activity, or change the object to be `NULL`, you have to unregister this listener  
+    // Before you leave the activity, or change the object to be `NULL`, you have to unregister this listener
 
     DiuitAPI.current.unregisterReceivingMessage(DiuitAPICallback<DiuitMessage> callback)
 
 ```
-
-### iOS
 
 ```objective_c
 // If you want to receive all messages , you have to add observer for notification named "messageReceived"
@@ -907,28 +865,37 @@ NSNotificationCenter.defaultCenter().addObserverForName("messageReceived.5566", 
 }
 ```
 
-## Send a Text Message
+Add listener to this events to receive real-time messaging from the chatroom.
 
-Use this command to send a text message to the chat-room.
+When a user send a message to the chatroom you are joined in. You will receive
+a "message" event.
 
-### Socket.IO
+The message will have the following format:
 
-To send a message to a chat room, emit a "message/create" message, with the
-following payload
-
-<aside class='note'>
+<aside class='note'><br/>
 {<br/>
 &nbsp;&nbsp;chatId: ${CHATROOM_ID},<br/>
-&nbsp;&nbsp;data: ${SOME_TEXT_TO_SEND},<br/>
-&nbsp;&nbsp;mime: 'text/plain',<br/>
-&nbsp;&nbsp;encoding: 'utf8',<br/>
+&nbsp;&nbsp;data: ${SOME_DATA},<br/>
+&nbsp;&nbsp;mime: ${DATA_MIME_TYPE},<br/>
+&nbsp;&nbsp;encoding: ${DATA_ENCOIDNG},<br/>
 &nbsp;&nbsp;meta: {$USER_SPECIFIC_META_FIELD}<br/>
 }
 </aside>
 
-> There three main type of message , text, photo, and file.
-> According different type, you have to call different API.
-> Example, if you want to send a text to your friends:
+For text message, the mime type will be **text/plain** and the encoding will be
+**utf8**, and the **data** will be the text message itself.
+
+For rich media messages, the **mime** type will be the mime type of the media
+and **encoding** will be **url**, and  **data** will contain a url pointing to
+the rich media itself.
+
+### Socket.IO
+
+Listen to the `message` event
+
+## Send a Text Message
+
+Use this command to send a text message to the chat-room.
 
 ```java
 
@@ -945,13 +912,13 @@ following payload
         @Override
         public void onFailure(final int code, final JSONObject resultObj)
         {
-            // if failure, it will return error code and result                
+            // if failure, it will return error code and result
         }
     });
 ```
 
 ```objective_c
-// @"YOUR_MESSAGE"(NSString) : your text message 
+// @"YOUR_MESSAGE"(NSString) : your text message
 // chat(DUChat)              : chat to which you want to send messages
 
 [DiuitAPI.current sendToChat:chat text:@"YOUR_MESSAGE" done:^(NSInteger statusCode, id result) {
@@ -971,6 +938,25 @@ DiuitAPI.current?.sendToChat(chat!, text: text) { code, message in
     }
 }
 ```
+
+### Socket.IO
+
+To send a message to a chat room, emit a "message/create" message, with the
+following payload
+
+<aside class='note'>
+{<br/>
+&nbsp;&nbsp;chatId: ${CHATROOM_ID},<br/>
+&nbsp;&nbsp;data: ${SOME_TEXT_TO_SEND},<br/>
+&nbsp;&nbsp;mime: 'text/plain',<br/>
+&nbsp;&nbsp;encoding: 'utf8',<br/>
+&nbsp;&nbsp;meta: {$USER_SPECIFIC_META_FIELD}<br/>
+}
+</aside>
+
+> There three main type of message , text, photo, and file.
+> According different type, you have to call different API.
+> Example, if you want to send a text to your friends:
 
 ## Send a Rich Media Message
 
@@ -997,7 +983,7 @@ with the following payload
 
     // @param bitmap , the bitmap of your photo
     // @param chat, choose a chat which you want to send
-    DiuitAPI.current.sendToChat(DiuitChat chat, Bitmap bitmap, new DiuitAPICallback<DiuitMessage>(){...})  
+    DiuitAPI.current.sendToChat(DiuitChat chat, Bitmap bitmap, new DiuitAPICallback<DiuitMessage>(){...})
 
 ```
 
@@ -1016,7 +1002,7 @@ with the following payload
 
 ```swift
 // YOUR_IMAGE(UIImage): your image message
-// chat(DUChat)       : chat to which you want to send 
+// chat(DUChat)       : chat to which you want to send
 
 DiuitAPI.current?.sendToChat(chat, image: YOUR_IMAGE) { code, message in
     if code != 200 {
@@ -1036,7 +1022,7 @@ DiuitAPI.current?.sendToChat(chat, image: YOUR_IMAGE) { code, message in
 ```
 
 ```objective_c
-// FILE_PATH(NSString) : path of your file message 
+// FILE_PATH(NSString) : path of your file message
 // chat(DUChat)        : chat to which you want to send messages
 // meta                : meta you'd like to append, here we pass the file name in meta
 
@@ -1048,7 +1034,7 @@ DiuitAPI.current?.sendToChat(chat, image: YOUR_IMAGE) { code, message in
 ```
 
 ```swift
-// FILE_PATH(String) : path of your file message 
+// FILE_PATH(String) : path of your file message
 // chat(DUChat)      : chat to which you want to send messages
 // meta              : meta you'd like to append, here we pass the file name in meta
 
@@ -1064,33 +1050,6 @@ DiuitAPI.current?.sendToChat(chat!, file: FILE_PATH!, meta: ["name":"sampleFile.
 ## List Messages In a Chat Room
 
 Use this command to list historic messages in the chat-room.
-
-### Socket.IO
-
-To list messages in a chat room, emit a "messages/list" message, with the
-following payload
-
-<aside class='note'>
-{<br/>
-&nbsp;&nbsp;chatId: ${CHATROOM_ID},<br/>
-&nbsp;&nbsp;page: ${PAGE_NUMBER_TO_GET},<br/>
-&nbsp;&nbsp;count: ${MESSAGES_PER_PAGE},<br/>
-&nbsp;&nbsp;before: ${TIMESTAMP_IN_SEC}<br/>
-}
-</aside>
-
-Response will contain **count** number of message before the timestamp specified
-in **before** field, skipping over **page** * **count** number of messages.
-(In another word, page start at 0)
-
-Messages are returned in reverse chronological order, with the newest message
-returned first.
-
-So, in general, you call the API with the current timestamp to obtain all the
-latest messages, and required, call the API with an older timestamp to obtain
-older messages.
-
-### Android
 
 ```java
 
@@ -1111,8 +1070,6 @@ older messages.
     });
 
 ```
-
-### iOS
 
 ```objective_c
 // chat(DUChat)    : the chat you want to query
@@ -1143,24 +1100,36 @@ DiuitAPI.current?.listMessagesInChat(chat) { code, result in
 }
 ```
 
+### Socket.IO
+
+To list messages in a chat room, emit a "messages/list" message, with the
+following payload
+
+<aside class='note'>
+{<br/>
+&nbsp;&nbsp;chatId: ${CHATROOM_ID},<br/>
+&nbsp;&nbsp;page: ${PAGE_NUMBER_TO_GET},<br/>
+&nbsp;&nbsp;count: ${MESSAGES_PER_PAGE},<br/>
+&nbsp;&nbsp;before: ${TIMESTAMP_IN_SEC}<br/>
+}
+</aside>
+
+Response will contain **count** number of message before the timestamp specified
+in **before** field, skipping over **page** * **count** number of messages.
+(In another word, page start at 0)
+
+Messages are returned in reverse chronological order, with the newest message
+returned first.
+
+So, in general, you call the API with the current timestamp to obtain all the
+latest messages, and required, call the API with an older timestamp to obtain
+older messages.
+
 ## Mark a Message as being Read
 
 Use this command to mark a message as read by the currently logged in user. Note
 that you do not have to use this command. It's perfectly fine if you want to
 implement a chat system without read indications.
-
-### Socket.IO
-
-To mark a message as being read, emit "messages/markAsRead" message, with the
-following payload.
-
-<aside class='note'>
-{<br/>
-&nbsp;&nbsp;messageId: ${MESSAGE_ID}<br/>
-}
-</aside>
-
-### Android
 
 ```java
 
@@ -1181,8 +1150,6 @@ following payload.
 
 ```
 
-### iOS
-
 ```objective_c
 // message(DUMessage) : message to be marked
 
@@ -1202,6 +1169,17 @@ DiuitAPI.current?.markAsReadWithMessage(message) { code, result in
     }
 }
 ```
+
+### Socket.IO
+
+To mark a message as being read, emit "messages/markAsRead" message, with the
+following payload.
+
+<aside class='note'>
+{<br/>
+&nbsp;&nbsp;messageId: ${MESSAGE_ID}<br/>
+}
+</aside>
 
 ## System Messages
 
