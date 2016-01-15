@@ -1,6 +1,6 @@
 # Errors
 
-The Diuit API uses the following error codes:
+Diuit uses conventional HTTP response codes to indicate the success or failure of an API request. In the following we list a table of error codes we’ll return on our platform:
 
 
 Error Code | Meaning
