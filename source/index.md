@@ -83,7 +83,7 @@ You can either use Maven or manually add a Jar to your project.
 3. Copy the **diuit-api-VERSION.jar** folder into app/libs
 4. In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files
 
-## Initialization
+## Start Connection
 
 ```objective_c
 #import <DUMessaging/DUMessaging-Swift.h>
@@ -113,7 +113,7 @@ func application(application: UIApplication, didFinishLaunchingWithOptions launc
             // Your own code to create the view
             // ...
 
-            DiuitAPI.current = new DiuitAPI( DIUIT_APP_ID, DIUIT_APP_KEY );
+            DiuitMessagingAPI.set( DIUIT_APP_ID, DIUIT_APP_KEY );
         }
 
         // Probably more methods
