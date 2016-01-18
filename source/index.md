@@ -68,7 +68,7 @@ Use Cocoapods to retrieve the framework
 
 ### Android
 
-    You can either use Maven or manually add a Jar to your project.
+    You can either use Maven to your project.
 
 **Maven**
 
@@ -79,12 +79,6 @@ Use Cocoapods to retrieve the framework
 2. Add compile **'com.duolc.diuitapi:message:0.2.1'** to the dependencies of your project
 3. In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files
 
-**Jar**
-
-1. Download the release package and unzip
-2. Create a new project with Android Studio
-3. Copy the **diuit-api-VERSION.jar** folder into app/libs
-4. In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files
 
 ## Setup
 
