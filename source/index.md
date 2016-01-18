@@ -280,6 +280,26 @@ Diuit is a powerful API that enables you to add in-app messaging with very littl
 
 ## Authentication for Socket.IO
 
+> Example 
+
+```swift
+// token : Auth token of the login device
+DUMessaging.loginWithAuthToken(token) { code, result in
+  if code != 200 {
+    // handle error
+     }
+}
+```
+
+```objective_c
+// @"TOKEN" : Auth token of the login device
+[DUMessaging loginWithAuthToken:@"TOKEN" completion:^(NSInteger statusCode, id result){
+  if (statusCode != 200) {
+    // handle error
+  }
+}];
+```
+
 For iOS and Android, we have completed the authentication for you in SDK; for direct Socket.IO interface, you will start the real-time messaging session by opening a Socket.IO connection to our server `http://www.diuit.net`.
 
 After the Socket.IO session is connected, you emit a `authenticate` message
@@ -1112,8 +1132,27 @@ When a member in the chat room updates the chat room’s meta field, all members
 Diuit API provides the easiest way for you to manage your users and enables chat room function in your app.
 
 
-## DiuitMessagingAPI
+## Messaging API
 
+```swift
+// class DUMessaging
+
+// set your appId and your appKey by the class method:
+public class func setAppId(appId: String, appKey: String)
+
+//login with auth token of your device by the class method:
+public class func loginWithAuthToken(authToken: String, done: DUMessagingCallback?)
+```
+
+```objective_c
+// @interface DUMessaging
+
+// set your appId and your appKey by the class method:
++(void)setAppId:(NSString * __nonnull)appId appKey:(NSString * __nonnull)appKey;
+
+//login with auth token of your device by the class method: 
++(void)loginWithAuthToken:(NSString * __nonnull)authToken completion:(void (^ __nullable)(NSInteger, id __nullable))completion;
+```
 ```java
     static void set(String diuitAppId, String diuitAppKey)
 
@@ -1127,12 +1166,37 @@ Diuit API provides the easiest way for you to manage your users and enables chat
 
 
 ```
-
-DiuitMessagingAPI is designed in singleton pattern. By calling the function DiuitMessagingAPI, you complete the authenticaion procedure and are ready to send messages.
-
+There are two must-to-do class methods : first one is to set appId and appKey, and the second one is to login with device auth token.
 
 
-## User Object
+
+## User 
+
+```swift
+// all properties are read-only
+
+// user's id
+public let id: Int?
+
+// user's serial
+public let serial: String!
+
+// user's devices
+public let devices: [DUDevice]?
+```
+
+```objective_c
+// all properties are read-only
+
+// user's id
+@property (nonatomic, readonly) NSInteger id;
+
+// user's serial
+@property (nonatomic, readonly) NSString * __null_unspecified serial;
+
+// user's devices
+@property (nonatomic, readonly) NSArray<DUDevice *> * __nullable devices;
+```
 
 ```java
     //@param Integer id, the user's id
@@ -1142,7 +1206,7 @@ DiuitMessagingAPI is designed in singleton pattern. By calling the function Diui
 After calling this function `loginWithAuthToken`, Diuit server will return the current` DiuitUser`, which contains the user’s id, serialNumber and all devices she owns.
 
 
-## Device Object
+## Device
 
 ```java
     //@param Integer id, the id of the device
@@ -1154,7 +1218,34 @@ After calling this function `loginWithAuthToken`, Diuit server will return the c
 After calling this function `loginWithAuthToken`, Diuit server will return the current `DiuitDevice`, which contains the information of the device, including device id, serial number, platform, and status.
 
 
-## Chat Object
+## Chatroom
+```swift
+// chatroom's id
+public let id: Int
+// last one message
+public var lastMessage: DUMessage?
+// users' serials of this chatroom, read-only
+public var members: [String]?
+// serials of users allowed to be in this chatroom, read-only
+public var whiteList: [String]?
+// meta of the chatroom, read-only. If you want to update meta, just call instance method 'updateMeta'
+public var meta: [String : AnyObject]?
+
+```
+
+```objective_c
+
+// chatroom's id
+@property (nonatomic, readonly) NSInteger id;
+// last one message
+@property (nonatomic, strong) DUMessage * __nullable lastMessage;
+// users' serials of this chatroom
+@property (nonatomic, readonly) NSArray<NSString *> * __nullable members;
+// serials of users allowed to be in this chatroom
+@property (nonatomic, readonly) NSArray<NSString *> * __nullable whiteList;
+// meta of the chatroom, read-only. If you want to update meta, just call instance method 'updateMeta'
+@property (nonatomic, readonly) NSDictionary<NSString *, id> * __nullable meta;
+```
 
 ```java
     //@param Integer id, the id of the chat room
@@ -1174,7 +1265,52 @@ The `Chat` class models a chat room between two or more participants. A chat roo
 
 
 
-## Message Object
+## Message
+```swift
+// all properties are read-only
+
+// message's id
+public let id: Int
+// message's mime
+public let mime: String?
+// message's encoding
+public let encoding: String?
+// message's content
+public let data: String?
+// message's creation date
+public let createdAt: NSDate?
+// the chatroom the message belongs to
+public let chat: DUChat?
+// the user who sent the message
+public let senderUser: DUUser?
+// meta of the message, read-only
+public var meta: [String : AnyObject]?
+// serials of the users who have read this message. If you want to update this array, use the instance method 'markAsRead'
+public var reads: [String]?
+```
+
+```objective_c
+// all properties are read-only
+
+// message's id
+@property (nonatomic, readonly) NSInteger id;
+// message's mime
+@property (nonatomic, readonly) NSString * __nullable mime;
+// message's encoding
+@property (nonatomic, readonly) NSString * __nullable encoding;
+// message's content
+@property (nonatomic, readonly) NSString * __nullable data;
+// message's creation date
+@property (nonatomic, readonly, strong) NSDate * __nullable createdAt;
+// the chatroom the message belongs to
+@property (nonatomic, readonly, strong) DUChat * __nullable chat;
+// the user who sent the message
+@property (nonatomic, readonly, strong) DUUser * __nullable senderUser;
+// meta of the message, read-only
+@property (nonatomic, readonly, copy) NSDictionary<NSString *, id> * __nullable meta;
+// serials of the users who have read this message. If you want to update this array, use the instance method 'markAsRead'
+@property (nonatomic, readonly, copy) NSArray<NSString *> * __nullable reads;
+```
 
 ```java
     //@param Integer id, the id of the message
@@ -1193,3 +1329,7 @@ The `Message` class represents a message in a chat room (modeled by the `Chat` c
 ## Callback
 
 Callback attaches to each Diuit API function. Depending on different types of function, callback will return different types of result. As an event happenes, for example - when a user joins a chat room, a message being sent, or a messages marked as read - DiuitAPI will receive an event notice on the main thread by default. And then the callback, running in the background, responses the result in the background thread.
+
+```swfit
+public typealias DUMessagingCallback = (Int, AnyObject?) -> Void
+```
