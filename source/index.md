@@ -21,6 +21,7 @@ search: true
 
 Diuit provides a simple and powerful API to enable real-time communication in web and mobile apps, or any other Internet connected device.
 This document provides a guide on how to get you start integrating and interacting with Diuit API.  
+This document update: 2016-01-18 10:00:00+00
 
 ## Prerequisites
 ### iOS
