@@ -21,13 +21,14 @@ search: true
 
 Diuit provides a simple and powerful API to enable real-time communication in web and mobile apps, or any other Internet connected device.
 This document provides a guide on how to get you start integrating and interacting with Diuit API.  
-This document update: 2016-01-18 10:00:00+00
+
+This document was updated at: 2016-01-18 10:00:00+00
 
 ## Prerequisites
 ### iOS
 
 - Support iOS 8.0+
-- Not available for simulator 
+- Not available for simulator
 - OS X support coming soon :)
 
 ### Android
@@ -1108,7 +1109,8 @@ When a member in the chat room updates the chat room’s meta field, all members
 
 # Class
 
-By default
+Diuit API provides the easiest way for you to manage your users and enables chat room function in your app.
+
 
 ## DiuitMessagingAPI
 
@@ -1126,7 +1128,7 @@ By default
 
 ```
 
-DiuitMessagingAPI is designed for singleton pattern. Generates a new DiuitMessageAPI, ready for authenticaion and sending messages.
+DiuitMessagingAPI is designed in singleton pattern. By calling the function DiuitMessagingAPI, you complete the authenticaion procedure and are ready to send messages.
 
 
 
@@ -1137,8 +1139,7 @@ DiuitMessagingAPI is designed for singleton pattern. Generates a new DiuitMessag
     //@param String serial, the user's serialNumber
     //@param List<DiuitDevice> DiuitDeviceList, all devices which the user owns
 ```
-After calling function **loginWithAuthToken**, Diuit server will return the current `DiuitUser`. It contains the user's id, serialNumber and all devices he/she owns.
-
+After calling this function `loginWithAuthToken`, Diuit server will return the current` DiuitUser`, which contains the user’s id, serialNumber and all devices she owns.
 
 
 ## Device Object
@@ -1150,7 +1151,7 @@ After calling function **loginWithAuthToken**, Diuit server will return the curr
     //@param String status, the status of the device
     //@param String authToken, the auth token of the device
 ```
-After calling function **loginWithAuthToken**, Diuit server will return the current `DiuitDevice`. It contains the information of the device, including id, serial, platform, and status.
+After calling this function `loginWithAuthToken`, Diuit server will return the current `DiuitDevice`, which contains the information of the device, including device id, serial number, platform, and status.
 
 
 ## Chat Object
@@ -1169,7 +1170,8 @@ After calling function **loginWithAuthToken**, Diuit server will return the curr
     void removeMember(String serial)
 
 ```
-The `Chat` class models a chat room between two or more participants within Diuit. A chat room is an on-goinh stream of messages (modeled by the `Message` class) synchronized among all participants.
+The `Chat` class models a chat room between two or more participants. A chat room is an on-going stream of messages (modeled by the `Message` class) synchronized among all participants.
+
 
 
 ## Message Object
@@ -1185,9 +1187,9 @@ The `Chat` class models a chat room between two or more participants within Diui
     //@param List<String> reads, all readers' serialNumber
 
 ```
-The `Message` class represents a message within a chat room (modeled by the `Chat` class) between two or more participants within Diuit.
+The `Message` class represents a message in a chat room (modeled by the `Chat` class) between two or more participants.
 
 
 ## Callback
 
-Callback attach to each Diuit API function. According different type of function, Callback will return different type of result. For example, a chat room may get inserted, or a message may get sent or marked as readed. DiuitAPI receives events on the main thread by default. The callback, running in BackgroundThread responses result on a BackgroundThread.
+Callback attaches to each Diuit API function. Depending on different types of function, callback will return different types of result. As an event happenes, for example - when a user joins a chat room, a message being sent, or a messages marked as read - DiuitAPI will receive an event notice on the main thread by default. And then the callback, running in the background, responses the result in the background thread.
