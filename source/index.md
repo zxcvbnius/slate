@@ -1113,7 +1113,7 @@ When a member in the chat room updates the chat room’s meta field, all members
 
 
 
-# Module
+# Class
 
 By default
 
@@ -1195,6 +1195,6 @@ The `Chat` class models a chat room between two or more participants within Diui
 The `Message` class represents a message within a chat room (modeled by the `Chat` class) between two or more participants within Diuit.
 
 
-## DiuitMessagingAPICallback
+## Callback
 
-DiuitMessagingAPICallback attach to each Diuit API function. According different type of function, DiuitMessagingAPICallback will return different type of result. For example, a chat room may get inserted, or a message may get sent or marked as readed. DiuitAPI receives events on the main thread by default. The callback , running in BackgroundThread responses result on a BackgroundThread.
+Callback attach to each Diuit API function. According different type of function, Callback will return different type of result. For example, a chat room may get inserted, or a message may get sent or marked as readed. DiuitAPI receives events on the main thread by default. The callback, running in BackgroundThread responses result on a BackgroundThread.
