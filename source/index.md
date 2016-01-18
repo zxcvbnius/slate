@@ -347,7 +347,7 @@ DiuitAPI.current?.listChats(){ code, result in
 ```
 
 ```shell
-    // Emit the "chats/list" message to server, 
+    // Emit the "chats/list" message to server,
     // with no params, and server will respond with
     {   
         "chats": [...array of chats...]
@@ -410,7 +410,7 @@ if code == 200 {
 ```
 
 ```shell
-    // Emit the "chats/chreate" message to the server 
+    // Emit the "chats/chreate" message to the server
     // with the following parameters:
     {
         members: [ ${USER_ID_1}, ${USER_ID_2} ..],
@@ -486,7 +486,7 @@ if code == 200 {
 ```
 
 ```shell
-    // To join a chat-room, you emit a "chats/join" message, 
+    // To join a chat-room, you emit a "chats/join" message,
     // with the following payload.
     {
         chatId: ${CHATROOM_ID}
@@ -538,7 +538,7 @@ if code != 200 {
 Leave a chat room to stop receiving messages in it.
 
 ```shell
-    // To leave a chat-room, you emit a "chats/leave" message, 
+    // To leave a chat-room, you emit a "chats/leave" message,
     // with the following payload.
     {
         chatId: ${CHATROOM_ID}
@@ -600,8 +600,8 @@ A chat room’s meta info can be used to hold anything application specific to t
 
 
 ```shell
-    // To update the chat-room’s information, 
-    // emit a "chats/meta/update" message, 
+    // To update the chat-room’s information,
+    // emit a "chats/meta/update" message,
     // with the following payload.
     {
         chatId: ${CHATROOM_ID}
@@ -664,8 +664,8 @@ Note that if an user has already joined the chat room, excluding her from the Wh
 
 
 ```shell
-    // To update the **whiteList** of chat room, 
-    // emit a "chats/whiteList/update" message, 
+    // To update the **whiteList** of chat room,
+    // emit a "chats/whiteList/update" message,
     // with the following payload.
     {
         chatId: ${CHATROOM_ID}
@@ -722,8 +722,8 @@ To completely block a user from joining the chat room, please emit a "chat/white
 
 
 ```shell
-    // To kick a user from the chat room, 
-    // emit a "chat/kick" message, 
+    // To kick a user from the chat room,
+    // emit a "chat/kick" message,
     // with the following payload
     {
         chatId: ${CHATROOM_ID}
@@ -780,7 +780,7 @@ NSNotificationCenter.defaultCenter().addObserverForName("messageReceived.5566", 
 
 ```shell
     // Listen to the `message` event
-    
+
     {
         chatId: ${CHATROOM_ID},
         data: ${SOME_DATA},
@@ -859,8 +859,8 @@ DiuitAPI.current?.sendToChat(chat!, text: text) { code, message in
 
 ```shell
 
-    // To send a message to a chat room, 
-    // emit a "message/create" message, 
+    // To send a message to a chat room,
+    // emit a "message/create" message,
     // with the following payload
     {
         chatId: ${CHATROOM_ID},
@@ -911,8 +911,8 @@ if code != 200 {
 ```
 ```shell
 
-    // To send a rich media message to a chat room, 
-    // emit a "messages/create" message, 
+    // To send a rich media message to a chat room,
+    // emit a "messages/create" message,
     // with the following payload.
     {
         chatId: ${CHATROOM_ID},
@@ -1016,7 +1016,7 @@ DiuitAPI.current?.listMessagesInChat(chat) { code, result in
 
 ```shell
 
-    // To list messages in a chat room, 
+    // To list messages in a chat room,
     // emit a "messages/list" message, with the following payload.
     {
         chatId: ${CHATROOM_ID},
@@ -1076,8 +1076,8 @@ DiuitAPI.current?.markAsReadWithMessage(message) { code, result in
 ```
 
 ```shell
-    // To mark a message as read, 
-    // emit "messages/markAsRead" message, 
+    // To mark a message as read,
+    // emit "messages/markAsRead" message,
     // with the following payload.
     {
         messageId: ${MESSAGE_ID}
@@ -1109,3 +1109,91 @@ When a user is kicked from a chat room, all members in the chat room will receiv
 ### Chat Room Meta Update
 
 When a member in the chat room updates the chat room’s meta field, all members of the chat room will receive a message with type **meta.updated**, and a single key **meta** providing the latest state of the chat room’s meta field.
+
+
+
+# Module
+
+By default
+
+## DiuitMessagingAPI
+
+```java
+    static void set(String diuitAppId, String diuitAppKey)
+
+    //@param `diuitAppId`, the id of client app  
+    //@param `diuitAppKey`, the key of client app
+
+    static void loginWithAuthToken(DiuitMessagingAPICallback<JSONObject> callback, String authToken)
+
+    //@param `authToken`, the auth of the device which is provided by client server  
+    //@param `callback`, after logging in, Diuit server will return a JSONObject which contains the information about the device itself  
+
+
+```
+
+DiuitMessagingAPI is designed for singleton pattern. Generates a new DiuitMessageAPI, ready for authenticaion and sending messages.
+
+
+
+## User Object
+
+```java
+    //@param Integer id, the user's id
+    //@param String serial, the user's serialNumber
+    //@param List<DiuitDevice> DiuitDeviceList, all devices which the user owns
+```
+After calling function **loginWithAuthToken**, Diuit server will return the current `DiuitUser`. It contains the user's id, serialNumber and all devices he/she owns.
+
+
+
+## Device Object
+
+```java
+    //@param Integer id, the id of the device
+    //@param String serial, the serialNumber of the device
+    //@param String platform, the platform of the device
+    //@param String status, the status of the device
+    //@param String authToken, the auth token of the device
+```
+After calling function **loginWithAuthToken**, Diuit server will return the current `DiuitDevice`. It contains the information of the device, including id, serial, platform, and status.
+
+
+## Chat Object
+
+```java
+    //@param Integer id, the id of the chat room
+    //@param List<String> memberSerials, all memeber's serialNumber in the chat room
+    //@param JSONObject meta, the meta of the chat room
+    //@param DiuitMessage lastMessage, the last message in the chat room, you have to update by your self
+    //@param List<String> whitList, the whitList of the chat room
+
+    // function :
+    // By calling this function, the serial would be added into memberSerials
+    void addMember(String serial)
+    // By calling this function, the serial would be removed from the memberSerials
+    void removeMember(String serial)
+
+```
+The `Chat` class models a chat room between two or more participants within Diuit. A chat room is an on-goinh stream of messages (modeled by the `Message` class) synchronized among all participants.
+
+
+## Message Object
+
+```java
+    //@param Integer id, the id of the message
+    //@param String mime, the mime of the message
+    //@param String encoding, the encoding of the message
+    //@param JSONObject meta, the meta of the message
+    //@param Date createAt, the created time of the message
+    //@param DiuitChat diuitChat, the message in the chat room
+    //@param DiuitUser sender, the sender of the message
+    //@param List<String> reads, all readers' serialNumber
+
+```
+The `Message` class represents a message within a chat room (modeled by the `Chat` class) between two or more participants within Diuit.
+
+
+## DiuitMessagingAPICallback
+
+DiuitMessagingAPICallback attach to each Diuit API function. According different type of function, DiuitMessagingAPICallback will return different type of result. For example, a chat room may get inserted, or a message may get sent or marked as readed. DiuitAPI receives events on the main thread by default. The callback , running in BackgroundThread responses result on a BackgroundThread.
