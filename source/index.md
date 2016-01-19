@@ -280,7 +280,7 @@ Diuit is a powerful API that enables you to add in-app messaging with very littl
 
 ## Authentication for Socket.IO
 
-> Example 
+> Example
 
 ```swift
 // token : Auth token of the login device
@@ -1150,7 +1150,7 @@ public class func loginWithAuthToken(authToken: String, done: DUMessagingCallbac
 // set your appId and your appKey by the class method:
 +(void)setAppId:(NSString * __nonnull)appId appKey:(NSString * __nonnull)appKey;
 
-//login with auth token of your device by the class method: 
+//login with auth token of your device by the class method:
 +(void)loginWithAuthToken:(NSString * __nonnull)authToken completion:(void (^ __nullable)(NSInteger, id __nullable))completion;
 ```
 ```java
@@ -1170,7 +1170,7 @@ There are two must-to-do class methods : first one is to set appId and appKey, a
 
 
 
-## User 
+## User
 
 ```swift
 // all properties are read-only
@@ -1200,8 +1200,11 @@ public let devices: [DUDevice]?
 
 ```java
     //@param Integer id, the user's id
+    private int id;
     //@param String serial, the user's serialNumber
-    //@param List<DiuitDevice> DiuitDeviceList, all devices which the user owns
+    private String serial;
+    //@param List<DiuitDevice> devicesList, all devices which the user owns
+    private List<DiuitDevice> deviceList;
 ```
 After calling this function `loginWithAuthToken`, Diuit server will return the current` DiuitUser`, which contains the user’s id, serialNumber and all devices she owns.
 
@@ -1210,10 +1213,15 @@ After calling this function `loginWithAuthToken`, Diuit server will return the c
 
 ```java
     //@param Integer id, the id of the device
+    private int id;
     //@param String serial, the serialNumber of the device
+    private String serial;
     //@param String platform, the platform of the device
+    private String platform;
     //@param String status, the status of the device
+    private String status;
     //@param String authToken, the auth token of the device
+    private String authToken;
 ```
 After calling this function `loginWithAuthToken`, Diuit server will return the current `DiuitDevice`, which contains the information of the device, including device id, serial number, platform, and status.
 
@@ -1248,11 +1256,17 @@ public var meta: [String : AnyObject]?
 ```
 
 ```java
+
     //@param Integer id, the id of the chat room
+    private int id;
     //@param List<String> memberSerials, all memeber's serialNumber in the chat room
+    private List<String> memberSerials;
     //@param JSONObject meta, the meta of the chat room
+    private JSONObject meta;
     //@param DiuitMessage lastMessage, the last message in the chat room, you have to update by your self
+    private DiuitMessage lastDiuitMessage;
     //@param List<String> whitList, the whitList of the chat room
+    private List<String> whiteList;
 
     // function :
     // By calling this function, the serial would be added into memberSerials
@@ -1314,13 +1328,23 @@ public var reads: [String]?
 
 ```java
     //@param Integer id, the id of the message
+    private int id;
     //@param String mime, the mime of the message
+    private String mime;
     //@param String encoding, the encoding of the message
+    private String encoding;
+    //@param String data, the data of the message
+    private String data;
     //@param JSONObject meta, the meta of the message
+    private JSONObject meta;
     //@param Date createAt, the created time of the message
+    private Date createdAt;
     //@param DiuitChat diuitChat, the message in the chat room
+    private DiuitChat diuitChat;
     //@param DiuitUser sender, the sender of the message
+    private DiuitUser sender;
     //@param List<String> reads, all readers' serialNumber
+    private List<String> reads;
 
 ```
 The `Message` class represents a message in a chat room (modeled by the `Chat` class) between two or more participants.
