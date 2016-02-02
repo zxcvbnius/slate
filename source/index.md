@@ -78,7 +78,7 @@ Use Cocoapods to retrieve the framework
 
     ` maven { url "https://dl.bintray.com/duolc/maven"}`
 
-2. Add `compile 'com.duolc.diuitapi:message:0.2.1'` to the dependencies of your project
+2. Add `compile 'com.duolc.diuitapi:message:0.2.3'` to the dependencies of your project
 3. In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files
 
 
@@ -178,7 +178,7 @@ requires a specific user session.
 
     Please note that the **Encryption Key** should be kept private on your account server, and should not be stored on your client devices, unless you have security measures ensuring that the key can be kept secret. (For Android / iOS clients, this is impossible. There are many ways of rooting devices, and storing your encryption key at iOS/Android client devices will make your system vulnerable to attack.)
 
-    If you suspect that your encryption key has been compromised, please reissue a new one on [http://www.diuit.net](http://www.diuit.net) and revoke the old key.
+    If you suspect that your encryption key has been compromised, please reissue a new one on [https://www.diuit.net](https://www.diuit.net) and revoke the old key.
 
 ### 1. Obtaining Authentication Nonce
 
@@ -320,7 +320,7 @@ DUMessaging.loginWithAuthToken(token) { code, result in
     }, authToken););
 ```
 
-For iOS and Android, we have completed the authentication for you in SDK; for direct Socket.IO interface, you will start the real-time messaging session by opening a Socket.IO connection to our server `http://www.diuit.net`.
+For iOS and Android, we have completed the authentication for you in SDK; for direct Socket.IO interface, you will start the real-time messaging session by opening a Socket.IO connection to our server `https://www.diuit.net`.
 
 After the Socket.IO session is connected, you emit a `authenticate` message
 with payload
