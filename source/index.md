@@ -70,7 +70,7 @@ Use Cocoapods to retrieve the framework
 
 ### Android
 
-    You can either use Maven to your project.
+    You can use Maven to add library in your project.
 
 **Maven**
 
@@ -78,7 +78,7 @@ Use Cocoapods to retrieve the framework
 
     ` maven { url "https://dl.bintray.com/duolc/maven"}`
 
-2. Add compile **'com.duolc.diuitapi:message:0.2.1'** to the dependencies of your project
+2. Add `compile 'com.duolc.diuitapi:message:0.2.3'` to the dependencies of your project
 3. In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files
 
 
@@ -114,12 +114,13 @@ Use Cocoapods to retrieve the framework
             // Your own code to create the view
             // ...
 
-            DiuitMessagingAPI.set( DIUIT_APP_ID, DIUIT_APP_KEY );
+            DiuitMessagingAPI.set( YOUR_DIUIT_APP_ID, YOUR_DIUIT_APP_KEY );
         }
 
         // Probably more methods
     }
 ```
+
 
 ### iOS
 
@@ -177,7 +178,7 @@ requires a specific user session.
 
     Please note that the **Encryption Key** should be kept private on your account server, and should not be stored on your client devices, unless you have security measures ensuring that the key can be kept secret. (For Android / iOS clients, this is impossible. There are many ways of rooting devices, and storing your encryption key at iOS/Android client devices will make your system vulnerable to attack.)
 
-    If you suspect that your encryption key has been compromised, please reissue a new one on [http://www.diuit.net](http://www.diuit.net) and revoke the old key.
+    If you suspect that your encryption key has been compromised, please reissue a new one on [https://www.diuit.net](https://www.diuit.net) and revoke the old key.
 
 ### 1. Obtaining Authentication Nonce
 
@@ -300,7 +301,26 @@ DUMessaging.loginWithAuthToken(token) { code, result in
 }];
 ```
 
-For iOS and Android, we have completed the authentication for you in SDK; for direct Socket.IO interface, you will start the real-time messaging session by opening a Socket.IO connection to our server `http://www.diuit.net`.
+```Java
+    //@param authToken, the token of the login device
+    DiuitMessageAPI.loginWithAuthToken(new DiuitMessagingAPICallback<JSONObject>()
+    {
+        @Override
+        public void onSuccess(final JSONObject result)
+        {
+            // put your code
+            //register receiving listener
+            DiuitMessagingAPI.registerReceivingMessage(chatReceivingCallback);
+        }
+        @Override
+        public void onFailure(final int code, final JSONObject result)
+        {
+            // put your code
+        }
+    }, authToken););
+```
+
+For iOS and Android, we have completed the authentication for you in SDK; for direct Socket.IO interface, you will start the real-time messaging session by opening a Socket.IO connection to our server `https://www.diuit.net`.
 
 After the Socket.IO session is connected, you emit a `authenticate` message
 with payload
@@ -328,12 +348,12 @@ are properly authenticated and call other APIs.
 ```java
     // In Android, if you have already authenticated the user’s device, you can easily list all the chat room.
 
-    DiuitMessagingAPI.listChats(new DiuitAPICallback<ArrayList<DiuitChat>>()
+    DiuitMessagingAPI.listChats(new DiuitMessagingAPICallback<ArrayList<DiuitChat>>()
     {
         @Override
         public void onSuccess(final ArrayList<DiuitChat> chatArrayList)
         {
-            // if success, retrun chatArrayList
+            // if success, return chatArrayList
         }
 
         @Override
@@ -386,7 +406,7 @@ Users can start a conversation by creating a chat room. Use the following comman
     // @params serialOfUsers : put all the users you want to join into this string array
     // @params meta : you can put attribute of the chat, ex, {'name' : 'this is my new chat room'}
 
-    DiuitMessagingAPI.createChat(ArrayList<String> serials, JSONObject meta, new DiuitAPICallback<DiuitChat>()
+    DiuitMessagingAPI.createChat(ArrayList<String> serials, JSONObject meta, new DiuitMessagingAPICallback<DiuitChat>()
     {
         @Override
         public void onSuccess(final DiuitChat diuitChat)
@@ -469,8 +489,7 @@ Once getting invited, your users can join an one-on-one or group conversation. D
 ```java
 
     //@param chatId, the id of the chat room you want the user to join
-
-    DiuitMessagingAPI.joinChat(int chatId, new DiuitAPICallback<DiuitChat>()
+    DiuitMessagingAPI.joinChat(int chatId, new DiuitMessagingAPICallback<DiuitChat>()
     {
         @Override
         public void onSuccess(final DiuitChat diuitChat)
@@ -517,9 +536,8 @@ DUMessaging.joinChatroomWithId(chatId){ code, result in
 Users can also leave a conversation and they will stop receiving messages.
 
 ```java
-
     // Instead of calling DiuitMessageAPI, you can use the method to let your user leave a chat room
-    diuitChat.leaveChat( new DiuitAPICallback<DiuitChat>()
+    diuitChat.leaveChat( new DiuitMessagingAPICallback<DiuitChat>()
     {
         @Override
         public void onFailure(final int code, final JSONObject resultObj)
@@ -575,7 +593,7 @@ Leave a chat room to stop receiving messages in it.
     JSONObject newMeta = new JSONObject();
     newMeta.put("name", newName);
 
-    diuitChat.updateChat(newMeta, new DiuitAPICallback<DiuitChat>()
+    diuitChat.updateChat(newMeta, new DiuitMessagingAPICallback<DiuitChat>()
     {
         @Override
         public void onFailure(final int code, final JSONObject resultObj)
@@ -638,7 +656,7 @@ Note that you have to modify the whole meta as whole; you cannot only update ind
 
     // @param serialsOfUsers : all users  you want to set into the white list of this chat room
     // @param diuitChat : the chat which you want to update
-    diuitChat.updateWhiteList(ArrayList<String> memberSerials, new DiuitAPICallback<DiuitChat>()
+    diuitChat.updateWhiteList(ArrayList<String> memberSerials, new DiuitMessagingAPICallback<DiuitChat>()
     {
         @Override
         public void onFailure(final int code, final JSONObject resultObj)
@@ -698,7 +716,7 @@ Note that if an user has already joined the chat room, excluding her from the Wh
 
 ```java
 
-    diuitChat.kick(String serial, new DiuitAPICallback<DiuitChat>()
+    diuitChat.kick(String serial, new DiuitMessagingAPICallback<DiuitChat>()
     {
         @Override
         public void onSuccess(DiuitChat diuitChat)
@@ -756,12 +774,10 @@ To completely block a user from joining the chat room, please emit a "chat/white
     // If you want to receive messages , you have to register receiving listener with your object
     // This object could be Activity, Fragment , or any kind of object
     // Once someone sends a message, you would get these in the callback
-
-    DiuitAPI.registerReceivingMessage(DiuitAPICallback<DiuitMessage> callback)
+    DiuitAPI.registerReceivingMessage(DiuitMessagingAPICallback<DiuitMessage> callback)
 
     // Before you leave the activity, or change the object to be `NULL`, you have to unregister this listener
-
-    DiuitAPI.unregisterReceivingMessage(DiuitAPICallback<DiuitMessage> callback)
+    DiuitAPI.unregisterReceivingMessage(DiuitMessagingAPICallback<DiuitMessage> callback)
 
 ```
 
@@ -838,7 +854,7 @@ There are mainly three message types: text, photo, and file. According to the fi
 
     // @param text , your text message string
     // @param meta, it's optional
-    diuitChat.sendText(String text, JSONObject meta, new DiuitAPICallback<DiuitMessage>()
+    diuitChat.sendText(String text, JSONObject meta, new DiuitMessagingAPICallback<DiuitMessage>()
     {
         @Override
         public void onSuccess(final DiuitMessage diuitMessage)
@@ -893,7 +909,7 @@ duchat.sendText(text, meta:[META]) { code, message in
 
 ## Send Rich Media Message
 
-RIch media message refers to photo and file. Use this command to send rich media message in a chat room
+Rich media message refers to photo and file. Use this command to send rich media message in a chat room
 
 
 > You can use those APIs to send photos and files
@@ -903,7 +919,7 @@ RIch media message refers to photo and file. Use this command to send rich media
     // @param bitmap , the bitmap of your photo
     // @param meta, it's optional
     // @param chat, choose a chat which you want to send
-    diuitChat.sendImage(Bitmap bitmap, JSONObject meta, new DiuitAPICallback<DiuitMessage>(){...})
+    diuitChat.sendImage(Bitmap bitmap, JSONObject meta, new DiuitMessagingAPICallback<DiuitMessage>(){...})
 
 ```
 
@@ -950,7 +966,7 @@ duchat.sendImage(YOUR_IMAGE, meta:[META]) { code, message in
     // @param file , the File object of your file
     // @param meta, it's optional
     // @param chat, choose a chat which you want to send
-    diuitChat.sendFile(File file, JSONObject meta, new DiuitAPICallback<DiuitMessage>(){...})
+    diuitChat.sendFile(File file, JSONObject meta, new DiuitMessagingAPICallback<DiuitMessage>(){...})
 
 ```
 
@@ -986,7 +1002,7 @@ When a new user joins a chat room, you may want her to see the historical messag
 
     // @param before, before the timestamp, UTC+0
     // @param page, start at 0
-    diuitChat.listMessagesInChat(Date before, int count, int page, new DiuitAPICallback<ArrayList<DiuitMessage>>()
+    diuitChat.listMessagesInChat(Date before, int count, int page, new DiuitMessagingAPICallback<ArrayList<DiuitMessage>>()
     {
         @Override
         public void onSuccess(final ArrayList<DiuitMessage> diuitMessageArrayList)
@@ -1154,16 +1170,14 @@ public class func loginWithAuthToken(authToken: String, done: DUMessagingCallbac
 +(void)loginWithAuthToken:(NSString * __nonnull)authToken completion:(void (^ __nullable)(NSInteger, id __nullable))completion;
 ```
 ```java
-    static void set(String diuitAppId, String diuitAppKey)
 
     //@param `diuitAppId`, the id of client app  
     //@param `diuitAppKey`, the key of client app
-
-    static void loginWithAuthToken(DiuitMessagingAPICallback<JSONObject> callback, String authToken)
+    static void set(String diuitAppId, String diuitAppKey)
 
     //@param `authToken`, the auth of the device which is provided by client server  
     //@param `callback`, after logging in, Diuit server will return a JSONObject which contains the information about the device itself  
-
+    static void loginWithAuthToken(DiuitMessagingAPICallback<JSONObject> callback, String authToken)
 
 ```
 There are two must-to-do class methods : first one is to set appId and appKey, and the second one is to login with device auth token.
