@@ -22,7 +22,7 @@ search: true
 Diuit provides a simple and powerful API to enable real-time communication in web and mobile apps, or any other Internet connected device.
 This document provides a guide on how to get you start integrating and interacting with Diuit API.  
 
-This document was updated at: 2016-02-14 10:00:00+00
+This document was updated at: 2016-02-15 16:00:00+00
 
 ## Prerequisites
 ### iOS
@@ -305,7 +305,7 @@ DUMessaging.loginWithAuthToken(token) { code, result in
 
 ```Java
     //@param authToken, the token of the login device
-    DiuitMessageAPI.loginWithAuthToken(new DiuitMessagingAPICallback<JSONObject>()
+    DiuitMessagingAPI.loginWithAuthToken(new DiuitMessagingAPICallback<JSONObject>()
     {
         @Override
         public void onSuccess(final JSONObject result)
@@ -538,7 +538,7 @@ DUMessaging.joinChatroomWithId(chatId){ code, result in
 Users can also leave a conversation and they will stop receiving messages.
 
 ```java
-    // Instead of calling DiuitMessageAPI, you can use the method to let your user leave a chat room
+    // Instead of calling DiuitMessagingAPI, you can use the method to let your user leave a chat room
     diuitChat.leaveChat( new DiuitMessagingAPICallback<DiuitChat>()
     {
         @Override
