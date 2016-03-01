@@ -75,8 +75,14 @@ Use Cocoapods to retrieve the framework
 **Maven**
 
 1.  Navigate to your build.gradle file at the app level (not project level) and ensure that you include the following:
+<aside class='note'><br/>
+&nbsp;&nbsp;repositories {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;maven {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp; url "https://dl.bintray.com/duolc/maven" <br/>
+&nbsp;&nbsp;}<br/>
+}
+</aside>
 
-    ` maven { url "https://dl.bintray.com/duolc/maven"}`
 
 2. Add `compile 'com.duolc.diuitapi:message:0.2.3'` to the dependencies of your project
 3. In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files
