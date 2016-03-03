@@ -221,7 +221,7 @@ If the user’s identity is verified, your server will generate a JWT token with
     {
       "typ": "JWT",
       "alg": "RS256"
-      "cty": "diuit-eit;v=1"
+      "cty": "diuit-auth;v=1"
       "kid": ${EncryptionKeyId}
     }
 </aside>
@@ -234,7 +234,7 @@ If the user’s identity is verified, your server will generate a JWT token with
       "sub": ${UNIQUE_USER_ID}
       "iat": ${CURRENT_TIME_IN_ISO8601_FORMAT}
       "exp": ${SESSION_EXPIRATION_TIME_IN_ISO8601_FORMAT}
-      "nce": ${AUTHENTICATION_NONCE}
+      "nonce": ${AUTHENTICATION_NONCE}
     }
 </aside>
 
