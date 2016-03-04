@@ -22,7 +22,7 @@ search: true
 Diuit provides a simple and powerful API to enable real-time communication in web and mobile apps, or any other Internet connected device.
 This document provides a guide on how to get you start integrating and interacting with Diuit API.  
 
-This document was updated at: 2016-03-03 06:00:00+00
+This document was updated at: 2016-03-04 07:00:00+00
 
 ## Prerequisites
 ### iOS
@@ -240,7 +240,7 @@ If the user’s identity is verified, your server will generate a JWT token with
 
 ...  then encrypt the whole thing with your **Encryption Key** obtained when registering for your account.
 
-Note that you can put anything in the "sub" field, as long as you can co-relate this to the user on your system. Our messaging server will use this field to identify this user.
+Note that you can put anything in the "sub" field, which has to be a **string** format, as long as you can co-relate this to the user in your system. Our messaging server will use this field to identify this user.
 
 In the "exp" field, you can specify when this grant will be expired. This field controls for how long the session token generated in the next step will be valid.
 
