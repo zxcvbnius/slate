@@ -140,12 +140,12 @@ Use Cocoapods to retrieve the framework
 
 ### RESTful
 
-Note that when sending an API commands, set the `x-diuit-application-id` and `x-diuit-api-key` headers with your `DIUIT_APP_ID` and `DIUIT_APP_KEY` respectively.
+Note that when sending an API commands, set the `x-diuit-application-id` and `x-diuit-app-key` headers with your `DIUIT_APP_ID` and `DIUIT_APP_KEY` respectively.
 
 ```shell
 curl -X GET \
   -H "x-diuit-application-id: ${DIUIT_APP_ID}" \
-  -H "x-diuit-api-key: ${DIUIT_APP_KEY}" \
+  -H "x-diuit-app-key: ${DIUIT_APP_KEY}" \
   https://api.diuit.net/${API_END_POINT}
 ```
 -->
@@ -197,7 +197,7 @@ To obtain the nonce from our server, send a GET request to the `/1/auth/nonce` e
 ```shell
 curl -X GET \
   -H "x-diuit-application-id: ${DIUIT_APP_ID}" \
-  -H "x-diuit-api-key: ${DIUIT_APP_KEY}" \
+  -H "x-diuit-app-key: ${DIUIT_APP_KEY}" \
   https://api.diuit.net/1/auth/nonce
 ```
 
@@ -267,7 +267,7 @@ If your wish to enable push notification on mobile devices, please pass two addi
 ```shell
 curl -X POST \
   -H "x-diuit-application-id: ${DIUIT_APP_ID}" \
-  -H "x-diuit-api-key: ${DIUIT_APP_KEY}" \
+  -H "x-diuit-app-key: ${DIUIT_APP_KEY}" \
   -H "Content-Type: application/json" \
   -d '{"authToken":${JWT_TOKEN}, "deviceId": ${DEVICE_ID}, "platform": ${PUSH_PLATFORM}, "pushToken": ${PUSH_TOKEN}' \
   https://api.diuit.net/1/auth/login
