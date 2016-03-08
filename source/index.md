@@ -22,7 +22,7 @@ search: true
 Diuit provides a simple and powerful API to enable real-time communication in web and mobile apps, or any other Internet connected device.
 This document provides a guide on how to get you start integrating and interacting with Diuit API.  
 
-This document was updated at: 2016-03-08 15:30:00+00
+This document was updated at: 2016-03-08 18:30:00+00
 
 ## Prerequisites
 ### iOS
@@ -1415,7 +1415,3 @@ The `Message` class represents a message in a chat room (modeled by the `Chat` c
 ## Callback
 
 Callback attaches to each Diuit API function. Depending on different types of function, callback will return different types of result. As an event happenes, for example - when a user joins a chat room, a message being sent, or a messages marked as read - DiuitAPI will receive an event notice on the main thread by default. And then the callback, running in the background, responses the result in the background thread.
-
-```swfit
-public typealias DUMessagingCallback = (Int, AnyObject?) -> Void
-```
