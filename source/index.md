@@ -291,25 +291,7 @@ Diuit is a powerful API that enables you to add in-app messaging with very littl
 
 > Example
 
-```swift
-// token : Auth token of the login device
-DUMessaging.loginWithAuthToken(token) { error, result in
-  if error != nil {
-    // handle error
-     }
-}
-```
-
-```objective_c
-// @"TOKEN" : Auth token of the login device
-[DUMessaging loginWithAuthToken:@"TOKEN" completion:^(NSError *error, id result){
-  if (error) {
-    // handle error
-  }
-}];
-```
-
-```Java
+```java
     //@param authToken, the token of the login device
     DiuitMessagingAPI.loginWithAuthToken(new DiuitMessagingAPICallback<JSONObject>()
     {
@@ -326,6 +308,24 @@ DUMessaging.loginWithAuthToken(token) { error, result in
             // put your code
         }
     }, authToken););
+```
+
+```objective_c
+// @"TOKEN" : Auth token of the login device
+[DUMessaging loginWithAuthToken:@"TOKEN" completion:^(NSError *error, id result){
+  if (error) {
+    // handle error
+  }
+}];
+```
+
+```swift
+// token : Auth token of the login device
+DUMessaging.loginWithAuthToken(token) { error, result in
+  if error != nil {
+    // handle error
+     }
+}
 ```
 
 For iOS and Android, we have completed the authentication for you in SDK; for direct Socket.IO interface, you will start the real-time messaging session by opening a Socket.IO connection to our server `https://api.diuit.net`.
