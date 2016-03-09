@@ -465,7 +465,7 @@ DUMessaging.createChatroomWith([USER_SERIALS], meta: [YOUR_META], whiteList:[WHI
 ```
 
 ```shell
-    // Emit the "chats/chreate" message to the server
+    // Emit the "chats/create" message to the server
     // with the following parameters:
     {
         members: [ ${USER_ID_1}, ${USER_ID_2} ..],
@@ -493,9 +493,6 @@ The **meta** field is a general purpose field for you to store any specific info
 For example, you can store the name of your chat room in this field, a globally shared notes for your chat room, or a base64 encoded small icon. The limit is your imagination.
 
 Again, Diuit doesn’t assume the types of your application. So it is your decision of putting the meta data you’d like to store in this field. Please note, however, that meta field can only store up to 5kb of serialized JSON string.
-
-But please noted that the meta field can only store up to 5kb of serialized JSON
-string.
 
 ## Join Chat Room
 
