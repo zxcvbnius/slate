@@ -924,7 +924,7 @@ duchat.sendText(text, meta:[META]) { error, message in
 ```shell
 
     // To send a message to a chat room,
-    // emit a "message/create" message,
+    // emit a "messages/create" message,
     // with the following payload
     {
         chatId: ${CHATROOM_ID},
