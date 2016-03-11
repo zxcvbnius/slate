@@ -9,7 +9,7 @@ language_tabs:
 
 toc_footers:
   - <a href='#'>Want to develop Diuit API?</a>
-  - <a href='mailto:benchang@diuit.com'>Contact us to build your application</a>
+  - v.003 | <a href='https://gist.github.com/diuitAPI/5e9a297c9afd74f259e8'>Release Note</a>
 
 includes:
   - errors
@@ -22,7 +22,7 @@ search: true
 Diuit provides a simple and powerful API to enable real-time communication in web and mobile apps, or any other Internet connected device.
 This document provides a guide on how to get you start integrating and interacting with Diuit API.  
 
-This document was updated at: 2016-03-08 18:30:00+00
+This document was updated at: 2016-03-11 23:00:00+00
 
 ## Prerequisites
 ### iOS
@@ -375,7 +375,7 @@ are properly authenticated and call other APIs.
 
 ```objective_c
 
-[DUMessaging listChatroomsOnCompletion:^(NSError *error, id result) {
+[DUMessaging listChatrooms:^(NSError *error, id result) {
     if (!error) {
         // You will get the result as @[DUChat]. 
     } else {
@@ -386,7 +386,7 @@ are properly authenticated and call other APIs.
 
 ```swift
 
-DUMessaging.listChatroomsOnCompletion() { error, result in
+DUMessaging.listChatrooms() { error, result in
     if error != nil {
         // You will get the result as [DUChat]
     } else {
