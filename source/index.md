@@ -8,8 +8,8 @@ language_tabs:
   - shell: REST / Socket.IO
 
 toc_footers:
-  - <a href='#'>Want to develop Diuit API?</a>
-  - v.003 | <a href='https://gist.github.com/diuitAPI/5e9a297c9afd74f259e8'>Release Note</a>
+  - <a href='http://api.diuit.com/'>Sign up now!</a>
+  - v.003 | <a target='_blank' href='https://gist.github.com/diuitAPI/5e9a297c9afd74f259e8'>Release Note</a>
 
 includes:
   - errors
