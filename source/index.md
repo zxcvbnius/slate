@@ -22,7 +22,7 @@ search: true
 Diuit provides a simple and powerful API to enable real-time communication in web and mobile apps, or any other Internet connected device.
 This document provides a guide on how to get you start integrating and interacting with Diuit API.  
 
-This document was updated at: 2016-03-11 23:00:00+00
+This document was updated at: 2016-03-14 14:30:00+00
 
 ## Prerequisites
 ### iOS
@@ -67,6 +67,11 @@ Use Cocoapods to retrieve the framework
 4. Make sure to always open the Xcode workspace instead of the project file when building your project:
 
     `open MyApp.xcworkspace`
+    
+1. If you are using Obj-C, add following code in your .m files where you'd like to use Diuit API.
+
+	`#import <DUMessaging/DUMessaging.h>`
+
 
 ### Android
 
