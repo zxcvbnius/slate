@@ -9,7 +9,7 @@ language_tabs:
 
 toc_footers:
   - <a href='http://api.diuit.com/'>Sign up now!</a>
-  - v.003 | <a target='_blank' href='https://gist.github.com/diuitAPI/5e9a297c9afd74f259e8'>Release Note</a>
+  - v.004 | <a target='_blank' href='https://gist.github.com/diuitAPI/5e9a297c9afd74f259e8'>Release Note</a>
 
 includes:
   - errors
