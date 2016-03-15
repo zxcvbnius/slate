@@ -12,6 +12,7 @@ toc_footers:
   - <a href='mailto:benchang@diuit.com'>Contact us to build your application</a>
 
 includes:
+  - notifications
   - errors
 
 search: true
