@@ -22,7 +22,7 @@ search: true
 Diuit provides a simple and powerful API to enable real-time communication in web and mobile apps, or any other Internet connected device.
 This document provides a guide on how to get you start integrating and interacting with Diuit API.  
 
-This document was updated at: 2016-03-14 14:30:00+00
+This document was updated at: 2016-03-16 04:30:00+00
 
 ## Prerequisites
 ### iOS
@@ -67,7 +67,7 @@ Use Cocoapods to retrieve the framework
 4. Make sure to always open the Xcode workspace instead of the project file when building your project:
 
     `open MyApp.xcworkspace`
-    
+
 1. If you are using Obj-C, add following code in your .m files where you'd like to use Diuit API.
 
 	`#import <DUMessaging/DUMessaging.h>`
@@ -89,7 +89,7 @@ Use Cocoapods to retrieve the framework
 </aside>
 
 
-2. Add `compile 'com.duolc.diuitapi:message:0.2.3'` to the dependencies of your project
+2. Add `compile 'com.duolc.diuitapi:message:0.2.5'` to the dependencies of your project
 3. In the Android Studio Menu: Tools -> Android -> Sync Project with Gradle Files
 
 <!--
@@ -298,7 +298,7 @@ Diuit is a powerful API that enables you to add in-app messaging with very littl
 
 ```java
     //@param authToken, the token of the login device
-    DiuitMessagingAPI.loginWithAuthToken(new DiuitMessagingAPICallback<JSONObject>()
+    DiuitMessagingAPI.loginWithAuthToken(String authToken, new DiuitMessagingAPICallback<JSONObject>()
     {
         @Override
         public void onSuccess(final JSONObject result)
@@ -312,7 +312,7 @@ Diuit is a powerful API that enables you to add in-app messaging with very littl
         {
             // put your code
         }
-    }, authToken););
+    }););
 ```
 
 ```objective_c
@@ -382,7 +382,7 @@ are properly authenticated and call other APIs.
 
 [DUMessaging listChatrooms:^(NSError *error, id result) {
     if (!error) {
-        // You will get the result as @[DUChat]. 
+        // You will get the result as @[DUChat].
     } else {
         // Handle error
     }
@@ -1227,7 +1227,7 @@ public class func loginWithAuthToken(authToken: String, done: DUMessagingCallbac
 
     //@param `authToken`, the auth of the device which is provided by client server  
     //@param `callback`, after logging in, Diuit server will return a JSONObject which contains the information about the device itself  
-    static void loginWithAuthToken(DiuitMessagingAPICallback<JSONObject> callback, String authToken)
+    static void loginWithAuthToken(String authToken, DiuitMessagingAPICallback<JSONObject> callback)
 
 ```
 There are two must-to-do class methods : first one is to set appId and appKey, and the second one is to login with device auth token.
