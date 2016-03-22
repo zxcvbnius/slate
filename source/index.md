@@ -1344,7 +1344,7 @@ public let id: Int?
 public let serial: String!
 
 // user's meta
-public let devices: [String: AnyObject]?
+public let meta: [String: AnyObject]?
 ```
 
 ```objective_c
