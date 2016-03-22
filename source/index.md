@@ -1211,7 +1211,7 @@ If you want to receive push notification, you must have:
 // NOTE: You also can register your push token when retrieving session token in your server
 
 // Set your push token with NSString
-[DUMessaging curretnDevice] setPushTokenFromString: @"PUSH_TOKEN" completion:^(NSError *error, NSDictionary *result) {
+[[DUMessaging curretnDevice] setPushTokenFromString: @"PUSH_TOKEN" completion:^(NSError *error, NSDictionary *result) {
     if (error) {
         // Handle error
         return;
@@ -1220,10 +1220,10 @@ If you want to receive push notification, you must have:
     if(!someChat.pushEnabled)
         [someChat enablePushNotifcation:nil];
 
-}
+}];
 
 // Either, you can set push token with NSData
-[DUMessaging curretnDevice] setPushTokenFromData: NSDATA_OF_TOKEN completion:^(NSError *error, NSDictionary *result) {
+[[DUMessaging curretnDevice] setPushTokenFromData: NSDATA_OF_TOKEN completion:^(NSError *error, NSDictionary *result) {
     if (error) {
         // Handle error
         return
@@ -1233,7 +1233,7 @@ If you want to receive push notification, you must have:
         [someChat enablePushNotifcation:nil];
     
 
-}
+}];
 
 ```
 
