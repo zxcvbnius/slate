@@ -256,8 +256,6 @@ Setting this to a relative short value makes the system more secure; leaking a s
 Setting this to a long value can also be useful for Internet of Things (IoT) applications, because you are very confident that the device will not be hacked. You can pre-generate your session token, and set a extremely long expiration date to effectively make the device always authenticated. But in this case, you will have to ensure that the session token is never leaked. (The session token will essentially behaves like a randomly generated password in this case).
 
 In the "kid" field, note to put Encryption Key ID, not **Encryption Key** itself. The JWT header itself is not encrypted, so never put any private data in the JWT header.
-The JWT header itself is not encrypted, so never put any private data in the
-JWT header.
 
 ### 4. Login to Messaging Server
 
