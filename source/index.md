@@ -22,7 +22,7 @@ search: true
 Diuit provides a simple and powerful API to enable real-time communication in web and mobile apps, or any other Internet connected device.
 This document provides a guide on how to get you start integrating and interacting with Diuit API.  
 
-This document was updated at: 2016-03-22 18:30:00+00
+This document was updated at: 2016-03-22 23:30:00+00
 
 ## Prerequisites
 ### iOS
@@ -1159,7 +1159,7 @@ dumessage.markAsReadOnCompletion() { error, result in
 
 // If you don't want to deal with callback, you can send nil as callback arguement
 
-dumessage.markAsReadOnCompletion(nil)
+dumessage.markAsReadOnCompletion()
 
 ```
 
@@ -1198,6 +1198,98 @@ When a user is kicked from a chat room, all members in the chat room will receiv
 
 When a member in the chat room updates the chat room’s meta field, all members of the chat room will receive a message with type **meta.updated**, and a single key **meta** providing the latest state of the chat room’s meta field.
 
+# Push Notification
+
+## Prequisite
+
+If you want to receive push notification, you must have:
+
+1. The push token of your device must be registered.
+2. You must enable push notification in the chatroom from which you want to receive notification. (When you create or join a chatroom, push notifcation of the chatroom is enabled in default)
+
+```objective_c
+// NOTE: You also can register your push token when retrieving session token in your server
+
+// Set your push token with NSString
+[DUMessaging curretnDevice] setPushTokenFromString: @"PUSH_TOKEN" completion:^(NSError *error, NSDictionary *result) {
+    if (error) {
+        // Handle error
+        return;
+    }
+    // Enable notification in some chatroom
+    if(!someChat.pushEnabled)
+        [someChat enablePushNotifcation:nil];
+
+}
+
+// Either, you can set push token with NSData
+[DUMessaging curretnDevice] setPushTokenFromData: NSDATA_OF_TOKEN completion:^(NSError *error, NSDictionary *result) {
+    if (error) {
+        // Handle error
+        return
+    }
+    // Enable notification in some chatroom
+    if(!someChat.pushEnabled)
+        [someChat enablePushNotifcation:nil];
+    
+
+}
+
+```
+
+```swift
+// NOTE: You also can register your push token when retrieving session token in your server
+
+// Set your push token with String
+DUMessaging.currentDevice!.setPushTokenFromData(NSDATA_OF_TOKEN) { error, result in
+    if error != nil {
+        // Handle error
+        return
+    }
+    // Enable notification in some chatroom
+    if someChat.pushEnabled == false {
+        someChat.enablePushNotification()
+    }
+}
+
+// Either, you can set push token with NSData
+DUMessaging.currentDevice!.setPushTokenFromData(NSDATA_OF_TOKEN) { error, result in
+    if error != nil {
+        // Handle error
+        return
+    }
+    // Enable notification in some chatroom
+    if someChat.pushEnabled == false {
+        someChat.enablePushNotification()
+    }
+}
+
+```
+
+## Sending Messages with Push Notification
+
+Diuit API will help you send out push notifciation along with your messages. Every text message will be sent with a push notification, and you can set whatever push title and body you like.
+
+When sending messages beside plain text, you need to specify push title (Android only) and obdy to trigger push notification.
+
+
+```swift
+// If you'd like your push body different from the text message, you can set customized message, payload or badge(the value is "increment" in default).
+someChat.sendText("New text message", meta: ["foo":"bar"], pushMessag: "You will see this line in your push notification", pushPayload: ["extra":"some value"], badge: 5)
+
+// Push for rich-media or customized message needs to specify push body
+self.chat.sendImage(someImage, meta: ["foo":"bar"], pushMessag: "You've got an image")
+
+```
+
+```objective_c
+// If you'd like your push body different from the text message, you can set customized message, payload or badge.
+[someChat sendText:@"New text message", meta: @{ @"foo": @"bar"}, pushMessage: @"You will see this line in your push", pushPayload: @{ @"extra": @"some value"}, badge: @"increment", completion: nil];
+
+// Push for rich-media or customized message needs to specify push body
+[someChat sendImage: someImage, meta: @{ @"foo": @"bar"}, pushMessage: @"You've got an image", pushPayload:nil, badge: @"increment", completion: nil];
+```
+
 
 
 # Class
@@ -1224,7 +1316,7 @@ public class func loginWithAuthToken(authToken: String, completion: (NSError?, [
 +(void)setAppId:(NSString *)appId appKey:(NSString * )appKey;
 
 //login with auth token of your device by the class method:
-+(void)loginWithAuthToken:(NSString *)authToken completion:(void (^)(NSInteger, NSDictionary *))completion;
++(void)loginWithAuthToken:(NSString *)authToken completion:(void (^)(NSError *, NSDictionary *))completion;
 ```
 ```java
 
@@ -1309,6 +1401,12 @@ public let platform: DUDevicePlatform
 // device's push token (read-only)
 public var pushToken: String?
 
+// methods:
+// Set your push token with String
+func setPushTokenFromString(token: String, completion: (NSError?, [String: AnyObject]?) -> Void)
+// Set your push token with NSData
+func setPushTokenFromData(token: NSData, completion: (NSError?, [String: AnyObject]?) -> Void)
+
 ```
 
 ```objective_c
@@ -1326,6 +1424,12 @@ public var pushToken: String?
 
 // device's push token
 @property (nonatomic, readonly) NSString *pushToken;
+
+// methods:
+// Set your push token with String
+- (void)setPushTokenFromString:(NSString *)token completion:(void (^)(NSError *, NSDictionary *))completion
+// Set your push token with NSData
+- (void)setPushTokenFromData:(NSData *)token completion:(void (^)(NSError *, NSDictionary *))completion
 ```
 
 After calling this function `loginWithAuthToken`, Diuit server will return the current `DiuitDevice`, which contains the information of the device, including device id, serial number, platform, and status.
@@ -1335,6 +1439,8 @@ After calling this function `loginWithAuthToken`, Diuit server will return the c
 ```swift
 // chatroom's id
 public let id: Int
+// if push notification is enabled in this chat, read-only
+public var pushEnabled: Bool
 // last one message
 public var lastMessage: DUMessage?
 // users' serials of this chatroom, read-only
@@ -1346,9 +1452,9 @@ public var meta: [String : AnyObject]?
 
 // methods:
 // By calling this function, the serial would be added into members
-addMemberWith(serial: String)
+func addMemberWith(serial: String)
 // By calling this function, the serial would be removed from the memberSerials
-removeMemberWith(serial: String)
+func removeMemberWith(serial: String)
 
 ```
 
@@ -1356,14 +1462,16 @@ removeMemberWith(serial: String)
 
 // chatroom's id
 @property (nonatomic, readonly) NSInteger id;
+// if push notification is enabled in this chat, read-only
+@property (nonatomic, readonly) BOOL pushEnabled;
 // last one message
 @property (nonatomic, strong) DUMessage * lastMessage;
 // users' serials of this chatroom
-@property (nonatomic, readonly) NSArray<NSString *> *members;
+@property (nonatomic, readonly) NSArray *members;
 // serials of users allowed to be in this chatroom
-@property (nonatomic, readonly) NSArray<NSString *> *whiteList;
+@property (nonatomic, readonly) NSArray *whiteList;
 // meta of the chatroom, read-only. If you want to update meta, just call instance method 'updateMeta'
-@property (nonatomic, readonly) NSDictionary<NSString *, id> *meta;
+@property (nonatomic, readonly) NSDictionary *meta;
 
 // methods:
 // By calling this function, the serial would be added into members
