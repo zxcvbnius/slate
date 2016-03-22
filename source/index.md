@@ -1200,7 +1200,7 @@ When a member in the chat room updates the chat room’s meta field, all members
 
 # Push Notification
 
-## Prequisite
+## Prerequisites
 
 If you want to receive push notification, you must have:
 
