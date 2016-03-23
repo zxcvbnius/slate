@@ -1457,9 +1457,9 @@ func addMemberWith(serial: String)
 // Remove user serial from the members array in DUChat
 func removeMemberWith(serial: String)
 // Enable push notification of this chat
-func enablePushNotification:(void (^)(NSError *, NSDictionary *))completion;
+func enablePushNotification(completion: (NSError?, [String: AnyObject]?) -> Void)
 // Disable push notification of this chat
-func disablePushNotification:(void (^)(NSError *, NSDictionary *))completion;
+func disablePushNotification(completion: (NSError?, [String: AnyObject]?) -> Void)
 
 ```
 
@@ -1484,9 +1484,9 @@ func disablePushNotification:(void (^)(NSError *, NSDictionary *))completion;
 // Remove user serial from the members array in DUChat
 - (void)removeMemberWith:(NSString *)serial;
 // Enable push notification of this chat
-- (void)enablePushNotification(completion: (NSError?, [String: AnyObject]?) -> Void)
+- (void)enablePushNotification:(void (^)(NSError *, NSDictionary *))completion;
 // Disable push notification of this chat
-- (void)disablePushNotification(completion: (NSError?, [String: AnyObject]?) -> Void)
+- (void)disablePushNotification:(void (^)(NSError *, NSDictionary *))completion;
 ```
 
 ```java
