@@ -1452,10 +1452,14 @@ public var whiteList: [String]?
 public var meta: [String : AnyObject]?
 
 // methods:
-// By calling this function, the serial would be added into members
+// Add user serial to the members array in DUChat
 func addMemberWith(serial: String)
-// By calling this function, the serial would be removed from the memberSerials
+// Remove user serial from the members array in DUChat
 func removeMemberWith(serial: String)
+// Enable push notification of this chat
+func enablePushNotification:(void (^)(NSError *, NSDictionary *))completion;
+// Disable push notification of this chat
+func disablePushNotification:(void (^)(NSError *, NSDictionary *))completion;
 
 ```
 
@@ -1475,10 +1479,14 @@ func removeMemberWith(serial: String)
 @property (nonatomic, readonly) NSDictionary *meta;
 
 // methods:
-// By calling this function, the serial would be added into members
+// Add user serial to the members array in DUChat
 - (void)addMemberWith:(NSString *)serial;
-// By calling this function, the serial would be removed from the memberSerials
+// Remove user serial from the members array in DUChat
 - (void)removeMemberWith:(NSString *)serial;
+// Enable push notification of this chat
+- (void)enablePushNotification(completion: (NSError?, [String: AnyObject]?) -> Void)
+// Disable push notification of this chat
+func disablePushNotification(completion: (NSError?, [String: AnyObject]?) -> Void)
 ```
 
 ```java
