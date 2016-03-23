@@ -1486,7 +1486,7 @@ func disablePushNotification:(void (^)(NSError *, NSDictionary *))completion;
 // Enable push notification of this chat
 - (void)enablePushNotification(completion: (NSError?, [String: AnyObject]?) -> Void)
 // Disable push notification of this chat
-func disablePushNotification(completion: (NSError?, [String: AnyObject]?) -> Void)
+- (void)disablePushNotification(completion: (NSError?, [String: AnyObject]?) -> Void)
 ```
 
 ```java
