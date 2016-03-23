@@ -9,7 +9,7 @@ language_tabs:
 
 toc_footers:
   - <a href='http://api.diuit.com/'>Sign up now!</a>
-  - v.006 | <a target='_blank' href='https://gist.github.com/diuitAPI/5e9a297c9afd74f259e8'>Release Note</a>
+  - v.007 | <a target='_blank' href='https://gist.github.com/diuitAPI/5e9a297c9afd74f259e8'>Release Note</a>
 
 includes:
   - errors
@@ -22,7 +22,7 @@ search: true
 Diuit provides a simple and powerful API to enable real-time communication in web and mobile apps, or any other Internet connected device.
 This document provides a guide on how to get you start integrating and interacting with Diuit API.  
 
-This document was updated at: 2016-03-22 23:30:00+00
+This document was updated at: 2016-03-23 13:30:00+00
 
 ## Prerequisites
 ### iOS
@@ -72,7 +72,7 @@ Use Cocoapods to retrieve the framework
 
 	`#import <DUMessaging/DUMessaging.h>`
 	
-1. Latest iOS framework version: 0.3.6
+1. Latest iOS framework version: 0.3.7
 
 
 ### Android
@@ -701,7 +701,7 @@ Note that you have to modify the whole meta as whole; you cannot only update ind
 
 ```objective_c
 // just call update method of the chatroom instance
-// @[USER_SERIALS] : NSString array of user serials
+// @[USER_SERIALS] : NSString array of user serials; Send nil to allow everyone to join the room
 
 [duchat updateWhiteList:@[USER_SERIALS] completion:^(NSError *error, DUChat *chat) {
     if (error) {
@@ -713,7 +713,7 @@ Note that you have to modify the whole meta as whole; you cannot only update ind
 
 ```swift
 // just call update method of the chatroom instance
-// [USER_SERIALS]([String]) : string array of user serials
+// [USER_SERIALS]([String]?) : string array of user serials; Send nil to allow everyone to join the room
 
 duchat.updateWhiteList([USER_SERIALS]){ error, chat in
     if error != nil {
@@ -1202,65 +1202,68 @@ When a member in the chat room updates the chat room’s meta field, all members
 
 If you want to receive push notification, you must have:
 
-1. The push token of your device must be registered.
+
+1. Upload the certificate of your app in <a target='_blank' href='http://developer.diuit.com/dashboard/'>Diuit API Dashboard</a>.
+2. The push token of your device must be registered.
 2. You must enable push notification in the chatroom from which you want to receive notification. (When you create or join a chatroom, push notifcation of the chatroom is enabled in default)
 
 ```objective_c
 // NOTE: You also can register your push token when retrieving session token in your server
 
-// Set your push token with NSString
-[[DUMessaging curretnDevice] setPushTokenFromString: @"PUSH_TOKEN" completion:^(NSError *error, NSDictionary *result) {
-    if (error) {
-        // Handle error
-        return;
-    }
-    // Enable notification in some chatroom
+// Step 1: In your AppDelegate.m, add following
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    [application registerUserNotificationSettings:[UIUserNotificationSettings
+                                                       settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge)
+                                                       categories:nil]];
+    [application registerForRemoteNotifications];
+    return YES;
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    // You can turn token binary into NSString by yourself, then use method 'setPushTokenFromString:' to update push token
+    [DUMessaging setPushTokenFromData: deviceToken completion:^(NSError *error, NSDictionary *result) {
+        if (error != nil) {
+            // Hadle error
+            return;
+        }
+    }];
+}
+
+// Step 2: Enable push notification in some chatroom to receive notification
     if(!someChat.pushEnabled)
         [someChat enablePushNotifcation:nil];
-
-}];
-
-// Either, you can set push token with NSData
-[[DUMessaging curretnDevice] setPushTokenFromData: NSDATA_OF_TOKEN completion:^(NSError *error, NSDictionary *result) {
-    if (error) {
-        // Handle error
-        return
-    }
-    // Enable notification in some chatroom
-    if(!someChat.pushEnabled)
-        [someChat enablePushNotifcation:nil];
-    
-
-}];
 
 ```
 
 ```swift
 // NOTE: You also can register your push token when retrieving session token in your server
 
-// Set your push token with String
-DUMessaging.currentDevice!.setPushTokenFromData(NSDATA_OF_TOKEN) { error, result in
-    if error != nil {
-        // Handle error
-        return
-    }
-    // Enable notification in some chatroom
-    if someChat.pushEnabled == false {
-        someChat.enablePushNotification()
+// Step 1: In your AppDelegate.swift, add following
+func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    // Register push notification 
+    let notificationTypes: UIUserNotificationType = [UIUserNotificationType.Alert, UIUserNotificationType.Badge, UIUserNotificationType.Sound]
+    let pushNotificationSettings = UIUserNotificationSettings(forTypes: notificationTypes, categories: nil)
+        application.registerUserNotificationSettings( pushNotificationSettings)
+    application.registerForRemoteNotifications()
+        
+    return true
+}
+
+func application( application: UIApplication!, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData! ) {
+    // You can turn token binary into NSString by yourself, then use method 'setPushTokenFromString' to update push token
+    DUMessaging.setPushTokenFromData(deviceToken) { error, result in
+        if error != nil {
+            // Handle error
+        }
     }
 }
 
-// Either, you can set push token with NSData
-DUMessaging.currentDevice!.setPushTokenFromData(NSDATA_OF_TOKEN) { error, result in
-    if error != nil {
-        // Handle error
-        return
-    }
-    // Enable notification in some chatroom
+// Step 2: Enable push notification in some chatroom to receive notification
     if someChat.pushEnabled == false {
         someChat.enablePushNotification()
     }
-}
 
 ```
 
