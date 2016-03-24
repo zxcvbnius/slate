@@ -1196,7 +1196,95 @@ When a user is kicked from a chat room, all members in the chat room will receiv
 
 When a member in the chat room updates the chat room’s meta field, all members of the chat room will receive a message with type **meta.updated**, and a single key **meta** providing the latest state of the chat room’s meta field.
 
+# Advanced
+In our standard API, we manage a basic chat features for you, which is suitable for most cases. However, for some cases, like when you want to do 1-to-1 communication or block someone, a group chat connection isn't enough. We've exposed the DirectMessage for these scenarios.  
+
+## Creating Direct Chat Room  
+Users can start a 1-to-1 conversation by creating a direct chat room. Use the following command to create a direct chat room.  
+
+```java
+// @params userSerial : put the user you want to send direct message to
+// @params meta : you can put attribute of the chat, ex, {'name' : 'this is my new chat room'}
+public static void createDirectChat(String serial, final JSONObject meta, final DiuitMessagingAPICallback callback)
+{
+    @Override
+    public void onSuccess(final DiuitChat diuitChat)
+    {
+        // If success, will return a DiuitChat object
+    }
+
+    @Override
+    public void onFailure(final int code, final JSONObject resultObj)
+    {
+        // if failure, it will return error code and result
+    }
+});
+```
+
+## Advanced Listing Chat Room
+By default, listing chat will return all chats. You can get a list of direct chats or a list of group chats by ChatType. As the following command.  
+
+```java
+DiuitMessagingAPI.listChats(DiuitChatType chatType, final DiuitMessagingAPICallback> callback) {
+    @Override
+    public void onSuccess(final ArrayList chatArrayList)
+    {
+        // if success, return chatArrayList
+    }
+
+    @Override
+    public void onFailure(final int code, final JSONObject resultObj)
+    {
+        // if failure, it will return error code and result
+    }
+});
+```
+## Send Direct Text Message
+As Send Text Message, user can send text messages to user directly by user's serial. If they haven't have their direct chat yet, we will create a direct chat for them. In other words, if they have already created their direct chat, we will send this text message into this chat  
+
+```java
+// @param userSerial , the user who you want to send to
+// @param text , your text message string
+// @param meta, the meta of the message, it's optional
+DiuitMessagingAPI.sendDirectText(final String userSerial, final String text, final JSONObject meta, final DiuitMessagingAPICallback callback)
+{
+    @Override
+    public void onSuccess(final DiuitMessage diuitMessage)
+    {
+        // if success, it will return your DiuitMessage
+    }
+
+    @Override
+    public void onFailure(final int code, final JSONObject resultObj)
+    {
+        // if failure, it will return error code and result
+    }
+});
+```
+
+
+## Send Direct Media Message
+User also can send rich media text to user directly.
+
+> Sending Photos  
+
+```java
+// @param bitmap , the bitmap of your photo
+// @param meta, the meta of the message, it's optional
+// @param userSerial, the user's serial who you want to send to
+DiuitMessagingAPI.sendDirectImage(final String serial, Bitmap bitmap, JSONObject meta, new DiuitMessagingAPICallback(){...})
+```
+> If you want to send a file, just call this API
+
+```java
+// @param file , the File object of your file
+// @param meta, it's optional
+// @param chat, choose a chat which you want to send
+DiuitMessagingAPI.sendDirctFile(final String serial, File file, JSONObject meta, new DiuitMessagingAPICallback(){...})
+```
+
 # Push Notification
+This guideline provides you with a step-by-step guide to configure your mobile application for push notifications. Push notification let your application notify a user of new messages or events, even when the user is not actively using your app. Diuit API will help you send out push notifciation along with your messages. Every text message will be sent with a push notification, and you can set whatever push title and body you like. On iOS/Android devices, your application's icon and a message will appear in the status bar when user’s device receives a push notification.
 
 ## Prerequisites
 
@@ -1302,33 +1390,19 @@ Diuit API provides the easiest way for you to manage your users and enables chat
 
 ```swift
 // class DUMessaging
-
-// set your appId and your appKey by the class method:
-public class func setAppId(appId: String, appKey: String)
-
 //login with auth token of your device by the class method:
 public class func loginWithAuthToken(authToken: String, completion: (NSError?, [String: AnyObject]?) -> Void)
 ```
 
 ```objective_c
 // @interface DUMessaging
-
-// set your appId and your appKey by the class method:
-+(void)setAppId:(NSString *)appId appKey:(NSString * )appKey;
-
 //login with auth token of your device by the class method:
 +(void)loginWithAuthToken:(NSString *)authToken completion:(void (^)(NSError *, NSDictionary *))completion;
 ```
 ```java
-
-    //@param `diuitAppId`, the id of client app  
-    //@param `diuitAppKey`, the key of client app
-    static void set(String diuitAppId, String diuitAppKey)
-
-    //@param `authToken`, the auth of the device which is provided by client server  
-    //@param `callback`, after logging in, Diuit server will return a JSONObject which contains the information about the device itself  
-    static void loginWithAuthToken(String authToken, DiuitMessagingAPICallback<JSONObject> callback)
-
+//@param `authToken`, the auth of the device which is provided by client server  
+//@param `callback`, after logging in, Diuit server will return a JSONObject which contains the information about the device itself  
+static void loginWithAuthToken(String authToken, DiuitMessagingAPICallback<JSONObject> callback)
 ```
 There are two must-to-do class methods : first one is to set appId and appKey, and the second one is to login with device auth token.
 
@@ -1374,16 +1448,14 @@ After calling this function `loginWithAuthToken`, Diuit server will return the c
 ## Device
 
 ```java
-    //@param Integer id, the id of the device
-    private int id;
-    //@param String serial, the serialNumber of the device
-    private String serial;
-    //@param String platform, the platform of the device
-    private String platform;
-    //@param String status, the status of the device
-    private String status;
-    //@param String authToken, the auth token of the device
-    private String authToken;
+//@param Integer id, the id of the device
+private int id;
+//@param String serial, the serialNumber of the device
+private String serial;
+//@param String platform, the platform of the device
+private String platform;
+//@param String authToken, the auth token of the device
+private String authToken;
 ```
 
 ```swift
@@ -1436,7 +1508,7 @@ func setPushTokenFromData(token: NSData, completion: (NSError?, [String: AnyObje
 After calling this function `loginWithAuthToken`, Diuit server will return the current `DiuitDevice`, which contains the information of the device, including device id, serial number, platform, and status.
 
 
-## Chatroom
+## Chat
 ```swift
 // chatroom's id
 public let id: Int
@@ -1490,28 +1562,36 @@ func disablePushNotification(completion: (NSError?, [String: AnyObject]?) -> Voi
 ```
 
 ```java
+//@param Integer id, the id of the chat room
+private int id;
+//@param List memberSerials, all memeber's serialNumber in the chat room
+private List memberSerials;
+//@param JSONObject meta, the meta of the chat room
+private JSONObject meta;
+//@param DiuitMessage lastMessage, the last message in the chat room, you have to update by your self
+private DiuitMessage lastDiuitMessage;
+//@param List whitList, the whitList of the chat room
+private List whiteList;
+//@param DiuitChatType type, the type of the chat room
+private DiuitChatType type;
+//@param boolean pushEnabled, enable push notification or not
+private boolean pushEnabled;
 
-    //@param Integer id, the id of the chat room
-    private int id;
-    //@param List<String> memberSerials, all memeber's serialNumber in the chat room
-    private List<String> memberSerials;
-    //@param JSONObject meta, the meta of the chat room
-    private JSONObject meta;
-    //@param DiuitMessage lastMessage, the last message in the chat room, you have to update by your self
-    private DiuitMessage lastDiuitMessage;
-    //@param List<String> whitList, the whitList of the chat room
-    private List<String> whiteList;
-
-    // function :
-    // By calling this function, the serial would be added into memberSerials
-    void addMember(String serial)
-    // By calling this function, the serial would be removed from the memberSerials
-    void removeMember(String serial)
-
+// By calling this function, the serial would be added into memberSerials
+void addMember(String serial)
+// By calling this function, the serial would be removed from the memberSerials
+void removeMember(String serial)
 ```
 The `Chat` class models a chat room between two or more participants. A chat room is an on-going stream of messages (modeled by the `Message` class) synchronized among all participants.
 
 
+## ChatType
+The `ChatType` module is an enumeration class that can be used to define unique sets of the type of the chat room. There are two types of chat: group and direct
+```java
+enum DiuitChatType {
+    GROUP, DIRECT
+}
+```
 
 ## Message
 ```swift
@@ -1561,25 +1641,24 @@ public var reads: [String]?
 ```
 
 ```java
-    //@param Integer id, the id of the message
-    private int id;
-    //@param String mime, the mime of the message
-    private String mime;
-    //@param String encoding, the encoding of the message
-    private String encoding;
-    //@param String data, the data of the message
-    private String data;
-    //@param JSONObject meta, the meta of the message
-    private JSONObject meta;
-    //@param Date createAt, the created time of the message
-    private Date createdAt;
-    //@param DiuitChat diuitChat, the message in the chat room
-    private DiuitChat diuitChat;
-    //@param DiuitUser sender, the sender of the message
-    private DiuitUser sender;
-    //@param List<String> reads, all readers' serialNumber
-    private List<String> reads;
-
+//@param Integer id, the id of the message
+private int id;
+//@param String mime, the mime of the message
+private String mime;
+//@param String encoding, the encoding of the message
+private String encoding;
+//@param String data, the data of the message
+private String data;
+//@param JSONObject meta, the meta of the message
+private JSONObject meta;
+//@param Date createAt, the created time of the message
+private Date createdAt;
+//@param DiuitChat diuitChat, the message in the chat room
+private DiuitChat diuitChat;
+//@param DiuitUser sender, the sender of the message
+private DiuitUser sender;
+//@param List reads, all readers' serialNumber
+private List reads;
 ```
 The `Message` class represents a message in a chat room (modeled by the `Chat` class) between two or more participants.
 
